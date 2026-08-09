@@ -41,6 +41,10 @@ export default function Home() {
     [values],
   );
   const active = BUDGET_CATEGORIES.find(x => x.id === selected)!;
+  const activeChange = describeBudgetChange(
+    active.baselineAmount100mYen,
+    values[active.id],
+  );
 
   const setValue = (id: BudgetCategoryId, value: number) => {
     setValues(v => ({ ...v, [id]: value }));
@@ -126,7 +130,7 @@ export default function Home() {
 
           <aside className="contextPanel" id="category-context" aria-label="選択分野の変更の意味">
             <p className="panelKicker">いま見ている分野</p><h2>{active.name}</h2>
-            <div className="amountCompare"><span>成立後の初期値<b>{money(active.baselineAmount100mYen)}</b></span><span>あなたの配分<b>{money(values[active.id])}</b></span></div>
+            <div className="amountCompare"><span>成立予算<b>{money(active.baselineAmount100mYen)}</b></span><span>あなたの案<b>{money(values[active.id])}</b></span><span>変更額<b>{activeChange.amountLabel}</b></span><span>変更率<b>{activeChange.rateLabel}</b></span></div>
             <div className="warning">目的別予算と局別要求は集計範囲が異なります。直接の差額比較ではありません。</div>
             <div className="timelineCard"><span className="stageTag request">各局要求</span>{active.request ? <><h3>{active.request.bureau}</h3><div className="requestNums"><span>R8要求<b>{money(active.request.requestedAmount100mYen)}</b></span><span>R7当初<b>{money(active.request.previousAmount100mYen)}</b></span></div><p>{active.request.reason}</p></> : <p>このプロトタイプでは、代表局の要求総額をまだ対応付けていません。推測値は表示しません。</p>}</div>
             <div className="timelineCard"><span className="stageTag bureau">財務局査定</span><p>{active.bureauAssessment ?? "この分野の代表事例は未収録です。公式の事項別一覧で確認できます。"}</p></div>

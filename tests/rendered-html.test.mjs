@@ -231,6 +231,38 @@ test("offers one detail cue for the selected category", async () => {
   assert.equal(html.match(/>この変更の意味を見る</g)?.length, 1);
 });
 
+test("shows the selected category and its complete comparison in the context panel", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `context-comparison-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+  const panel = html.match(
+    /<aside class="contextPanel" id="category-context" aria-label="選択分野の変更の意味">.*?<\/aside>/,
+  )?.[0];
+
+  assert.ok(panel);
+  assert.match(panel, /<h2>福祉と保健<\/h2>/);
+  assert.match(panel, /成立予算.*?18,730億円/);
+  assert.match(panel, /あなたの案.*?18,730億円/);
+  assert.match(panel, /変更額.*?±0億円/);
+  assert.match(panel, /変更率.*?±0\.0%/);
+});
+
 test("keeps total, difference, and remaining funds together", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `balance-${process.pid}-${Date.now()}`);
