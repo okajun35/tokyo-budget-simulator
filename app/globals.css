@@ -106,9 +106,12 @@ input[type="range"]::-webkit-slider-thumb { appearance:none; width:16px; height:
 .caseUnavailable { padding:10px; }
 .caseUnavailable p { margin:4px 0 0; color:var(--muted); font-size:8px; line-height:1.6; }
 .warning { margin:14px 0; padding:11px; background:#fff3d9; color:#6f5728; font-size:10px; line-height:1.6; }
+.budgetBackgroundTimeline { display:grid; gap:7px; }
 .timelineCard { margin-top:11px; padding:16px; border:1px solid var(--line); }
+.budgetBackgroundTimeline .timelineCard { margin-top:0; padding:11px; }
 .timelineCard h3 { margin:10px 0; font-size:13px; }
 .timelineCard p { margin:10px 0 0; color:#5a6664; font-size:11px; line-height:1.7; }
+.timelineCard>a { display:inline-block; margin-top:8px; color:var(--teal); font-size:8px; font-weight:800; }
 .stageTag { display:inline-block; padding:4px 7px; color:white; background:#777; font-size:9px; letter-spacing:.08em; font-weight:900; }
 .stageTag.request { background:#9a7935; }.stageTag.bureau,.stageTag.bureau_assessment { background:#436b9b; }.stageTag.governor,.stageTag.governor_assessment { background:#934f72; }.stageTag.enacted_budget { background:var(--teal); }.stageTag.proposal { background:#655a8e; }.stageTag.external_request { background:#8b6956; }.stageTag.evaluation { background:#4c7b52; }
 .noForecast { margin-top:15px; padding:16px; background:#edf4ff; border-radius:7px; }

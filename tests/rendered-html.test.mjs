@@ -334,6 +334,50 @@ test("summarizes domestic and international cases with their evidential limits",
   assert.match(panel, /東京都で同じ結果になるとは限りません/);
 });
 
+test("separates each Tokyo budget stage behind the enacted amount", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `context-background-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+  const panel = html.match(
+    /<aside class="contextPanel" id="category-context" aria-label="選択分野の変更の意味">.*?<\/aside>/,
+  )?.[0];
+
+  assert.ok(panel);
+  assert.match(panel, /東京都で現在の金額になった背景/);
+  assert.equal(panel.match(/data-budget-background-stage=/g)?.length, 5);
+
+  const stages = [
+    'data-budget-background-stage="request"',
+    'data-budget-background-stage="bureau_assessment"',
+    'data-budget-background-stage="governor_assessment"',
+    'data-budget-background-stage="proposal"',
+    'data-budget-background-stage="enacted_budget"',
+  ];
+  for (let index = 1; index < stages.length; index += 1) {
+    assert.ok(panel.indexOf(stages[index - 1]) < panel.indexOf(stages[index]));
+  }
+
+  assert.match(panel, /予算案.*?まだ成立予算ではありません/);
+  assert.match(panel, /成立予算.*?18,730億円/);
+  assert.match(panel, /本シミュレーターの初期値/);
+});
+
 test("keeps total, difference, and remaining funds together", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `balance-${process.pid}-${Date.now()}`);

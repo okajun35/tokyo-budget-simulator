@@ -29,6 +29,13 @@ import { BUDGET_SOURCES } from "@/features/trace-budget-sources/budget-sources";
 const money = (v: number) => `${Math.round(v).toLocaleString("ja-JP")}億円`;
 const signedMoney = (v: number) =>
   v === 0 ? "±0億円" : `${v > 0 ? "+" : ""}${money(v)}`;
+const budgetBackgroundSources = {
+  request: BUDGET_SOURCES.find(source => source.id === "request")!,
+  bureauAssessment: BUDGET_SOURCES.find(source => source.id === "bureau")!,
+  governorAssessment: BUDGET_SOURCES.find(source => source.id === "governor")!,
+  proposal: BUDGET_SOURCES.find(source => source.id === "proposal")!,
+  enactedBudget: BUDGET_SOURCES.find(source => source.id === "enacted")!,
+};
 export default function Home() {
   const [values, setValues] = useState<BudgetAllocations>(() =>
     createInitialBudgetSimulationState(BUDGET_CATEGORIES).allocations,
@@ -162,10 +169,17 @@ export default function Home() {
               <div className="contextSectionHead"><h3>国内外の事例</h3><span>公的資料で確認</span></div>
               <div className="budgetCaseList">{contextCases.map(({scope, label, budgetCase}) => budgetCase ? <details key={scope} data-budget-case-scope={scope}><summary><span>{label}</span><b>{budgetCase.title}</b></summary><div className="budgetCaseBody"><p className="caseMeta">{budgetCase.jurisdiction} · {budgetCase.period}</p><p>{budgetCase.budgetContext}</p><strong>{CAUSAL_STRENGTH_LABELS[budgetCase.causalStrength]}</strong><ul>{budgetCase.confirmedChanges.map(change => <li key={change}>{change}</li>)}</ul><p className="caseCaution">{budgetCase.caution}</p>{scope === "international" && <p className="caseCaution">制度や前提が異なるため、東京都で同じ結果になるとは限りません。</p>}<a href={budgetCase.sourceUrl} target="_blank" rel="noreferrer">公的資料を確認する ↗</a></div></details> : <div className="caseUnavailable" key={scope}><b>{label}</b><p>この分野は信頼できる事例をまだ収録していません。推測例は表示しません。</p></div>)}</div>
             </section>
-            <div className="warning">目的別予算と局別要求は集計範囲が異なります。直接の差額比較ではありません。</div>
-            <div className="timelineCard"><span className="stageTag request">各局要求</span>{active.request ? <><h3>{active.request.bureau}</h3><div className="requestNums"><span>R8要求<b>{money(active.request.requestedAmount100mYen)}</b></span><span>R7当初<b>{money(active.request.previousAmount100mYen)}</b></span></div><p>{active.request.reason}</p></> : <p>このプロトタイプでは、代表局の要求総額をまだ対応付けていません。推測値は表示しません。</p>}</div>
-            <div className="timelineCard"><span className="stageTag bureau">財務局査定</span><p>{active.bureauAssessment ?? "この分野の代表事例は未収録です。公式の事項別一覧で確認できます。"}</p></div>
-            <div className="timelineCard"><span className="stageTag governor">知事査定</span><p>{active.governorAssessment ?? "知事査定で変更された事項だけが資料に掲載されます。該当なしを『判断なし』とは扱いません。"}</p></div>
+            <section className="contextSection">
+              <div className="contextSectionHead"><h3>東京都で現在の金額になった背景</h3><span>資料段階を分離</span></div>
+              <div className="warning">目的別予算と局別要求は集計範囲が異なります。直接の差額比較ではありません。</div>
+              <div className="budgetBackgroundTimeline">
+                <article className="timelineCard" data-budget-background-stage="request"><span className="stageTag request">各局要求</span>{active.request ? <><h3>{active.request.bureau}</h3><div className="requestNums"><span>R8要求<b>{money(active.request.requestedAmount100mYen)}</b></span><span>R7当初<b>{money(active.request.previousAmount100mYen)}</b></span></div><p>{active.request.reason}</p></> : <p>代表局の要求総額を対応付けられていないため、推測値は表示しません。</p>}<a href={budgetBackgroundSources.request.sourceUrl} target="_blank" rel="noreferrer">要求資料 ↗</a></article>
+                <article className="timelineCard" data-budget-background-stage="bureau_assessment"><span className="stageTag bureau">財務局査定</span><p>{active.bureauAssessment ?? "この分野の代表事項は未収録です。事項別一覧に掲載されないことを『査定なし』とは扱いません。"}</p><a href={budgetBackgroundSources.bureauAssessment.sourceUrl} target="_blank" rel="noreferrer">財務局査定資料 ↗</a></article>
+                <article className="timelineCard" data-budget-background-stage="governor_assessment"><span className="stageTag governor">知事査定</span><p>{active.governorAssessment ?? "知事査定で変更された事項だけが資料に掲載されます。掲載なしを『判断なし』とは扱いません。"}</p><a href={budgetBackgroundSources.governorAssessment.sourceUrl} target="_blank" rel="noreferrer">知事査定資料 ↗</a></article>
+                <article className="timelineCard" data-budget-background-stage="proposal"><span className="stageTag proposal">予算案</span><p>知事査定などを反映して都議会へ提出した段階で、まだ成立予算ではありません。このパネルでは成立額と混ぜて表示しません。</p><a href={budgetBackgroundSources.proposal.sourceUrl} target="_blank" rel="noreferrer">予算案資料 ↗</a></article>
+                <article className="timelineCard" data-budget-background-stage="enacted_budget"><span className="stageTag enacted_budget">成立予算</span><h3>{money(active.baselineAmount100mYen)}</h3><p>都議会の議決後に成立した当初予算です。本シミュレーターの初期値として使用しています。</p><a href={budgetBackgroundSources.enactedBudget.sourceUrl} target="_blank" rel="noreferrer">成立後の予算概要 ↗</a></article>
+              </div>
+            </section>
             <div className="noForecast"><b>効果量は計算しません</b><p>予算増減と成果の因果関係が公式資料で示されない限り、「何人改善」「何％向上」といった推測はしません。</p><button onClick={() => setTab("sources")}>政策・事業評価の出典を見る →</button></div>
           </aside>
         </div>
