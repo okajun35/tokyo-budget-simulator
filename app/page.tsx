@@ -12,7 +12,6 @@ import {
 import type { BudgetProcessSummaryStep } from "@/features/learn-budget-process/budget-process-step";
 import {
   calculateBudgetBalance,
-  createInitialBudgetAllocations,
   getBudgetAllocationRange,
   type BudgetAllocations,
 } from "@/features/simulate-budget/budget-allocation";
@@ -22,6 +21,7 @@ import {
 } from "@/features/simulate-budget/budget-categories";
 import type { BudgetCategoryId } from "@/features/simulate-budget/budget-category";
 import { describeBudgetChange } from "@/features/simulate-budget/budget-change";
+import { createInitialBudgetSimulationState } from "@/features/simulate-budget/budget-simulation-state";
 import { BUDGET_SOURCES } from "@/features/trace-budget-sources/budget-sources";
 
 const money = (v: number) => `${Math.round(v).toLocaleString("ja-JP")}億円`;
@@ -29,9 +29,11 @@ const signedMoney = (v: number) =>
   v === 0 ? "±0億円" : `${v > 0 ? "+" : ""}${money(v)}`;
 export default function Home() {
   const [values, setValues] = useState<BudgetAllocations>(() =>
-    createInitialBudgetAllocations(BUDGET_CATEGORIES),
+    createInitialBudgetSimulationState(BUDGET_CATEGORIES).allocations,
   );
-  const [selected, setSelected] = useState<BudgetCategoryId>("welfare");
+  const [selected, setSelected] = useState<BudgetCategoryId>(() =>
+    createInitialBudgetSimulationState(BUDGET_CATEGORIES).selectedCategoryId,
+  );
   const [tab, setTab] = useState<"sim" | "participate" | "sources">("sim");
   const [openStage, setOpenStage] = useState<BudgetProcessSummaryStep["id"] | null>(null);
   const balance = useMemo(
@@ -44,7 +46,11 @@ export default function Home() {
     setValues(v => ({ ...v, [id]: value }));
     setSelected(id);
   };
-  const reset = () => setValues(createInitialBudgetAllocations(BUDGET_CATEGORIES));
+  const reset = () => {
+    const initialState = createInitialBudgetSimulationState(BUDGET_CATEGORIES);
+    setValues(initialState.allocations);
+    setSelected(initialState.selectedCategoryId);
+  };
   const showSimulatorSection = (sectionId: "simulator" | "budget-process") => {
     setTab("sim");
     requestAnimationFrame(() =>
