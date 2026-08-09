@@ -21,6 +21,7 @@ import {
   GENERAL_ACCOUNT_BASELINE_100M_YEN,
 } from "@/features/simulate-budget/budget-categories";
 import type { BudgetCategoryId } from "@/features/simulate-budget/budget-category";
+import { describeBudgetChange } from "@/features/simulate-budget/budget-change";
 import { BUDGET_SOURCES } from "@/features/trace-budget-sources/budget-sources";
 
 const money = (v: number) => `${Math.round(v).toLocaleString("ja-JP")}億円`;
@@ -90,17 +91,23 @@ export default function Home() {
         <div className="simulatorWorkspace">
           <section className="budgetControls" aria-label="9分野の予算操作">
             {BUDGET_CATEGORIES.map(item => {
-              const changed = values[item.id] !== item.baselineAmount100mYen;
-              const delta = values[item.id] - item.baselineAmount100mYen;
-              const deltaRate = delta / item.baselineAmount100mYen * 100;
-              const direction = changed ? delta > 0 ? "up" : "down" : "unchanged";
+              const change = describeBudgetChange(
+                item.baselineAmount100mYen,
+                values[item.id],
+              );
+              const direction =
+                change.direction === "increase"
+                  ? "up"
+                  : change.direction === "decrease"
+                    ? "down"
+                    : "unchanged";
               const range = getBudgetAllocationRange(item.baselineAmount100mYen);
               return <article key={item.id} data-budget-category={item.id} aria-current={selected === item.id ? "true" : undefined} className={`budgetRow ${selected === item.id ? "selected" : ""}`} onClick={() => setSelected(item.id)}>
                 <div className="rowIdentity"><span className="colorDot" style={{background:item.color}}/><div><h3>{item.name}{selected === item.id && <span className="selectionState">選択中</span>}</h3><small>{item.shortDescription}</small></div></div>
                 <div className="budgetMetric"><small>成立予算</small><b>{money(item.baselineAmount100mYen)}</b></div>
                 <div className="sliderCell"><input aria-label={`${item.name}の予算`} type="range" min={range.minimumAmount100mYen} max={range.maximumAmount100mYen} value={values[item.id]} onChange={e => setValue(item.id, Number(e.target.value))} style={{"--accent": item.color} as React.CSSProperties}/></div>
                 <div className="budgetMetric"><small>あなたの案</small><b>{money(values[item.id])}</b></div>
-                <div className={`changeMetric ${direction}`}><small>変更</small><b>{changed ? `${delta > 0 ? "+" : ""}${money(delta)}` : "±0億円"}</b><em>{changed ? `${delta > 0 ? "+" : ""}${deltaRate.toFixed(1)}%` : "±0.0%"}</em>{selected === item.id && <a className="selectedDetailLink" href="#category-context" onClick={event => event.stopPropagation()}>この変更の意味を見る</a>}</div>
+                <div className={`changeMetric ${direction}`}><small>変更</small><b>{change.amountLabel}</b><em>{change.rateLabel}</em>{selected === item.id && <a className="selectedDetailLink" href="#category-context" onClick={event => event.stopPropagation()}>この変更の意味を見る</a>}</div>
               </article>
             })}
           </section>
