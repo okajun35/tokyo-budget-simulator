@@ -86,8 +86,8 @@ export default function Home() {
           <p>{diff === 0 ? "基準予算と一致しています" : diff > 0 ? `財源が ${money(diff)} 不足しています` : `${money(Math.abs(diff))} の余裕があります`}</p>
         </div>
 
-        <div className="simGrid">
-          <div className="sliders">
+        <div className="simulatorWorkspace">
+          <section className="budgetControls" aria-label="9分野の予算操作">
             {BUDGET_CATEGORIES.map(item => {
               const changed = values[item.id] !== item.baselineAmount100mYen;
               const delta = values[item.id] - item.baselineAmount100mYen;
@@ -96,9 +96,9 @@ export default function Home() {
                 <div className="sliderLine"><input aria-label={`${item.name}の予算`} type="range" min={Math.round(item.baselineAmount100mYen * .7)} max={Math.round(item.baselineAmount100mYen * 1.3)} value={values[item.id]} onChange={e => setValue(item.id, Number(e.target.value))} style={{"--accent": item.color} as React.CSSProperties}/><span className={changed ? delta > 0 ? "up" : "down" : ""}>{changed ? `${delta > 0 ? "+" : ""}${money(delta)}` : "基準"}</span></div>
               </article>
             })}
-          </div>
+          </section>
 
-          <aside className="contextPanel">
+          <aside className="contextPanel" id="category-context" aria-label="選択分野の変更の意味">
             <p className="panelKicker">いま見ている分野</p><h2>{active.name}</h2>
             <div className="amountCompare"><span>成立後の初期値<b>{money(active.baselineAmount100mYen)}</b></span><span>あなたの配分<b>{money(values[active.id])}</b></span></div>
             <div className="warning">目的別予算と局別要求は集計範囲が異なります。直接の差額比較ではありません。</div>

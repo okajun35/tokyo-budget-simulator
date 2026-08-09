@@ -121,3 +121,34 @@ test("shows the fiscal year, general account, and main revenue at the top", asyn
   assert.match(overview, /主要財源・都税/);
   assert.match(overview, /7兆3,856億円/);
 });
+
+test("places budget controls and category meaning in one workspace", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `workspace-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+
+  assert.match(
+    html,
+    /<div class="simulatorWorkspace"><section class="budgetControls" aria-label="9分野の予算操作">/,
+  );
+  assert.match(
+    html,
+    /<aside class="contextPanel" id="category-context" aria-label="選択分野の変更の意味">/,
+  );
+});
