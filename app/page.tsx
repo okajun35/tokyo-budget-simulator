@@ -48,7 +48,7 @@ export default function Home() {
     );
   };
 
-  return <main>
+  return <main data-visual-theme="tokyo-blue">
     <header className="topbar">
       <a className="brand" href="#top" aria-label="東京予算ラボ トップ"><span className="brandMark">都</span><span>東京予算ラボ<small>令和8年度・一般会計</small></span></a>
       <nav aria-label="主要メニュー">

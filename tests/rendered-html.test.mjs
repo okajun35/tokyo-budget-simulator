@@ -284,3 +284,27 @@ test("introduces the budget process after the simulator", async () => {
 
   assert.ok(html.indexOf('id="simulator"') < html.indexOf('id="budget-process"'));
 });
+
+test("uses the blue card-based visual theme", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `theme-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+
+  assert.match(html, /<main data-visual-theme="tokyo-blue">/);
+});
