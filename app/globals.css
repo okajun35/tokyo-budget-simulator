@@ -30,7 +30,7 @@ a { color:inherit; }
 .overviewCards em { color:#2f64b5; font-size:9px; font-style:normal; font-weight:700; }
 .process { padding:38px 8vw; background:#e7e2d7; border-bottom:1px solid var(--line); }
 .process>p { margin:0 0 20px; font-family:serif; font-size:21px; font-weight:700; }
-.process>div { display:grid; grid-template-columns:repeat(5,1fr); }
+.process>div { display:grid; grid-template-columns:repeat(6,1fr); }
 .process button { display:flex; align-items:center; gap:10px; padding:12px; border:0; border-left:1px solid #bcb8af; background:none; cursor:pointer; text-align:left; font-size:12px; font-weight:800; }
 .process button:first-child { border-left:0; }
 .process button span { display:grid; place-items:center; width:25px; height:25px; border-radius:50%; background:#cfc9bd; font-size:10px; }

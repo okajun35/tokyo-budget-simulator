@@ -4,6 +4,7 @@ import test from "node:test";
 import { BUDGET_SOURCES } from "../trace-budget-sources/budget-sources.ts";
 import {
   BUDGET_PROCESS_OVERVIEW_STEPS,
+  BUDGET_PROCESS_SUMMARY_STEPS,
   BUDGET_PROCESS_STEPS,
 } from "./budget-process-steps.ts";
 
@@ -46,6 +47,20 @@ test("marks the FY2026 settlement as not available yet", () => {
 
   assert.equal(settlement.fiscalYearStatus, "not_available_yet");
   assert.match(settlement.summary, /令和8年度の決算はまだ確定していません/);
+});
+
+test("summarizes the top-page path in six understandable stages", () => {
+  assert.deepEqual(
+    BUDGET_PROCESS_SUMMARY_STEPS.map((step) => step.label),
+    [
+      "意見・要望",
+      "各局予算要求",
+      "財務局査定",
+      "知事査定・予算案",
+      "都議会審議・議決",
+      "予算成立",
+    ],
+  );
 });
 
 test("shows the five budget stages currently supported by the overview", () => {

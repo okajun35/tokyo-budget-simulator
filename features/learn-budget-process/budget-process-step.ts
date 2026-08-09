@@ -24,3 +24,9 @@ export type BudgetProcessStep = {
 export type BudgetProcessOverviewStep = BudgetProcessStep & {
   documentStage: BudgetProcessOverviewStage;
 };
+
+export type BudgetProcessSummaryStep = {
+  id: string;
+  label: string;
+  summary: string;
+};

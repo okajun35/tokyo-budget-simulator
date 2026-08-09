@@ -7,9 +7,9 @@ import {
 } from "@/domain/tokyo-budget/budget-document-stage";
 import { PARTICIPATION_ROUTES } from "@/features/find-participation-route/participation-routes";
 import {
-  BUDGET_PROCESS_OVERVIEW_STEPS,
+  BUDGET_PROCESS_SUMMARY_STEPS,
 } from "@/features/learn-budget-process/budget-process-steps";
-import type { BudgetProcessOverviewStage } from "@/features/learn-budget-process/budget-process-step";
+import type { BudgetProcessSummaryStep } from "@/features/learn-budget-process/budget-process-step";
 import {
   calculateBudgetTotal,
   createInitialBudgetAllocations,
@@ -31,7 +31,7 @@ export default function Home() {
   );
   const [selected, setSelected] = useState<BudgetCategoryId>("welfare");
   const [tab, setTab] = useState<"sim" | "participate" | "sources">("sim");
-  const [openStage, setOpenStage] = useState<BudgetProcessOverviewStage | null>(null);
+  const [openStage, setOpenStage] = useState<BudgetProcessSummaryStep["id"] | null>(null);
   const total = useMemo(() => calculateBudgetTotal(values), [values]);
   const diff = total - GENERAL_ACCOUNT_BASELINE_100M_YEN;
   const active = BUDGET_CATEGORIES.find(x => x.id === selected)!;
@@ -74,12 +74,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="process" id="budget-process" aria-label="予算成立までの段階">
-        <p>予算は、最初から今の形ではありません。</p>
-        <div>{BUDGET_PROCESS_OVERVIEW_STEPS.map((step, i) => <button key={step.documentStage} onClick={() => setOpenStage(openStage === step.documentStage ? null : step.documentStage)} className={openStage === step.documentStage ? "selected" : ""}><span>{i + 1}</span>{BUDGET_DOCUMENT_STAGE_LABELS[step.documentStage]}</button>)}</div>
-        {openStage && <aside className="stageExplainer"><b>{BUDGET_DOCUMENT_STAGE_LABELS[openStage]}</b><p>{BUDGET_PROCESS_OVERVIEW_STEPS.find((step) => step.documentStage === openStage)?.summary}</p></aside>}
-      </section>
-
       <section className="simulator" id="simulator">
         <div className="sectionHead"><div><p className="eyebrow">ALLOCATION</p><h2>目的別に配分する</h2><p>スライダーは基準額の70〜130%。1億円単位です。</p></div><button className="reset" onClick={reset}>↺ 初期値に戻す</button></div>
         <div className="budgetBalance" data-state={diff === 0 ? "ok" : diff > 0 ? "over" : "under"} aria-live="polite">
@@ -119,6 +113,12 @@ export default function Home() {
             <div className="noForecast"><b>効果量は計算しません</b><p>予算増減と成果の因果関係が公式資料で示されない限り、「何人改善」「何％向上」といった推測はしません。</p><button onClick={() => setTab("sources")}>政策・事業評価の出典を見る →</button></div>
           </aside>
         </div>
+      </section>
+
+      <section className="process" id="budget-process" aria-label="予算成立までの段階">
+        <p>現実の予算は、どうやって決まる？</p>
+        <div>{BUDGET_PROCESS_SUMMARY_STEPS.map((step, i) => <button key={step.id} onClick={() => setOpenStage(openStage === step.id ? null : step.id)} className={openStage === step.id ? "selected" : ""}><span>{i + 1}</span>{step.label}</button>)}</div>
+        {openStage && <aside className="stageExplainer"><b>{BUDGET_PROCESS_SUMMARY_STEPS.find((step) => step.id === openStage)?.label}</b><p>{BUDGET_PROCESS_SUMMARY_STEPS.find((step) => step.id === openStage)?.summary}</p></aside>}
       </section>
 
       <section className="fiscalFacts">

@@ -1,6 +1,7 @@
 import type {
   BudgetProcessOverviewStage,
   BudgetProcessOverviewStep,
+  BudgetProcessSummaryStep,
   BudgetProcessStep,
 } from "./budget-process-step";
 
@@ -149,6 +150,45 @@ export const BUDGET_PROCESS_STEPS = [
     fiscalYearStatus: "in_progress",
   },
 ] as const satisfies readonly BudgetProcessStep[];
+
+export const BUDGET_PROCESS_SUMMARY_STEPS = [
+  {
+    id: "external-input",
+    label: "意見・要望",
+    summary:
+      "都民、各種団体、都議会各会派などが意見や要望を伝えます。要望だけで予算額が決まるわけではありません。",
+  },
+  {
+    id: "bureau-request",
+    label: "各局予算要求",
+    summary:
+      "各局が所管事業に必要な翌年度経費を見積もり、財務局へ要求します。要求額は成立予算額ではありません。",
+  },
+  {
+    id: "finance-assessment",
+    label: "財務局査定",
+    summary:
+      "財務局が事業の必要性、緊急性、経費などを確認し、要求額を査定します。",
+  },
+  {
+    id: "governor-proposal",
+    label: "知事査定・予算案",
+    summary:
+      "知事査定などを反映して予算案をまとめ、東京都議会へ提出します。この時点ではまだ成立していません。",
+  },
+  {
+    id: "assembly-decision",
+    label: "都議会審議・議決",
+    summary:
+      "本会議や委員会で予算案を審議し、東京都議会が採決します。",
+  },
+  {
+    id: "enacted",
+    label: "予算成立",
+    summary:
+      "議決後に当初予算が成立し、各局が事業を執行します。本シミュレーターはこの成立額を基準にしています。",
+  },
+] as const satisfies readonly BudgetProcessSummaryStep[];
 
 const OVERVIEW_STAGE_ORDER = [
   "request",
