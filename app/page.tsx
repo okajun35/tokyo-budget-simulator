@@ -131,6 +131,16 @@ export default function Home() {
           <aside className="contextPanel" id="category-context" aria-label="選択分野の変更の意味">
             <p className="panelKicker">いま見ている分野</p><h2>{active.name}</h2>
             <div className="amountCompare"><span>成立予算<b>{money(active.baselineAmount100mYen)}</b></span><span>あなたの案<b>{money(values[active.id])}</b></span><span>変更額<b>{activeChange.amountLabel}</b></span><span>変更率<b>{activeChange.rateLabel}</b></span></div>
+            <section className="contextSection categoryMeaning">
+              <h3>そもそも何のお金？</h3>
+              <p>{active.definition}</p>
+              <ul>{active.mainUses.map(use => <li key={use}>{use}</li>)}</ul>
+            </section>
+            <section className="contextSection">
+              <div className="contextSectionHead"><h3>配分を変える方法</h3><span>{active.changeOptions.length}つの検討例</span></div>
+              <p className="contextCaution">実際の変更方法を示す検討例であり、実行可能な確定案ではありません。</p>
+              <ol className="changeOptionList">{active.changeOptions.map((option, index) => <li key={option.id} data-change-option={option.id}><span>{index + 1}</span><div><b>{option.title}</b><p>{option.description}</p></div></li>)}</ol>
+            </section>
             <div className="warning">目的別予算と局別要求は集計範囲が異なります。直接の差額比較ではありません。</div>
             <div className="timelineCard"><span className="stageTag request">各局要求</span>{active.request ? <><h3>{active.request.bureau}</h3><div className="requestNums"><span>R8要求<b>{money(active.request.requestedAmount100mYen)}</b></span><span>R7当初<b>{money(active.request.previousAmount100mYen)}</b></span></div><p>{active.request.reason}</p></> : <p>このプロトタイプでは、代表局の要求総額をまだ対応付けていません。推測値は表示しません。</p>}</div>
             <div className="timelineCard"><span className="stageTag bureau">財務局査定</span><p>{active.bureauAssessment ?? "この分野の代表事例は未収録です。公式の事項別一覧で確認できます。"}</p></div>
