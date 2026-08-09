@@ -43,13 +43,14 @@ a { color:inherit; }
 .sectionHead h2 { margin:0; font-family:serif; font-size:36px; }
 .sectionHead p:not(.eyebrow) { margin:9px 0 0; color:var(--muted); font-size:13px; }
 .reset { background:none; border:1px solid #a7aaa5; padding:10px 14px; font-size:12px; cursor:pointer; }
-.balance { display:grid; grid-template-columns:250px 1fr 260px; align-items:center; gap:28px; margin-bottom:30px; padding:20px 24px; background:var(--ink); color:white; }
-.balance span { display:block; color:#bcc7c4; font-size:11px; }
-.balance strong { display:block; margin-top:3px; font-size:23px; }
+.budgetBalance { position:sticky; top:64px; z-index:15; display:grid; grid-template-columns:minmax(390px,1.2fr) minmax(140px,.8fr) 220px; align-items:center; gap:22px; margin-bottom:24px; padding:13px 18px; background:var(--ink); color:white; box-shadow:0 6px 20px rgba(15,38,65,.16); }
+.balanceMetrics { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.budgetBalance span { display:block; color:#bcc7c4; font-size:9px; }
+.budgetBalance strong { display:block; margin-top:3px; font-size:16px; }
 .balanceTrack { height:8px; background:#51615f; }
 .balanceTrack i { display:block; height:100%; background:#59b19d; }
-.balance[data-state="over"] .balanceTrack i { background:#ed7258; }
-.balance p { margin:0; text-align:right; font-size:12px; font-weight:800; }
+.budgetBalance[data-state="over"] .balanceTrack i { background:#ed7258; }
+.budgetBalance p { margin:0; text-align:right; font-size:10px; font-weight:800; }
 .simulatorWorkspace { display:grid; grid-template-columns:minmax(0,58fr) minmax(340px,42fr); gap:28px; align-items:start; }
 .budgetControls { display:grid; gap:9px; }
 .budgetRow { display:grid; grid-template-columns:minmax(130px,1.1fr) minmax(88px,.7fr) minmax(125px,1.25fr) minmax(88px,.7fr) minmax(105px,.8fr); gap:12px; align-items:center; padding:13px 14px; background:var(--cream); border:1px solid transparent; cursor:pointer; transition:.15s ease; }
@@ -103,6 +104,6 @@ input[type="range"]::-webkit-slider-thumb { appearance:none; width:16px; height:
 .dataCoverage { margin-top:20px; padding:24px; border:1px solid var(--line); }.dataCoverage h2 { margin-top:0; font-family:serif; }.dataCoverage p { color:var(--muted); line-height:2; font-size:12px; }
 footer { display:flex; align-items:center; gap:30px; padding:30px 7vw; background:#0d211f; color:white; }footer p { flex:1; color:#91a29f; font-size:10px; }footer>a { color:#b8d3cb; font-size:10px; }
 
-@media (max-width:950px) { .overviewCards { grid-template-columns:1fr 1fr; }.simulatorWorkspace { grid-template-columns:1fr; }.contextPanel { position:relative; top:auto; }.balance { grid-template-columns:1fr; gap:12px; }.balance p { text-align:left; }.process>div { grid-template-columns:1fr 1fr; }.process button { border:0; }.factGrid { grid-template-columns:1fr; }.participationGrid { grid-template-columns:1fr; } }
+@media (max-width:950px) { .overviewCards { grid-template-columns:1fr 1fr; }.simulatorWorkspace { grid-template-columns:1fr; }.contextPanel { position:relative; top:auto; }.budgetBalance { grid-template-columns:1fr; gap:10px; }.budgetBalance p { text-align:left; }.process>div { grid-template-columns:1fr 1fr; }.process button { border:0; }.factGrid { grid-template-columns:1fr; }.participationGrid { grid-template-columns:1fr; } }
 @media (max-width:620px) { .topbar { padding:0 18px; }.topbar nav { gap:8px; }.topbar nav button { font-size:10px; }.brand>span:last-child { font-size:12px; }.hero,.simulator,.fiscalFacts,.subpage { padding:32px 20px; }.overviewCards { grid-template-columns:1fr; }.heroActions { align-items:flex-start; flex-direction:column; }.process { padding:30px 20px; }.process>div { grid-template-columns:1fr; }.sectionHead { align-items:flex-start; gap:20px; flex-direction:column; }.budgetRow { grid-template-columns:1fr 1fr; }.rowIdentity,.sliderCell { grid-column:1 / -1; }.contextPanel { padding:20px; }.participationGrid dl { grid-template-columns:1fr; gap:3px; }.participationGrid dd { margin-bottom:9px; }.sourceList article { grid-template-columns:1fr; }.sourceList dl { grid-template-columns:120px 1fr; }.priority ol { display:grid; }.factGrid article { padding:22px; } footer { align-items:flex-start; flex-direction:column; } }
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } * { transition:none !important; } }

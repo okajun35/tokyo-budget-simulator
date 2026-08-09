@@ -230,3 +230,33 @@ test("offers one detail cue for the selected category", async () => {
   assert.equal(html.match(/href="#category-context"/g)?.length, 1);
   assert.equal(html.match(/>この変更の意味を見る</g)?.length, 1);
 });
+
+test("keeps total, difference, and remaining funds together", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `balance-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+  const balance = html.match(
+    /<div class="budgetBalance"[^>]*aria-live="polite"[^>]*>.*?<\/div><div class="simulatorWorkspace">/,
+  )?.[0];
+
+  assert.ok(balance);
+  assert.match(balance, /あなたの予算総額/);
+  assert.match(balance, /成立予算との差額/);
+  assert.match(balance, /残額/);
+});
