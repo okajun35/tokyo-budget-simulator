@@ -16,6 +16,7 @@
     "data:fetch": "node scripts/fetch-budget-data.ts",
     "data:normalize": "node scripts/normalize-budget-data.ts",
     "data:validate": "node scripts/validate-budget-data.ts",
+    "audit:layout": "node scripts/audit-layout.mjs",
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"
   },
   "dependencies": {

@@ -84,7 +84,7 @@ export default async function BudgetDetailPage({
 
   return <main className="budgetDetailPage" data-budget-detail={category.id}>
     <header className="budgetDetailHeader">
-      <Link href="/#simulator">← 予算一覧へ戻る</Link>
+      <Link href="/#simulator">← 予算に戻る</Link>
       <p className="eyebrow">BUDGET DETAIL · FY2026</p>
       <h1>{category.name}</h1>
       <p>シミュレーターで選んだ分野と金額を引き継ぎ、変更の意味と根拠を確認します。</p>
@@ -208,7 +208,7 @@ export default async function BudgetDetailPage({
         </article>)}</div>
       </section>
 
-      <nav className="budgetDetailBack" aria-label="関連ページへ移動"><Link href="/#simulator">← 予算一覧へ戻る</Link><Link href={`/participation?category=${category.id}`}>この分野の意見先を見る</Link><Link href="/budget-process">予算の決まり方を確認する →</Link></nav>
+      <nav className="budgetDetailBack" aria-label="関連ページへ移動"><Link href="/#simulator">← 予算に戻る</Link><Link href={`/participation?category=${category.id}`}>この分野の意見先を見る</Link><Link href="/budget-process">予算の決まり方を確認する →</Link></nav>
     </div>
   </main>;
 }

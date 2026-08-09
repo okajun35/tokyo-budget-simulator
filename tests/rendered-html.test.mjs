@@ -659,6 +659,58 @@ test("carries the selected category and amount to its detail page", async () => 
   assert.match(detailHtml, /あなたの案.*?18,730億円/);
 });
 
+test("offers a direct detail route from every mobile budget card", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `mobile-detail-links-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = (await response.text()).replaceAll("<!-- -->", "");
+
+  assert.equal(html.match(/data-mobile-detail-link=/g)?.length, 9);
+  assert.match(
+    html,
+    /data-mobile-detail-link="debt"[^>]*href="\/budget\/debt\?amount=2799"[^>]*>詳しく見る/,
+  );
+});
+
+test("labels the detail page return route as going back to the budget", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `detail-return-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/budget/debt?amount=2799", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+
+  assert.match(html, /href="\/#simulator"[^>]*>← 予算に戻る/);
+});
+
 test("renders the shared detail route for all nine budget categories", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `detail-routes-${process.pid}-${Date.now()}`);
@@ -807,7 +859,7 @@ test("explains a budget change through the complete shared detail template", asy
   assert.match(normalizedHtml, /詳しい公式資料/);
   assert.match(normalizedHtml, /意見を伝える先/);
   assert.match(normalizedHtml, /主な所管であり、予算分類との一対一対応ではありません/);
-  assert.match(normalizedHtml, /href="\/#simulator"[^>]*>.*?予算一覧へ戻る/);
+  assert.match(normalizedHtml, /href="\/#simulator"[^>]*>.*?予算に戻る/);
 });
 
 test("renders the completed content for debt, welfare, and education", async () => {
