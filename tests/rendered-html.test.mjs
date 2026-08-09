@@ -498,6 +498,50 @@ test("renders the shared detail route for all nine budget categories", async () 
   }
 });
 
+test("renders the complete minimum detail for the remaining six categories", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `remaining-details-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const expectedTextByCategory = {
+    industry: "貸付原資、補助金、相談・訓練、情報発信",
+    environment: "設備補助、調査・監視、普及啓発、施設運営",
+    city: "新設、用地取得、更新、点検・補修",
+    safety: "人員配置、日常の運用、施設維持、装備更新",
+    admin: "複数分野を支える基盤経費や法令上必要な事務",
+    linked: "東京都が使途や金額を単独で自由に決められるとは限りません",
+  };
+
+  for (const [categoryId, expectedText] of Object.entries(
+    expectedTextByCategory,
+  )) {
+    const response = await worker.fetch(
+      new Request(`http://localhost/budget/${categoryId}`, {
+        headers: { accept: "text/html" },
+      }),
+      {
+        ASSETS: {
+          fetch: async () => new Response("Not found", { status: 404 }),
+        },
+      },
+      {
+        waitUntil() {},
+        passThroughOnException() {},
+      },
+    );
+    const html = (await response.text()).replaceAll("<!-- -->", "");
+    const sourceSection = html.match(
+      /aria-labelledby="sources-heading".*?<\/section>/,
+    )?.[0];
+
+    assert.equal(response.status, 200);
+    assert.match(html, new RegExp(expectedText));
+    assert.match(html, /公開情報だけでは分からないこと/);
+    assert.match(html, /東京都で同じ結果が起きるとの予測ではありません/);
+    assert.ok(sourceSection);
+    assert.equal(sourceSection.match(/公式資料を開く/g)?.length, 2);
+  }
+});
+
 test("falls back safely when the detail amount is invalid or outside its range", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `detail-fallback-${process.pid}-${Date.now()}`);

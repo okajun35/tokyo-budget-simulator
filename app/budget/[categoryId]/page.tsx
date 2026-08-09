@@ -111,7 +111,7 @@ export default async function BudgetDetailPage({
       <section className="budgetDetailSection" aria-labelledby="meaning-heading">
         <p className="sectionLabel">BASIC FACTS</p>
         <h2 id="meaning-heading">そもそも何のお金？</h2>
-        <p className="detailLead">{category.definition}</p>
+        <p className="detailLead">{"detailedExplanation" in category ? category.detailedExplanation : category.definition}</p>
         <h3>主な用途</h3>
         <ul className="detailUseList">{category.mainUses.map(use => <li key={use}>{use}</li>)}</ul>
         {detailedCategory && <>

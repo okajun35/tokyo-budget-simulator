@@ -81,3 +81,32 @@ test("provides the concrete change methods required by the three detailed catego
     }
   }
 });
+
+test("provides complete minimum content for the remaining six categories", () => {
+  const categoryIds = [
+    "industry",
+    "environment",
+    "city",
+    "safety",
+    "admin",
+    "linked",
+  ];
+
+  for (const categoryId of categoryIds) {
+    const category = BUDGET_CATEGORIES.find(item => item.id === categoryId);
+
+    assert.ok(category, categoryId);
+    assert.ok(
+      category.detailedExplanation.length >= 200 &&
+        category.detailedExplanation.length <= 400,
+      `${categoryId}: ${category.detailedExplanation.length}文字`,
+    );
+    assert.ok(category.mainUses.length >= 3 && category.mainUses.length <= 6);
+    assert.ok(
+      category.changeOptions.length >= 3 && category.changeOptions.length <= 6,
+    );
+    assert.ok(category.sourceIds.length >= 2);
+    assert.ok(category.leadBureaus.length > 0);
+    assert.ok(category.participationRouteIds.length > 0);
+  }
+});

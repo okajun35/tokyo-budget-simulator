@@ -28,6 +28,7 @@ export type BudgetCategory = {
   color: string;
   shortDescription: string;
   definition: string;
+  detailedExplanation?: string;
   mainUses: readonly string[];
   changeOptions: readonly BudgetChangeOption[];
   sourceIds: readonly string[];
