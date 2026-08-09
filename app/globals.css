@@ -12,7 +12,7 @@ a { color:inherit; }
 .brand small { display:block; margin-top:5px; font-size:10px; color:var(--muted); letter-spacing:.12em; font-weight:600; }
 .brandMark { display:grid; place-items:center; width:37px; height:37px; border-radius:9px; color:white; background:var(--teal); font-family:serif; box-shadow:0 4px 10px rgba(20,94,199,.2); }
 .topbar nav { display:flex; height:100%; gap:18px; }
-.topbar nav button { position:relative; background:none; border:0; padding:0 4px; font-size:13px; font-weight:700; cursor:pointer; }
+.topbar nav button,.topbar nav>a { position:relative; display:flex; align-items:center; background:none; border:0; padding:0 4px; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; }
 .topbar nav button.active:after { content:""; position:absolute; left:0; right:0; bottom:0; height:3px; background:var(--teal); }
 .hero { display:grid; gap:20px; padding:24px 5vw 26px; background:linear-gradient(180deg,#fff 0,#f8faff 100%); border-bottom:1px solid var(--line); }
 .eyebrow { margin:0 0 16px; color:var(--teal); font-size:11px; letter-spacing:.2em; font-weight:900; }
@@ -38,6 +38,7 @@ a { color:inherit; }
 .process button.selected span { color:white; background:var(--teal); }
 .stageExplainer { margin-top:18px; padding:18px 20px; background:var(--cream); border:1px solid var(--line); border-left:4px solid var(--teal); border-radius:7px; }
 .stageExplainer p { margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.7; }
+.processDetailLink { display:inline-block; margin-top:18px; color:var(--teal); font-size:12px; font-weight:900; text-decoration:none; }
 .simulator,.fiscalFacts,.subpage { padding:52px 5vw; }
 .simulator { background:#fff; }
 .sectionHead { display:flex; justify-content:space-between; align-items:end; margin-bottom:34px; }
@@ -191,7 +192,31 @@ input[type="range"]::-webkit-slider-thumb { appearance:none; width:16px; height:
 .detailReferenceTag { display:inline-block; padding:3px 8px; border-radius:999px; background:#efe7e1; color:#754c3a; font-size:9px; font-weight:900; }
 .detailBureauLinks { display:flex; flex-wrap:wrap; gap:7px; margin-top:16px; }.detailBureauLinks a { padding:8px 10px; border:1px solid #b8cdea; color:#31547f; font-size:10px; font-weight:800; text-decoration:none; }
 .detailParticipationGrid p { margin:7px 0; }.detailParticipationGrid a { display:inline-block; margin-top:8px; }
-.budgetDetailBack { max-width:1100px; margin:18px auto 0; padding:22px; background:#102b50; }.budgetDetailBack a { color:white; font-size:12px; font-weight:900; text-decoration:none; }
+.budgetDetailBack { display:flex; justify-content:space-between; gap:16px; max-width:1100px; margin:18px auto 0; padding:22px; background:#102b50; }.budgetDetailBack a { color:white; font-size:12px; font-weight:900; text-decoration:none; }
+.budgetProcessPage { min-height:100vh; padding:48px 5vw 72px; background:#f3f6fb; }
+.budgetProcessHeader,.budgetProcessTimeline,.budgetProcessNext { max-width:1100px; margin-right:auto; margin-left:auto; }
+.budgetProcessHeader>a { color:var(--teal); font-size:11px; font-weight:800; text-decoration:none; }
+.budgetProcessHeader .eyebrow { margin-top:28px; }
+.budgetProcessHeader h1 { margin:0; font-family:"Yu Mincho","Hiragino Mincho ProN",serif; font-size:clamp(40px,6vw,72px); line-height:1.12; }
+.budgetProcessHeader>p:last-of-type { max-width:760px; color:var(--muted); font-size:13px; line-height:1.9; }
+.processSeparationNotes { margin-top:24px; padding:20px 22px; border-left:4px solid #d7a238; background:#fff8e8; color:#654f27; font-size:11px; line-height:1.8; }
+.processSeparationNotes ul { margin:7px 0 0; padding-left:20px; }
+.budgetProcessTimeline { position:relative; display:grid; gap:16px; margin-top:36px; }
+.budgetProcessTimeline:before { content:""; position:absolute; top:25px; bottom:25px; left:27px; width:2px; background:#b9cbe2; }
+.budgetProcessStage { position:relative; display:grid; grid-template-columns:56px 1fr; gap:16px; align-items:start; }
+.budgetProcessMarker { z-index:1; display:grid; place-items:center; width:56px; height:56px; border:5px solid #f3f6fb; border-radius:50%; background:#145ec7; color:white; font-family:Georgia,serif; font-size:12px; font-weight:900; }
+.budgetProcessCard { padding:26px; border:1px solid var(--line); background:white; }
+.budgetProcessStageHeading { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.processStatus { color:#42664c; font-size:9px; font-weight:900; }.processStatus.in_progress { color:#8a6317; }.processStatus.not_available_yet { color:#7a5768; }
+.budgetProcessCard h2 { margin:13px 0 8px; font-family:"Yu Mincho","Hiragino Mincho ProN",serif; font-size:clamp(22px,3vw,34px); }
+.processStageSummary { margin:0; color:#52615f; font-size:12px; line-height:1.8; }
+.budgetProcessFacts { display:grid; grid-template-columns:1fr 1fr; gap:1px; margin:20px 0 0; background:var(--line); border:1px solid var(--line); }
+.budgetProcessFacts div { padding:15px 17px; background:#f8fafc; }.budgetProcessFacts div:last-child { grid-column:1 / -1; }
+.budgetProcessFacts dt { color:#31547f; font-size:9px; font-weight:900; }.budgetProcessFacts dd { margin:5px 0 0; color:#52615f; font-size:10px; line-height:1.7; }
+.budgetProcessSources { margin-top:20px; }.budgetProcessSources h3 { margin:0 0 9px; font-size:12px; }
+.budgetProcessSources article { display:flex; justify-content:space-between; gap:18px; padding:13px 15px; border-top:1px solid var(--line); background:#f8fafc; }
+.budgetProcessSources article b { font-size:10px; }.budgetProcessSources article p { margin:4px 0 0; color:var(--muted); font-size:9px; }.budgetProcessSources article a { flex:none; align-self:center; color:var(--teal); font-size:9px; font-weight:900; }
+.budgetProcessNext { display:flex; justify-content:space-between; gap:14px; margin-top:20px; padding:22px; background:#102b50; }.budgetProcessNext a { color:white; font-size:11px; font-weight:900; text-decoration:none; }
 .fiscalFacts { background:#102b50; color:white; }
 .fiscalFacts .eyebrow { color:#9bc0f2; }.fiscalFacts .sectionHead h2 { color:white; }
 .factGrid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:#385778; border:1px solid #385778; }
@@ -213,5 +238,5 @@ input[type="range"]::-webkit-slider-thumb { appearance:none; width:16px; height:
 footer { display:flex; align-items:center; gap:30px; padding:30px 5vw; background:#0b203d; color:white; }footer p { flex:1; color:#aabbd0; font-size:10px; }footer>a { color:#c2d7f2; font-size:10px; }
 
 @media (max-width:950px) { .overviewCards { grid-template-columns:1fr 1fr; }.simulatorWorkspace { grid-template-columns:1fr; }.contextPanel { position:relative; top:auto; }.budgetBalance { grid-template-columns:1fr; gap:10px; }.budgetBalance p { text-align:left; }.process>div { grid-template-columns:1fr 1fr; }.process button { border:0; }.factGrid { grid-template-columns:1fr; }.participationGrid { grid-template-columns:1fr; }.evidenceGrid { grid-template-columns:1fr 1fr; } }
-@media (max-width:620px) { .topbar { padding:0 18px; }.topbar nav { gap:8px; }.topbar nav button { font-size:10px; }.brand>span:last-child { font-size:12px; }.hero,.simulator,.fiscalFacts,.subpage { padding:32px 20px; }.overviewCards { grid-template-columns:1fr; }.heroActions,.simulationNotice { align-items:flex-start; flex-direction:column; }.simulationNotice { gap:5px; }.process { padding:30px 20px; }.process>div { grid-template-columns:1fr; }.sectionHead { align-items:flex-start; gap:20px; flex-direction:column; }.budgetRow { grid-template-columns:1fr 1fr; }.rowIdentity,.sliderCell { grid-column:1 / -1; }.contextPanel { padding:20px; }.participationGrid dl { grid-template-columns:1fr; gap:3px; }.participationGrid dd { margin-bottom:9px; }.sourceList article { grid-template-columns:1fr; }.sourceList dl { grid-template-columns:120px 1fr; }.priority ol { display:grid; }.factGrid article { padding:22px; }.budgetDetailPage { padding:30px 16px 48px; }.budgetDetailOverview,.budgetDetailSection { padding:20px; }.budgetDetailMetrics,.detailConceptList,.detailOptionGrid,.detailCaseGrid,.detailParticipationGrid,.evidenceGrid { grid-template-columns:1fr; }.budgetDetailMetrics article:last-child { grid-column:auto; }.detailCaseGrid dl { grid-template-columns:1fr; gap:2px; }.detailCaseGrid dd { margin-bottom:7px; } footer { align-items:flex-start; flex-direction:column; } }
+@media (max-width:620px) { .topbar { padding:0 18px; }.topbar nav { gap:8px; }.topbar nav button,.topbar nav>a { font-size:10px; }.brand>span:last-child { font-size:12px; }.hero,.simulator,.fiscalFacts,.subpage { padding:32px 20px; }.overviewCards { grid-template-columns:1fr; }.heroActions,.simulationNotice { align-items:flex-start; flex-direction:column; }.simulationNotice { gap:5px; }.process { padding:30px 20px; }.process>div { grid-template-columns:1fr; }.sectionHead { align-items:flex-start; gap:20px; flex-direction:column; }.budgetRow { grid-template-columns:1fr 1fr; }.rowIdentity,.sliderCell { grid-column:1 / -1; }.contextPanel { padding:20px; }.participationGrid dl { grid-template-columns:1fr; gap:3px; }.participationGrid dd { margin-bottom:9px; }.sourceList article { grid-template-columns:1fr; }.sourceList dl { grid-template-columns:120px 1fr; }.priority ol { display:grid; }.factGrid article { padding:22px; }.budgetDetailPage,.budgetProcessPage { padding:30px 16px 48px; }.budgetDetailOverview,.budgetDetailSection { padding:20px; }.budgetDetailMetrics,.detailConceptList,.detailOptionGrid,.detailCaseGrid,.detailParticipationGrid,.evidenceGrid,.budgetProcessFacts { grid-template-columns:1fr; }.budgetDetailMetrics article:last-child,.budgetProcessFacts div:last-child { grid-column:auto; }.detailCaseGrid dl { grid-template-columns:1fr; gap:2px; }.detailCaseGrid dd { margin-bottom:7px; }.budgetProcessTimeline:before { left:20px; }.budgetProcessStage { grid-template-columns:42px 1fr; gap:8px; }.budgetProcessMarker { width:42px; height:42px; border-width:4px; }.budgetProcessCard { padding:18px; }.budgetProcessSources article,.budgetDetailBack,.budgetProcessNext { align-items:flex-start; flex-direction:column; } footer { align-items:flex-start; flex-direction:column; } }
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } * { transition:none !important; } }

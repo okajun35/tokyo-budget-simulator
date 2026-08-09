@@ -100,7 +100,7 @@ export default function Home() {
       <a className="brand" href="#top" aria-label="東京予算ラボ トップ"><span className="brandMark">都</span><span>東京予算ラボ<small>令和8年度・一般会計</small></span></a>
       <nav aria-label="主要メニュー">
         <button className={tab === "sim" ? "active" : ""} onClick={() => showSimulatorSection("simulator")}>予算シミュレーター</button>
-        <button onClick={() => showSimulatorSection("budget-process")}>予算が決まるまで</button>
+        <a href="/budget-process">予算が決まるまで</a>
         <button className={tab === "participate" ? "active" : ""} onClick={() => setTab("participate")}>声を届ける</button>
         <button className={tab === "sources" ? "active" : ""} onClick={() => setTab("sources")}>出典・データ</button>
       </nav>
@@ -207,6 +207,7 @@ export default function Home() {
         <p>現実の予算は、どうやって決まる？</p>
         <div>{BUDGET_PROCESS_SUMMARY_STEPS.map((step, i) => <button key={step.id} onClick={() => setOpenStage(openStage === step.id ? null : step.id)} className={openStage === step.id ? "selected" : ""}><span>{i + 1}</span>{step.label}</button>)}</div>
         {openStage && <aside className="stageExplainer"><b>{BUDGET_PROCESS_SUMMARY_STEPS.find((step) => step.id === openStage)?.label}</b><p>{BUDGET_PROCESS_SUMMARY_STEPS.find((step) => step.id === openStage)?.summary}</p></aside>}
+        <a className="processDetailLink" href="/budget-process">全過程と令和8年度の公式資料を見る →</a>
       </section>
 
       <section className="fiscalFacts">

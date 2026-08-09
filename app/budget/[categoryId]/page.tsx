@@ -208,7 +208,7 @@ export default async function BudgetDetailPage({
         </article>)}</div>
       </section>
 
-      <nav className="budgetDetailBack" aria-label="予算シミュレーターへ戻る"><Link href="/#simulator">← 予算一覧へ戻る</Link></nav>
+      <nav className="budgetDetailBack" aria-label="関連ページへ移動"><Link href="/#simulator">← 予算一覧へ戻る</Link><Link href="/budget-process">予算の決まり方を確認する →</Link></nav>
     </div>
   </main>;
 }

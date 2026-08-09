@@ -84,9 +84,66 @@ test("offers all four primary navigation destinations", async () => {
 
   assert.ok(navigation);
   assert.match(navigation, />予算シミュレーター</);
-  assert.match(navigation, />予算が決まるまで</);
+  assert.match(
+    navigation,
+    /<a(?=[^>]*href=["']\/budget-process["'])[^>]*>予算が決まるまで/,
+  );
   assert.match(navigation, />声を届ける</);
   assert.match(navigation, />出典・データ</);
+});
+
+test("renders the complete FY2026 budget process on an independent page", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `budget-process-page-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/budget-process", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = (await response.text()).replaceAll("<!-- -->", "");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /data-budget-process-page="fy2026"/);
+  assert.equal(html.match(/data-budget-process-stage=/g)?.length, 10);
+  for (const heading of [
+    "意見・要望",
+    "各局要求",
+    "財務局査定",
+    "知事査定",
+    "予算案",
+    "都議会審議",
+    "成立予算",
+    "事業執行",
+    "決算",
+    "政策・事業評価",
+  ]) {
+    assert.match(html, new RegExp(heading));
+  }
+  for (const label of [
+    "誰が行うか",
+    "何を判断するか",
+    "金額や事業が変わる可能性",
+    "都民が関与できるか",
+    "制度上の限界",
+    "令和8年度の公式資料",
+  ]) {
+    assert.match(html, new RegExp(label));
+  }
+  assert.match(html, /外部要望は東京都の確定政策ではありません/);
+  assert.match(html, /財務局査定と知事査定は別の段階です/);
+  assert.match(html, /予算案は成立予算ではありません/);
+  assert.match(html, /令和8年度の決算はまだ確定していません/);
 });
 
 test("shows the fiscal year, general account, and main revenue at the top", async () => {
