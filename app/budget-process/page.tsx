@@ -86,7 +86,7 @@ export default function BudgetProcessPage() {
 
     <nav className="budgetProcessNext" aria-label="次に確認する内容">
       <Link href="/#simulator">予算シミュレーターへ戻る</Link>
-      <Link href="/">トップへ戻る</Link>
+      <Link href="/participation">声を届ける制度を見る</Link>
     </nav>
   </main>;
 }

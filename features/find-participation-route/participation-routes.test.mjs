@@ -3,10 +3,18 @@ import test from "node:test";
 
 import { PARTICIPATION_ROUTES } from "./participation-routes.ts";
 
-test("provides the four participation routes currently shown by the prototype", () => {
+test("provides the seven participation routes required by the specification", () => {
   assert.deepEqual(
     PARTICIPATION_ROUTES.map((route) => route.title),
-    ["請願", "陳情", "都民の声", "パブリックコメント"],
+    [
+      "担当局への問い合わせ・意見",
+      "都民の声",
+      "パブリックコメント",
+      "請願",
+      "陳情",
+      "都議会議員・会派への要望",
+      "選挙・都民提案",
+    ],
   );
 });
 

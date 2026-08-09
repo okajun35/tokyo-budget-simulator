@@ -88,8 +88,53 @@ test("offers all four primary navigation destinations", async () => {
     navigation,
     /<a(?=[^>]*href=["']\/budget-process["'])[^>]*>予算が決まるまで/,
   );
-  assert.match(navigation, />声を届ける</);
+  assert.match(
+    navigation,
+    /<a(?=[^>]*href=["']\/participation\?category=welfare["'])[^>]*>声を届ける/,
+  );
   assert.match(navigation, />出典・データ</);
+});
+
+test("renders participation routes for the selected budget category without collecting data", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `participation-page-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/participation?category=education", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = (await response.text()).replaceAll("<!-- -->", "");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /data-participation-page="education"/);
+  assert.match(html, /選択中の分野.*?教育と文化/);
+  assert.match(html, /教育庁/);
+  assert.match(html, /生活文化局/);
+  assert.match(html, /スポーツ推進本部/);
+  assert.equal(html.match(/data-participation-route=/g)?.length, 7);
+  for (const label of [
+    "提出先",
+    "対象",
+    "必要な手続",
+    "処理の流れ",
+    "できること",
+    "できないこと",
+  ]) {
+    assert.match(html, new RegExp(label));
+  }
+  assert.match(html, /予算への反映は保証されません/);
+  assert.match(html, /このサイトは意見や個人情報を保存・送信しません/);
 });
 
 test("renders the complete FY2026 budget process on an independent page", async () => {

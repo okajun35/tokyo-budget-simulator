@@ -8,4 +8,8 @@ export type ParticipationRoute = {
   canDo: string;
   cannotGuarantee: string;
   officialGuideUrl: string;
+  relatedOfficialGuide?: {
+    label: string;
+    url: string;
+  };
 };

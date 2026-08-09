@@ -42,7 +42,7 @@ export default function Home() {
   const [selected, setSelected] = useState<BudgetCategoryId>(() =>
     createInitialBudgetSimulationState(BUDGET_CATEGORIES).selectedCategoryId,
   );
-  const [tab, setTab] = useState<"sim" | "participate" | "sources">("sim");
+  const [tab, setTab] = useState<"sim" | "sources">("sim");
   const [openStage, setOpenStage] = useState<BudgetProcessSummaryStep["id"] | null>(null);
   const allocationSummary = useMemo(
     () => calculateBudgetAllocationSummary(values, GENERAL_ACCOUNT_BASELINE_100M_YEN),
@@ -101,7 +101,7 @@ export default function Home() {
       <nav aria-label="主要メニュー">
         <button className={tab === "sim" ? "active" : ""} onClick={() => showSimulatorSection("simulator")}>予算シミュレーター</button>
         <a href="/budget-process">予算が決まるまで</a>
-        <button className={tab === "participate" ? "active" : ""} onClick={() => setTab("participate")}>声を届ける</button>
+        <a href={`/participation?category=${selected}`}>声を届ける</a>
         <button className={tab === "sources" ? "active" : ""} onClick={() => setTab("sources")}>出典・データ</button>
       </nav>
     </header>
@@ -195,7 +195,7 @@ export default function Home() {
               <div className="leadBureauLinks">{active.leadBureaus.map(bureau => <a key={bureau.name} href={bureau.url} target="_blank" rel="noreferrer">{bureau.name} ↗</a>)}</div>
               <div className="participationLinks">{activeParticipationRoutes.map(route => <a key={route.id} href={route.officialGuideUrl} target="_blank" rel="noreferrer"><b>{route.title}</b><span>{route.canDo}</span></a>)}</div>
               <p className="participationCaution">どの制度も、提出による予算への反映は保証されません。</p>
-              <button onClick={() => setTab("participate")}>各制度のできること・できないことを見る →</button>
+              <a className="participationDetailLink" href={`/participation?category=${active.id}`}>各制度のできること・できないことを見る →</a>
             </section>
             <div className="noForecast" data-evidence-status="unknown" role="note"><span>公開情報だけでは判断できないこと</span><b>効果量と実行方法は計算しません</b><ul><li>あなたの配分で何人改善するか、何％向上するか</li><li>どの事業を変更すれば実行できるか</li><li>予算増減と成果の因果関係</li></ul><p>公式資料で確認できないため、推測値は表示しません。</p><button onClick={() => setTab("sources")}>政策・事業評価の出典を見る →</button></div>
             <a className="detailLink" href={`/budget/${active.id}?amount=${values[active.id]}`}>詳しく見る <span>選択分野とあなたの案を引き継ぐ →</span></a>
@@ -216,11 +216,6 @@ export default function Home() {
         <p className="csvBadge">✓ 画面の基準値は8種類の公式CSVから機械取得。PDFからの手入力は背景説明に限定。</p>
       </section>
     </>}
-
-    {tab === "participate" && <section className="subpage">
-      <p className="eyebrow">CIVIC PARTICIPATION</p><h1>予算を動かすゲームの次に、<br/>現実の制度を知る。</h1><p className="intro">どの制度も、提出すれば予算に反映される仕組みではありません。提出先・対象・手続・処理の流れがそれぞれ違います。</p>
-      <div className="participationGrid">{PARTICIPATION_ROUTES.map((p, i) => <article key={p.id}><div className="participationTitle"><span>0{i+1}</span><h2>{p.title}</h2></div><dl><dt>提出先</dt><dd>{p.recipient}</dd><dt>対象</dt><dd>{p.target}</dd><dt>必要な手続</dt><dd>{p.procedure}</dd><dt>処理の流れ</dt><dd>{p.flow}</dd><dt>できること</dt><dd>{p.canDo}</dd><dt>できないこと</dt><dd>{p.cannotGuarantee}</dd></dl><div className="guarantee">予算への反映は保証されません</div><a href={p.officialGuideUrl} target="_blank" rel="noreferrer">公式案内を開く ↗</a></article>)}</div>
-    </section>}
 
     {tab === "sources" && <section className="subpage sourcesPage">
       <p className="eyebrow">PROVENANCE</p><h1>数字の「いつ・どの段階」を<br/>消さない。</h1><p className="intro">成立予算、予算案、各局要求、財務局査定、知事査定、外部要望を別データとして保持しています。会派・団体の要望は東京都の確定政策として扱いません。</p>
