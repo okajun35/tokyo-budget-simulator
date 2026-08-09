@@ -5,6 +5,20 @@ import type {
 
 export type BudgetAllocations = Record<BudgetCategoryId, number>;
 
+export type BudgetAllocationRange = {
+  minimumAmount100mYen: number;
+  maximumAmount100mYen: number;
+};
+
+export function getBudgetAllocationRange(
+  baselineAmount100mYen: number,
+): BudgetAllocationRange {
+  return {
+    minimumAmount100mYen: Math.round(baselineAmount100mYen * 0.7),
+    maximumAmount100mYen: Math.round(baselineAmount100mYen * 1.3),
+  };
+}
+
 export function createInitialBudgetAllocations(
   categories: readonly BudgetCategory[],
 ): BudgetAllocations {

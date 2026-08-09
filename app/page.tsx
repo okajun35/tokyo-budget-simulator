@@ -13,6 +13,7 @@ import type { BudgetProcessSummaryStep } from "@/features/learn-budget-process/b
 import {
   calculateBudgetTotal,
   createInitialBudgetAllocations,
+  getBudgetAllocationRange,
   type BudgetAllocations,
 } from "@/features/simulate-budget/budget-allocation";
 import {
@@ -93,10 +94,11 @@ export default function Home() {
               const delta = values[item.id] - item.baselineAmount100mYen;
               const deltaRate = delta / item.baselineAmount100mYen * 100;
               const direction = changed ? delta > 0 ? "up" : "down" : "unchanged";
+              const range = getBudgetAllocationRange(item.baselineAmount100mYen);
               return <article key={item.id} data-budget-category={item.id} aria-current={selected === item.id ? "true" : undefined} className={`budgetRow ${selected === item.id ? "selected" : ""}`} onClick={() => setSelected(item.id)}>
                 <div className="rowIdentity"><span className="colorDot" style={{background:item.color}}/><div><h3>{item.name}{selected === item.id && <span className="selectionState">選択中</span>}</h3><small>{item.shortDescription}</small></div></div>
                 <div className="budgetMetric"><small>成立予算</small><b>{money(item.baselineAmount100mYen)}</b></div>
-                <div className="sliderCell"><input aria-label={`${item.name}の予算`} type="range" min={Math.round(item.baselineAmount100mYen * .7)} max={Math.round(item.baselineAmount100mYen * 1.3)} value={values[item.id]} onChange={e => setValue(item.id, Number(e.target.value))} style={{"--accent": item.color} as React.CSSProperties}/></div>
+                <div className="sliderCell"><input aria-label={`${item.name}の予算`} type="range" min={range.minimumAmount100mYen} max={range.maximumAmount100mYen} value={values[item.id]} onChange={e => setValue(item.id, Number(e.target.value))} style={{"--accent": item.color} as React.CSSProperties}/></div>
                 <div className="budgetMetric"><small>あなたの案</small><b>{money(values[item.id])}</b></div>
                 <div className={`changeMetric ${direction}`}><small>変更</small><b>{changed ? `${delta > 0 ? "+" : ""}${money(delta)}` : "±0億円"}</b><em>{changed ? `${delta > 0 ? "+" : ""}${deltaRate.toFixed(1)}%` : "±0.0%"}</em>{selected === item.id && <a className="selectedDetailLink" href="#category-context" onClick={event => event.stopPropagation()}>この変更の意味を見る</a>}</div>
               </article>
