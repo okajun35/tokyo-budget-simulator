@@ -88,3 +88,36 @@ test("offers all four primary navigation destinations", async () => {
   assert.match(navigation, />声を届ける</);
   assert.match(navigation, />出典・データ</);
 });
+
+test("shows the fiscal year, general account, and main revenue at the top", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `overview-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+  const overview = html.match(
+    /<div class="overviewCards" aria-label="令和8年度予算の概要">.*?<\/div><\/section>/,
+  )?.[0];
+
+  assert.ok(overview);
+  assert.match(overview, /対象年度/);
+  assert.match(overview, /令和8年度/);
+  assert.match(overview, /一般会計総額/);
+  assert.match(overview, /9兆6,530億円/);
+  assert.match(overview, /主要財源・都税/);
+  assert.match(overview, /7兆3,856億円/);
+});

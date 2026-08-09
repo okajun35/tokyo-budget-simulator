@@ -65,13 +65,10 @@ export default function Home() {
           <p className="lead">令和8年度の成立後当初予算を基準にした仮想シミュレーションです。数字を変えながら、要求・査定・議会を経て予算が決まる流れを学べます。</p>
           <div className="heroActions"><a href="#simulator" className="primary">予算を動かしてみる <span>↓</span></a><button onClick={() => setTab("sources")} className="textButton">データの扱いを見る</button></div>
         </div>
-        <div className="heroCard" aria-label="令和8年度予算の概要">
-          <span className="stamp">成立後</span>
-          <p>一般会計</p><strong>9<small>兆</small>6,530<small>億円</small></strong>
-          <div className="statLine"><span>一般歳出</span><b>7兆2,678億円</b></div>
-          <div className="statLine"><span>都税</span><b>7兆3,856億円</b></div>
-          <div className="miniChart">{BUDGET_CATEGORIES.map(x => <i key={x.id} style={{width: `${x.baselineAmount100mYen / GENERAL_ACCOUNT_BASELINE_100M_YEN * 100}%`, background: x.color}} />)}</div>
-          <small className="sourceNote">成立予算概要と令和8年度CSVを照合</small>
+        <div className="overviewCards" aria-label="令和8年度予算の概要">
+          <article><span className="overviewIcon" aria-hidden="true">暦</span><small>対象年度</small><strong>令和8年度</strong><em>2026年度</em></article>
+          <article><span className="overviewIcon" aria-hidden="true">円</span><small>一般会計総額</small><strong>9兆6,530億円</strong><em>成立後当初予算</em></article>
+          <article><span className="overviewIcon" aria-hidden="true">税</span><small>主要財源・都税</small><strong>7兆3,856億円</strong><em>令和8年度当初予算</em></article>
         </div>
       </section>
 
