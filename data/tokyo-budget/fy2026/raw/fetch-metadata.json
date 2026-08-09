@@ -1,0 +1,78 @@
+{
+  "datasetUrl": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000004d0000000005",
+  "retrievedAt": "2026-08-09T08:57:32.642Z",
+  "resources": [
+    {
+      "id": "general-account",
+      "title": "一般会計 歳入歳出予算",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/01_sainyu_saishutsu.csv",
+      "fileName": "general-account.csv",
+      "bytes": 3063,
+      "contentType": "text/csv",
+      "lastModified": "Mon, 02 Feb 2026 12:24:58 GMT"
+    },
+    {
+      "id": "purpose-breakdown",
+      "title": "一般歳出 目的別内訳",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/05_mokutekibetsu.csv",
+      "fileName": "purpose-breakdown.csv",
+      "bytes": 3622,
+      "contentType": "text/csv",
+      "lastModified": "Mon, 02 Feb 2026 12:24:58 GMT"
+    },
+    {
+      "id": "nature-breakdown",
+      "title": "一般会計歳出予算 性質別内訳",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/04_seishitsubetsu.csv",
+      "fileName": "nature-breakdown.csv",
+      "bytes": 1201,
+      "contentType": "text/csv",
+      "lastModified": "Mon, 02 Feb 2026 12:24:58 GMT"
+    },
+    {
+      "id": "revenue-breakdown",
+      "title": "一般会計 歳入内訳",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/08_sainyu_uchiwake.csv",
+      "fileName": "revenue-breakdown.csv",
+      "bytes": 5519,
+      "contentType": "text/csv",
+      "lastModified": "Mon, 02 Feb 2026 12:24:58 GMT"
+    },
+    {
+      "id": "tax-breakdown",
+      "title": "都税内訳（当初予算）",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/09_tozei_uchiwake.csv",
+      "fileName": "tax-breakdown.csv",
+      "bytes": 3958,
+      "contentType": "text/csv",
+      "lastModified": "Mon, 02 Feb 2026 12:24:58 GMT"
+    },
+    {
+      "id": "fund-balance",
+      "title": "基金の残高推移（普通会計ベース）",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/14_kikin_zandaka_suii.csv",
+      "fileName": "fund-balance.csv",
+      "bytes": 4894,
+      "contentType": "text/csv",
+      "lastModified": "Mon, 02 Feb 2026 12:24:58 GMT"
+    },
+    {
+      "id": "fund-changes",
+      "title": "基金の積立・取崩状況",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/15_kikin_tsumitate_torikuzushi_jyokyo.csv",
+      "fileName": "fund-changes.csv",
+      "bytes": 59063,
+      "contentType": "text/csv",
+      "lastModified": "Mon, 02 Feb 2026 12:24:58 GMT"
+    },
+    {
+      "id": "bond-balance",
+      "title": "都債発行額と都債残高の推移",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/16_tosai_hakkougaku_zandaka_suii.csv",
+      "fileName": "bond-balance.csv",
+      "bytes": 825,
+      "contentType": "text/csv",
+      "lastModified": "Mon, 02 Feb 2026 12:24:58 GMT"
+    }
+  ]
+}

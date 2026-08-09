@@ -27,3 +27,12 @@ test("records what each source is and where the app uses it", () => {
     assert.ok(source.appUsage.length > 0);
   }
 });
+
+test("records the official catalog license for the budget CSVs", () => {
+  const csvSource = BUDGET_SOURCES.find(source => source.id === "csv");
+
+  assert.equal(
+    csvSource?.license,
+    "クリエイティブ・コモンズ 表示（CC BY 4.0）",
+  );
+});

@@ -1,0 +1,939 @@
+{
+  "schemaVersion": 1,
+  "fiscalYear": 2026,
+  "amountUnit": "100_million_yen",
+  "sourceEncoding": "Shift_JIS",
+  "normalizedEncoding": "UTF-8",
+  "datasetUrl": "https://catalog.data.metro.tokyo.lg.jp/dataset/t000004d0000000005",
+  "retrievedAt": "2026-08-09T08:57:32.642Z",
+  "resources": [
+    {
+      "id": "general-account",
+      "title": "一般会計 歳入歳出予算",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/01_sainyu_saishutsu.csv",
+      "rows": [
+        {
+          "fiscalYear": 2026,
+          "category": "歳入",
+          "subcategory": "2026",
+          "amount100mYen": 96530
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "歳入",
+          "subcategory": "2025",
+          "amount100mYen": 91580
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "歳入",
+          "subcategory": "増減額",
+          "amount100mYen": 4950
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "うち都税",
+          "subcategory": "2026",
+          "amount100mYen": 73856
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "うち都税",
+          "subcategory": "2025",
+          "amount100mYen": 69296
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "うち都税",
+          "subcategory": "増減額",
+          "amount100mYen": 4560
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "歳出",
+          "subcategory": "2026",
+          "amount100mYen": 96530
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "歳出",
+          "subcategory": "2025",
+          "amount100mYen": 91580
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "歳出",
+          "subcategory": "増減額",
+          "amount100mYen": 4950
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "うち一般歳出",
+          "subcategory": "2026",
+          "amount100mYen": 72678
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "うち一般歳出",
+          "subcategory": "2025",
+          "amount100mYen": 68978
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "うち一般歳出",
+          "subcategory": "増減額",
+          "amount100mYen": 3701
+        }
+      ]
+    },
+    {
+      "id": "purpose-breakdown",
+      "title": "一般歳出 目的別内訳",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/05_mokutekibetsu.csv",
+      "rows": [
+        {
+          "fiscalYear": 2026,
+          "category": "福祉と保健",
+          "amount100mYen": 18730,
+          "description": "少子高齢化対策など"
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "教育と文化",
+          "amount100mYen": 15922,
+          "description": "学校教育の充実など"
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "労働と経済",
+          "amount100mYen": 7822,
+          "description": "産業の活性化など"
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "生活環境",
+          "amount100mYen": 4813,
+          "description": "廃棄物対策など"
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "都市の整備",
+          "amount100mYen": 9823,
+          "description": "道路の整備など"
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "警察と消防",
+          "amount100mYen": 10575,
+          "description": "警察活動・消防活動など"
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "企画・総務",
+          "amount100mYen": 4993,
+          "description": "職員の研修・福利厚生など"
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "公債費",
+          "amount100mYen": 2799,
+          "description": "都債の元利償還など"
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "税連動経費等",
+          "amount100mYen": 21053,
+          "description": "区市町村への交付金など"
+        }
+      ]
+    },
+    {
+      "id": "nature-breakdown",
+      "title": "一般会計歳出予算 性質別内訳",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/04_seishitsubetsu.csv",
+      "rows": [
+        {
+          "fiscalYear": 2026,
+          "category": "給与関係費",
+          "amount100mYen": 18733
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他経常経費",
+          "amount100mYen": 42621
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "投資的経費",
+          "amount100mYen": 11324
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "公債費",
+          "amount100mYen": 2799
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "税連動経費等",
+          "amount100mYen": 21053
+        }
+      ]
+    },
+    {
+      "id": "revenue-breakdown",
+      "title": "一般会計 歳入内訳",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/08_sainyu_uchiwake.csv",
+      "rows": [
+        {
+          "fiscalYear": 2026,
+          "category": "都税収入",
+          "subcategory": "法人二税",
+          "amount100mYen": 27126
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "都税収入",
+          "subcategory": "繰入地方消費税",
+          "amount100mYen": 9216
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "都税収入",
+          "subcategory": "固定資産税・都市計画税",
+          "amount100mYen": 18541
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "都税収入",
+          "subcategory": "その他の税",
+          "amount100mYen": 18973
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "地方譲与税",
+          "subcategory": "地方譲与税",
+          "amount100mYen": 787
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "国庫支出金",
+          "subcategory": "国庫支出金",
+          "amount100mYen": 4937
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "繰入金",
+          "subcategory": "繰入金",
+          "amount100mYen": 8888
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "都債",
+          "subcategory": "都債",
+          "amount100mYen": 2226
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の収入",
+          "subcategory": "助成交付金",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の収入",
+          "subcategory": "地方特例交付金",
+          "amount100mYen": 402
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の収入",
+          "subcategory": "特別交付金",
+          "amount100mYen": 29
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の収入",
+          "subcategory": "分担金及負担金",
+          "amount100mYen": 251
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の収入",
+          "subcategory": "使用料及手数料",
+          "amount100mYen": 923
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の収入",
+          "subcategory": "財産収入",
+          "amount100mYen": 603
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の収入",
+          "subcategory": "寄附金",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の収入",
+          "subcategory": "諸収入",
+          "amount100mYen": 3628
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の収入",
+          "subcategory": "繰越金",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の収入",
+          "subcategory": "端数調整",
+          "amount100mYen": 0
+        }
+      ]
+    },
+    {
+      "id": "tax-breakdown",
+      "title": "都税内訳（当初予算）",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/09_tozei_uchiwake.csv",
+      "rows": [
+        {
+          "fiscalYear": 2026,
+          "category": "法人二税",
+          "subcategory": "法人二税",
+          "amount100mYen": 27126
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "繰入地方消費税",
+          "subcategory": "繰入地方消費税",
+          "amount100mYen": 9216
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "固定資産税・都市計画税",
+          "subcategory": "固定資産税",
+          "amount100mYen": 15532
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "固定資産税・都市計画税",
+          "subcategory": "都市計画税",
+          "amount100mYen": 3009
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "固定資産税・都市計画税",
+          "subcategory": "端数調整（固・都）",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の税",
+          "subcategory": "個人都民税",
+          "amount100mYen": 14071
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の税",
+          "subcategory": "都民税利子割",
+          "amount100mYen": 443
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の税",
+          "subcategory": "不動産取得税",
+          "amount100mYen": 1068
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の税",
+          "subcategory": "自動車税",
+          "amount100mYen": 969
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の税",
+          "subcategory": "事業所税",
+          "amount100mYen": 1313
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の税",
+          "subcategory": "宿泊税",
+          "amount100mYen": 81
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他の税",
+          "subcategory": "その他",
+          "amount100mYen": 1028
+        }
+      ]
+    },
+    {
+      "id": "fund-balance",
+      "title": "基金の残高推移（普通会計ベース）",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/14_kikin_zandaka_suii.csv",
+      "rows": [
+        {
+          "fiscalYear": 2026,
+          "category": "３シティ基金に類する基金",
+          "amount100mYen": 5417,
+          "note": "当初予算額"
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "財政調整基金",
+          "amount100mYen": 8085,
+          "note": "当初予算額"
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "その他基金",
+          "amount100mYen": 1003,
+          "note": "当初予算額"
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "合計",
+          "amount100mYen": 14505,
+          "note": "当初予算額"
+        }
+      ]
+    },
+    {
+      "id": "fund-changes",
+      "title": "基金の積立・取崩状況",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/15_kikin_tsumitate_torikuzushi_jyokyo.csv",
+      "rows": [
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "セーフ シティ",
+          "fundName": "東京強靱化推進基金",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 3257
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "セーフ シティ",
+          "fundName": "東京強靱化推進基金",
+          "detail": "2026年度積立額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "セーフ シティ",
+          "fundName": "東京強靱化推進基金",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -2652
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "セーフ シティ",
+          "fundName": "東京強靱化推進基金",
+          "detail": "2026年度末残高",
+          "amount100mYen": 635
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "セーフ シティ",
+          "fundName": "＜端数調整＞",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "セーフ シティ",
+          "fundName": "＜端数調整＞",
+          "detail": "2026年度積立額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "セーフ シティ",
+          "fundName": "＜端数調整＞",
+          "detail": "2026年度取崩額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "セーフ シティ",
+          "fundName": "＜端数調整＞",
+          "detail": "2026年度末残高",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "社会資本等整備基金",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 3049
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "社会資本等整備基金",
+          "detail": "2026年度積立額",
+          "amount100mYen": 68
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "社会資本等整備基金",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -1844
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "社会資本等整備基金",
+          "detail": "2026年度末残高",
+          "amount100mYen": 1305
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "鉄道新線建設等準備基金",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 1811
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "鉄道新線建設等準備基金",
+          "detail": "2026年度積立額",
+          "amount100mYen": 57
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "鉄道新線建設等準備基金",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -100
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "鉄道新線建設等準備基金",
+          "detail": "2026年度末残高",
+          "amount100mYen": 1779
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "スマート東京推進基金",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 724
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "スマート東京推進基金",
+          "detail": "2026年度積立額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "スマート東京推進基金",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -723
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "スマート東京推進基金",
+          "detail": "2026年度末残高",
+          "amount100mYen": 5
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "緑あふれる東京基金",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 145
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "緑あふれる東京基金",
+          "detail": "2026年度積立額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "緑あふれる東京基金",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -35
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "緑あふれる東京基金",
+          "detail": "2026年度末残高",
+          "amount100mYen": 111
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "ゼロエミッション東京推進基金",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 795
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "ゼロエミッション東京推進基金",
+          "detail": "2026年度積立額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "ゼロエミッション東京推進基金",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -640
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "ゼロエミッション東京推進基金",
+          "detail": "2026年度末残高",
+          "amount100mYen": 159
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "新築建築物再生可能エネルギー設備設置等推進基金",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 1061
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "新築建築物再生可能エネルギー設備設置等推進基金",
+          "detail": "2026年度積立額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "新築建築物再生可能エネルギー設備設置等推進基金",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -473
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "新築建築物再生可能エネルギー設備設置等推進基金",
+          "detail": "2026年度末残高",
+          "amount100mYen": 594
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "＜端数調整＞",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": -1
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "＜端数調整＞",
+          "detail": "2026年度積立額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "＜端数調整＞",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -1
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "スマート シティ",
+          "fundName": "＜端数調整＞",
+          "detail": "2026年度末残高",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "ダイバーシティ",
+          "fundName": "福祉先進都市実現基金",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 1925
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "ダイバーシティ",
+          "fundName": "福祉先進都市実現基金",
+          "detail": "2026年度積立額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "ダイバーシティ",
+          "fundName": "福祉先進都市実現基金",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -1369
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "ダイバーシティ",
+          "fundName": "福祉先進都市実現基金",
+          "detail": "2026年度末残高",
+          "amount100mYen": 569
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "ダイバーシティ",
+          "fundName": "＜端数調整＞",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "ダイバーシティ",
+          "fundName": "＜端数調整＞",
+          "detail": "2026年度積立額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "ダイバーシティ",
+          "fundName": "＜端数調整＞",
+          "detail": "2026年度取崩額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "ダイバーシティ",
+          "fundName": "＜端数調整＞",
+          "detail": "2026年度末残高",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "東京2020大会レガシー基金",
+          "fundName": "東京2020大会レガシー基金",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 406
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "東京2020大会レガシー基金",
+          "fundName": "東京2020大会レガシー基金",
+          "detail": "2026年度積立額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "東京2020大会レガシー基金",
+          "fundName": "東京2020大会レガシー基金",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -151
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "東京2020大会レガシー基金",
+          "fundName": "東京2020大会レガシー基金",
+          "detail": "2026年度末残高",
+          "amount100mYen": 260
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "＜端数調整＞",
+          "fundName": "＜端数調整＞",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 1
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "＜端数調整＞",
+          "fundName": "＜端数調整＞",
+          "detail": "2026年度積立額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "＜端数調整＞",
+          "fundName": "＜端数調整＞",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -1
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "３つのシティ実現に向けた基金",
+          "subcategory": "＜端数調整＞",
+          "fundName": "＜端数調整＞",
+          "detail": "2026年度末残高",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "国の交付金等により積み立てた基金",
+          "subcategory": "その他基金",
+          "fundName": "その他基金",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 1118
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "国の交付金等により積み立てた基金",
+          "subcategory": "その他基金",
+          "fundName": "その他基金",
+          "detail": "2026年度積立額",
+          "amount100mYen": 267
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "国の交付金等により積み立てた基金",
+          "subcategory": "その他基金",
+          "fundName": "その他基金",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -392
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "国の交付金等により積み立てた基金",
+          "subcategory": "その他基金",
+          "fundName": "その他基金",
+          "detail": "2026年度末残高",
+          "amount100mYen": 1003
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "財政調整基金",
+          "subcategory": "財政調整基金",
+          "fundName": "財政調整基金",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 7879
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "財政調整基金",
+          "subcategory": "財政調整基金",
+          "fundName": "財政調整基金",
+          "detail": "2026年度積立額",
+          "amount100mYen": 151
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "財政調整基金",
+          "subcategory": "財政調整基金",
+          "fundName": "財政調整基金",
+          "detail": "2026年度取崩額",
+          "amount100mYen": 0
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "財政調整基金",
+          "subcategory": "財政調整基金",
+          "fundName": "財政調整基金",
+          "detail": "2026年度末残高",
+          "amount100mYen": 8085
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "合計",
+          "subcategory": "合計",
+          "fundName": "合計",
+          "detail": "2025年度末残高（最終補正後）",
+          "amount100mYen": 22170
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "合計",
+          "subcategory": "合計",
+          "fundName": "合計",
+          "detail": "2026年度積立額",
+          "amount100mYen": 543
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "合計",
+          "subcategory": "合計",
+          "fundName": "合計",
+          "detail": "2026年度取崩額",
+          "amount100mYen": -8381
+        },
+        {
+          "fiscalYear": 2026,
+          "category": "合計",
+          "subcategory": "合計",
+          "fundName": "合計",
+          "detail": "2026年度末残高",
+          "amount100mYen": 14505
+        }
+      ]
+    },
+    {
+      "id": "bond-balance",
+      "title": "都債発行額と都債残高の推移",
+      "sourceUrl": "https://www.opendata.metro.tokyo.lg.jp/zaimu/R6/16_tosai_hakkougaku_zandaka_suii.csv",
+      "rows": [
+        {
+          "fiscalYear": 2026,
+          "bondBalance100mYen": 42372,
+          "bondIssuance100mYen": 2226
+        }
+      ]
+    }
+  ]
+}

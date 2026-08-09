@@ -30,7 +30,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-06T21:48:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "open_data_catalog",
-    license: LICENSE_UNCONFIRMED,
+    license: "クリエイティブ・コモンズ 表示（CC BY 4.0）",
     targetPage: "TOKYO予算見える化ボード データ一覧",
     targetTableOrItem: "一般歳出の目的別内訳を含む令和8年度CSV一覧",
     appUsage: ["9分野の成立予算額の照合"],
