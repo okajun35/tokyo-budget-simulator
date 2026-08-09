@@ -59,6 +59,7 @@ for (const viewport of viewports) {
         path: location.pathname + location.search,
         clientWidth: document.documentElement.clientWidth,
         scrollWidth: document.documentElement.scrollWidth,
+        headings: Array.from(document.querySelectorAll('h1,h2,h3,h4,h5,h6')).map(heading => ({ level: Number(heading.tagName[1]), text: heading.textContent.trim() })),
         mobileDetailDisplay: document.querySelector('[data-mobile-detail-link]') ? getComputedStyle(document.querySelector('[data-mobile-detail-link]')).display : null,
         contextPanelDisplay: document.querySelector('.contextPanel') ? getComputedStyle(document.querySelector('.contextPanel')).display : null,
         budgetBalancePosition: document.querySelector('.budgetBalance') ? getComputedStyle(document.querySelector('.budgetBalance')).position : null
@@ -70,14 +71,90 @@ for (const viewport of viewports) {
   }
 }
 
+await command("Emulation.setDeviceMetricsOverride", {
+  width: 1440,
+  height: 900,
+  deviceScaleFactor: 1,
+  mobile: false,
+});
+await command("Page.navigate", { url: `${siteUrl}/` });
+await new Promise(resolve => setTimeout(resolve, 250));
+await command("Runtime.evaluate", {
+  expression: "document.querySelector('[data-budget-select-control=education]').focus()",
+});
+await command("Input.dispatchKeyEvent", {
+  type: "keyDown",
+  key: " ",
+  code: "Space",
+  windowsVirtualKeyCode: 32,
+});
+await command("Input.dispatchKeyEvent", {
+  type: "keyUp",
+  key: " ",
+  code: "Space",
+  windowsVirtualKeyCode: 32,
+});
+await new Promise(resolve => setTimeout(resolve, 100));
+const selectAuditResponse = await command("Runtime.evaluate", {
+  expression: `JSON.stringify({
+    educationPressed: document.querySelector('[data-budget-select-control=education]').getAttribute('aria-pressed'),
+    educationCurrent: document.querySelector('[data-budget-category=education]').getAttribute('aria-current'),
+    focusOutlineStyle: getComputedStyle(document.activeElement).outlineStyle,
+    focusOutlineWidth: getComputedStyle(document.activeElement).outlineWidth
+  })`,
+  returnByValue: true,
+});
+const selectAudit = JSON.parse(selectAuditResponse.result.value);
+
+const sliderBeforeResponse = await command("Runtime.evaluate", {
+  expression: `(() => {
+    const slider = document.querySelector('input[aria-label="公債費の予算"]');
+    slider.focus();
+    return slider.value;
+  })()`,
+  returnByValue: true,
+});
+await command("Input.dispatchKeyEvent", {
+  type: "rawKeyDown",
+  key: "ArrowLeft",
+  code: "ArrowLeft",
+  windowsVirtualKeyCode: 37,
+});
+await command("Input.dispatchKeyEvent", {
+  type: "keyUp",
+  key: "ArrowLeft",
+  code: "ArrowLeft",
+  windowsVirtualKeyCode: 37,
+});
+await new Promise(resolve => setTimeout(resolve, 100));
+const sliderAfterResponse = await command("Runtime.evaluate", {
+  expression: "document.querySelector('input[aria-label=\"公債費の予算\"]').value",
+  returnByValue: true,
+});
+const keyboardAudit = {
+  select: selectAudit,
+  sliderBefore: Number(sliderBeforeResponse.result.value),
+  sliderAfter: Number(sliderAfterResponse.result.value),
+};
+
 socket.close();
 await fetch(`${devtoolsEndpoint}/json/close/${target.id}`);
 
 let failed = false;
 for (const result of results) {
   const overflow = result.scrollWidth > result.clientWidth;
-  if (overflow) failed = true;
-  console.log(JSON.stringify({ ...result, overflow }));
+  const headingLevels = result.headings.map(heading => heading.level);
+  const headingsValid = headingLevels.filter(level => level === 1).length === 1 &&
+    headingLevels.every((level, index) => index === 0 || level <= headingLevels[index - 1] + 1);
+  if (overflow || !headingsValid) failed = true;
+  console.log(JSON.stringify({ ...result, overflow, headingsValid }));
 }
+
+const keyboardValid = keyboardAudit.select.educationPressed === "true" &&
+  keyboardAudit.select.educationCurrent === "true" &&
+  keyboardAudit.select.focusOutlineStyle !== "none" &&
+  keyboardAudit.sliderAfter === keyboardAudit.sliderBefore - 1;
+if (!keyboardValid) failed = true;
+console.log(JSON.stringify({ keyboardAudit, keyboardValid }));
 
 if (failed) process.exitCode = 1;

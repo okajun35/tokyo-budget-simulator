@@ -30,7 +30,7 @@ export default async function ParticipationPage({
       <span>選択中の分野</span>
       <h2>{selectedCategory.name}</h2>
       <p>目的別予算と組織別予算は一対一対応ではありません。以下を主な所管として案内します。</p>
-      <div>{selectedCategory.leadBureaus.map(bureau => <a key={bureau.name} href={bureau.url} target="_blank" rel="noreferrer">{bureau.name} ↗</a>)}</div>
+      <div>{selectedCategory.leadBureaus.map(bureau => <a key={bureau.name} href={bureau.url} target="_blank" rel="noreferrer">{bureau.name}（外部リンク）↗</a>)}</div>
     </aside> : <aside className="selectedParticipationCategory empty">
       <span>分野指定なし</span>
       <p>予算シミュレーターで分野を選ぶと、主な所管局を引き継いで表示します。</p>
@@ -47,8 +47,8 @@ export default async function ParticipationPage({
         <dl><dt>提出先</dt><dd>{route.recipient}</dd><dt>対象</dt><dd>{route.target}</dd><dt>必要な手続</dt><dd>{route.procedure}</dd><dt>処理の流れ</dt><dd>{route.flow}</dd><dt>できること</dt><dd>{route.canDo}</dd><dt>できないこと</dt><dd>{route.cannotGuarantee}</dd></dl>
         <div className="guarantee">予算への反映は保証されません</div>
         <div className="participationOfficialLinks">
-          <a href={route.officialGuideUrl} target="_blank" rel="noreferrer">公式案内を開く ↗</a>
-          {"relatedOfficialGuide" in route && <a href={route.relatedOfficialGuide.url} target="_blank" rel="noreferrer">{route.relatedOfficialGuide.label} ↗</a>}
+          <a href={route.officialGuideUrl} target="_blank" rel="noreferrer">公式案内を開く（外部リンク）↗</a>
+          {"relatedOfficialGuide" in route && <a href={route.relatedOfficialGuide.url} target="_blank" rel="noreferrer">{route.relatedOfficialGuide.label}（外部リンク）↗</a>}
         </div>
       </article>)}</div>
     </section>

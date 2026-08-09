@@ -7,6 +7,7 @@ body { margin:0; background:var(--paper); color:var(--ink); font-family:"Yu Goth
 button, input { font:inherit; }
 button { color:inherit; }
 a { color:inherit; }
+:focus-visible { outline:3px solid #f5a623; outline-offset:3px; }
 .topbar { height:64px; position:sticky; top:0; z-index:20; display:flex; align-items:center; justify-content:space-between; padding:0 5vw; background:rgba(255,255,255,.96); border-bottom:1px solid var(--line); backdrop-filter:blur(16px); }
 .brand { display:flex; align-items:center; gap:12px; text-decoration:none; font-weight:800; line-height:1.05; letter-spacing:.02em; }
 .brand small { display:block; margin-top:5px; font-size:10px; color:var(--muted); letter-spacing:.12em; font-weight:600; }
@@ -58,9 +59,10 @@ a { color:inherit; }
 .budgetBalance p { margin:0; text-align:right; font-size:10px; font-weight:800; }
 .simulatorWorkspace { display:grid; grid-template-columns:minmax(0,58fr) minmax(340px,42fr); gap:28px; align-items:start; }
 .budgetControls { display:grid; gap:9px; }
-.budgetRow { display:grid; grid-template-columns:minmax(130px,1.1fr) minmax(88px,.7fr) minmax(125px,1.25fr) minmax(88px,.7fr) minmax(105px,.8fr); gap:12px; align-items:center; padding:13px 14px; background:var(--cream); border:1px solid var(--line); border-radius:8px; cursor:pointer; transition:.15s ease; }
+.budgetRow { display:grid; grid-template-columns:minmax(130px,1.1fr) minmax(88px,.7fr) minmax(125px,1.25fr) minmax(88px,.7fr) minmax(105px,.8fr); gap:12px; align-items:center; padding:13px 14px; background:var(--cream); border:1px solid var(--line); border-radius:8px; transition:.15s ease; }
 .budgetRow:hover,.budgetRow.selected { border-color:#7da9e5; background:#f5f9ff; box-shadow:0 5px 14px rgba(20,94,199,.1); transform:translateY(-1px); }
 .rowIdentity { display:flex; align-items:center; gap:10px; min-width:0; }
+.rowSelect { width:100%; border:0; padding:4px; background:none; text-align:left; cursor:pointer; }
 .colorDot { width:11px; height:11px; border-radius:50%; flex:none; }
 .rowIdentity h3 { margin:0; font-size:13px; }
 .selectionState { display:inline-block; margin-left:7px; padding:2px 5px; border:1px solid #2f64b5; border-radius:999px; color:#2f64b5; font-size:8px; vertical-align:2px; }
@@ -74,6 +76,7 @@ a { color:inherit; }
 .mobileDetailLink { display:none; }
 .sliderCell { min-width:0; }
 input[type="range"] { appearance:none; width:100%; height:4px; background:#d9e1ec; outline:none; }
+input[type="range"]:focus-visible { outline:3px solid #f5a623; outline-offset:5px; }
 input[type="range"]::-webkit-slider-thumb { appearance:none; width:16px; height:16px; border-radius:50%; border:3px solid white; background:var(--accent); box-shadow:0 0 0 1px #8c8c85; cursor:grab; }
 .contextPanel { position:sticky; top:140px; padding:26px; background:#fff; border:1px solid var(--line); border-top:5px solid var(--teal); border-radius:10px; box-shadow:0 10px 30px rgba(35,64,93,.1); }
 .panelKicker { margin:0; color:var(--muted); font-size:10px; letter-spacing:.14em; }

@@ -405,6 +405,69 @@ test("identifies exactly one selected budget row without relying on color", asyn
   assert.equal(html.match(/>選択中</g)?.length, 1);
 });
 
+test("offers a keyboard-operable selection control for every budget row", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `budget-select-controls-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+
+  assert.equal(html.match(/data-budget-select-control=/g)?.length, 9);
+  assert.equal(html.match(/aria-pressed="true"/g)?.length, 1);
+  assert.equal(html.match(/aria-pressed="false"/g)?.length, 8);
+});
+
+test("visibly labels every link that opens an external site", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `external-link-labels-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const paths = [
+    "/",
+    "/budget/debt?amount=1959",
+    "/budget-process",
+    "/participation?category=debt",
+    "/sources",
+  ];
+
+  for (const path of paths) {
+    const response = await worker.fetch(
+      new Request(`http://localhost${path}`, {
+        headers: { accept: "text/html" },
+      }),
+      {
+        ASSETS: {
+          fetch: async () => new Response("Not found", { status: 404 }),
+        },
+      },
+      {
+        waitUntil() {},
+        passThroughOnException() {},
+      },
+    );
+    const html = (await response.text()).replaceAll("<!-- -->", "");
+    const externalLinks = html.match(/<a(?=[^>]*target="_blank")[^>]*>.*?<\/a>/g) ?? [];
+
+    assert.ok(externalLinks.length > 0, `expected external links on ${path}`);
+    for (const link of externalLinks) {
+      assert.match(link, /外部リンク/, `${path}: ${link}`);
+    }
+  }
+});
+
 test("offers one detail cue for the selected category", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `detail-cue-${process.pid}-${Date.now()}`);

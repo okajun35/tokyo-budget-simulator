@@ -76,7 +76,7 @@ export default function BudgetProcessPage() {
               <h3>令和8年度の公式資料</h3>
               {sources.map(source => <article key={source.id}>
                 <div><b>{source.sourceTitle}</b><p>{source.targetTableOrItem}</p></div>
-                <a href={source.sourceUrl} target="_blank" rel="noreferrer">公式資料を開く ↗</a>
+                <a href={source.sourceUrl} target="_blank" rel="noreferrer">公式資料を開く（外部リンク）↗</a>
               </article>)}
             </div>
           </div>

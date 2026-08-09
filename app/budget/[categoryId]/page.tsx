@@ -160,7 +160,7 @@ export default async function BudgetDetailPage({
           <p><b>長期成果：</b>{budgetCase.measuredLongTermOutcome ?? "この資料では確認できません。"}</p>
           <p><b>因果の強さ：</b>{CAUSAL_STRENGTH_LABELS[budgetCase.causalStrength]}</p>
           <p className="detailCaution">{budgetCase.caution}</p>
-          <a href={budgetCase.sourceUrl} target="_blank" rel="noreferrer">{budgetCase.sourceTitle}（{budgetCase.sourceDate}）↗</a>
+          <a href={budgetCase.sourceUrl} target="_blank" rel="noreferrer">{budgetCase.sourceTitle}（{budgetCase.sourceDate}・外部リンク）↗</a>
         </article>)}</div> : <div className="detailUnavailable" data-evidence-kind="unknown"><b>事例は未収録です</b><p>信頼できる公的事例を確認できるまで、推測例は表示しません。</p></div>}
       </section>
 
@@ -169,11 +169,11 @@ export default async function BudgetDetailPage({
         <h2 id="background-heading">東京都で現在の金額になった背景</h2>
         <p className="detailLead">目的別予算と局別要求は集計範囲が異なるため、直接の差額比較はしません。資料段階ごとに確認できる内容を分けます。</p>
         <div className="detailTimeline">
-          <article><span className="stageTag request">各局要求</span><h3>{category.request?.bureau ?? "代表局との対応は未収録"}</h3>{category.request ? <><p>要求額 {money(category.request.requestedAmount100mYen)}／前年度当初 {money(category.request.previousAmount100mYen)}</p><p>{category.request.reason}</p></> : <p data-evidence-kind="unknown">この分野の代表局要求は確認できていません。</p>}<a href={budgetBackgroundSources.request.sourceUrl} target="_blank" rel="noreferrer">要求額と要求理由が分かる資料 ↗</a></article>
-          <article><span className="stageTag bureau_assessment">財務局査定</span><h3>要求内容を財務局が精査</h3><p>{category.bureauAssessment ?? "事項別資料に代表例を対応付けられていません。掲載なしを『査定なし』とは扱いません。"}</p><a href={budgetBackgroundSources.bureauAssessment.sourceUrl} target="_blank" rel="noreferrer">要求から増減した代表事項が分かる資料 ↗</a></article>
-          <article><span className="stageTag governor_assessment">知事査定</span><h3>知事判断による変更事項</h3><p>{category.governorAssessment ?? "知事査定の代表事項を対応付けられていません。掲載なしを『判断なし』とは扱いません。"}</p><a href={budgetBackgroundSources.governorAssessment.sourceUrl} target="_blank" rel="noreferrer">知事査定で変更された事項が分かる資料 ↗</a></article>
-          <article><span className="stageTag proposal">予算案</span><h3>都議会へ提出した段階</h3><p>知事査定などを反映した案であり、この時点では成立予算ではありません。</p><a href={budgetBackgroundSources.proposal.sourceUrl} target="_blank" rel="noreferrer">提出時の予算案と主要施策が分かる資料 ↗</a></article>
-          <article><span className="stageTag enacted_budget">成立予算</span><h3>{money(category.baselineAmount100mYen)}</h3><p>都議会の議決後に成立した当初予算で、本シミュレーターの基準額です。</p><a href={budgetBackgroundSources.enactedBudget.sourceUrl} target="_blank" rel="noreferrer">成立後の一般会計規模と目的別歳出が分かる資料 ↗</a></article>
+          <article><span className="stageTag request">各局要求</span><h3>{category.request?.bureau ?? "代表局との対応は未収録"}</h3>{category.request ? <><p>要求額 {money(category.request.requestedAmount100mYen)}／前年度当初 {money(category.request.previousAmount100mYen)}</p><p>{category.request.reason}</p></> : <p data-evidence-kind="unknown">この分野の代表局要求は確認できていません。</p>}<a href={budgetBackgroundSources.request.sourceUrl} target="_blank" rel="noreferrer">要求額と要求理由が分かる資料（外部リンク）↗</a></article>
+          <article><span className="stageTag bureau_assessment">財務局査定</span><h3>要求内容を財務局が精査</h3><p>{category.bureauAssessment ?? "事項別資料に代表例を対応付けられていません。掲載なしを『査定なし』とは扱いません。"}</p><a href={budgetBackgroundSources.bureauAssessment.sourceUrl} target="_blank" rel="noreferrer">要求から増減した代表事項が分かる資料（外部リンク）↗</a></article>
+          <article><span className="stageTag governor_assessment">知事査定</span><h3>知事判断による変更事項</h3><p>{category.governorAssessment ?? "知事査定の代表事項を対応付けられていません。掲載なしを『判断なし』とは扱いません。"}</p><a href={budgetBackgroundSources.governorAssessment.sourceUrl} target="_blank" rel="noreferrer">知事査定で変更された事項が分かる資料（外部リンク）↗</a></article>
+          <article><span className="stageTag proposal">予算案</span><h3>都議会へ提出した段階</h3><p>知事査定などを反映した案であり、この時点では成立予算ではありません。</p><a href={budgetBackgroundSources.proposal.sourceUrl} target="_blank" rel="noreferrer">提出時の予算案と主要施策が分かる資料（外部リンク）↗</a></article>
+          <article><span className="stageTag enacted_budget">成立予算</span><h3>{money(category.baselineAmount100mYen)}</h3><p>都議会の議決後に成立した当初予算で、本シミュレーターの基準額です。</p><a href={budgetBackgroundSources.enactedBudget.sourceUrl} target="_blank" rel="noreferrer">成立後の一般会計規模と目的別歳出が分かる資料（外部リンク）↗</a></article>
         </div>
       </section>
 
@@ -186,14 +186,14 @@ export default async function BudgetDetailPage({
             <h3>{source.sourceTitle}</h3>
             <p><b>この資料で分かること：</b>{source.targetTableOrItem}</p>
             <p>資料日 {source.sourceDate}／取得日 {source.retrievedAt}</p>
-            <a href={source.sourceUrl} target="_blank" rel="noreferrer">公式資料を開く ↗</a>
+            <a href={source.sourceUrl} target="_blank" rel="noreferrer">公式資料を開く（外部リンク）↗</a>
           </article>)}
           {detailedCategory?.referenceSources.map(source => <article key={source.id}>
             <span className="detailReferenceTag">用語・財政資料</span>
             <h3>{source.title}</h3>
             <p><b>この資料で分かること：</b>{source.whatCanBeLearned}</p>
             <p>資料日 {source.sourceDate}／取得日 {source.retrievedAt}</p>
-            <a href={source.url} target="_blank" rel="noreferrer">公式資料を開く ↗</a>
+            <a href={source.url} target="_blank" rel="noreferrer">公式資料を開く（外部リンク）↗</a>
           </article>)}
         </div>
       </section>
@@ -202,9 +202,9 @@ export default async function BudgetDetailPage({
         <p className="sectionLabel">CIVIC PARTICIPATION</p>
         <h2 id="participation-heading">意見を伝える先</h2>
         <p className="detailLead">以下は主な所管であり、予算分類との一対一対応ではありません。提出しても予算への反映は保証されません。</p>
-        <div className="detailBureauLinks">{category.leadBureaus.map(bureau => <a key={bureau.name} href={bureau.url} target="_blank" rel="noreferrer">{bureau.name} ↗</a>)}</div>
+        <div className="detailBureauLinks">{category.leadBureaus.map(bureau => <a key={bureau.name} href={bureau.url} target="_blank" rel="noreferrer">{bureau.name}（外部リンク）↗</a>)}</div>
         <div className="detailParticipationGrid">{categoryParticipationRoutes.map(route => <article key={route.id}>
-          <h3>{route.title}</h3><p><b>提出先：</b>{route.recipient}</p><p><b>できること：</b>{route.canDo}</p><p><b>保証されないこと：</b>{route.cannotGuarantee}</p><a href={route.officialGuideUrl} target="_blank" rel="noreferrer">公式案内を開く ↗</a>
+          <h3>{route.title}</h3><p><b>提出先：</b>{route.recipient}</p><p><b>できること：</b>{route.canDo}</p><p><b>保証されないこと：</b>{route.cannotGuarantee}</p><a href={route.officialGuideUrl} target="_blank" rel="noreferrer">公式案内を開く（外部リンク）↗</a>
         </article>)}</div>
       </section>
 
