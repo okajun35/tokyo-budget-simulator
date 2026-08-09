@@ -93,8 +93,8 @@ export default function Home() {
               const delta = values[item.id] - item.baselineAmount100mYen;
               const deltaRate = delta / item.baselineAmount100mYen * 100;
               const direction = changed ? delta > 0 ? "up" : "down" : "unchanged";
-              return <article key={item.id} data-budget-category={item.id} className={`budgetRow ${selected === item.id ? "selected" : ""}`} onClick={() => setSelected(item.id)}>
-                <div className="rowIdentity"><span className="colorDot" style={{background:item.color}}/><div><h3>{item.name}</h3><small>{item.shortDescription}</small></div></div>
+              return <article key={item.id} data-budget-category={item.id} aria-current={selected === item.id ? "true" : undefined} className={`budgetRow ${selected === item.id ? "selected" : ""}`} onClick={() => setSelected(item.id)}>
+                <div className="rowIdentity"><span className="colorDot" style={{background:item.color}}/><div><h3>{item.name}{selected === item.id && <span className="selectionState">選択中</span>}</h3><small>{item.shortDescription}</small></div></div>
                 <div className="budgetMetric"><small>成立予算</small><b>{money(item.baselineAmount100mYen)}</b></div>
                 <div className="sliderCell"><input aria-label={`${item.name}の予算`} type="range" min={Math.round(item.baselineAmount100mYen * .7)} max={Math.round(item.baselineAmount100mYen * 1.3)} value={values[item.id]} onChange={e => setValue(item.id, Number(e.target.value))} style={{"--accent": item.color} as React.CSSProperties}/></div>
                 <div className="budgetMetric"><small>あなたの案</small><b>{money(values[item.id])}</b></div>

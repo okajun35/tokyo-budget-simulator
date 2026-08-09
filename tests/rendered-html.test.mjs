@@ -180,3 +180,28 @@ test("shows enacted and proposed amounts with the change in all nine rows", asyn
   assert.match(html, /±0億円/);
   assert.match(html, /±0\.0%/);
 });
+
+test("identifies exactly one selected budget row without relying on color", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `selected-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+
+  assert.equal(html.match(/aria-current="true"/g)?.length, 1);
+  assert.equal(html.match(/>選択中</g)?.length, 1);
+});
