@@ -6,7 +6,7 @@ import { BUDGET_SOURCES } from "./budget-sources.ts";
 test("keeps each budget source uniquely traceable", () => {
   const ids = BUDGET_SOURCES.map((source) => source.id);
 
-  assert.equal(BUDGET_SOURCES.length, 9);
+  assert.equal(BUDGET_SOURCES.length, 13);
   assert.equal(new Set(ids).size, ids.length);
 });
 

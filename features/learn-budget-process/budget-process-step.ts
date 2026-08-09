@@ -10,6 +10,17 @@ export type BudgetProcessOverviewStage = Extract<
 >;
 
 export type BudgetProcessStep = {
-  documentStage: BudgetProcessOverviewStage;
+  documentStage: BudgetDocumentStage;
   summary: string;
+  actor: string;
+  decision: string;
+  amountChangePossibility: string;
+  sourceIds: readonly string[];
+  publicInvolvement: string;
+  limitation: string;
+  fiscalYearStatus: "completed" | "in_progress" | "not_available_yet";
+};
+
+export type BudgetProcessOverviewStep = BudgetProcessStep & {
+  documentStage: BudgetProcessOverviewStage;
 };

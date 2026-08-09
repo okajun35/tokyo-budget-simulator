@@ -72,7 +72,7 @@ PCレイアウト    docs/web-image.png
   - 配置：`features/learn-from-budget-cases/`
   - 完了条件：各事例が `causal_strength`、出典、注意事項を持つ。
 
-- [ ] 2.5 予算成立過程データの配置先を作る
+- [x] 2.5 予算成立過程データの配置先を作る
   - 配置：`features/learn-budget-process/`
   - 完了条件：各段階の名称、主体、説明、公式資料、参加可能性をデータとして保持する。
 
