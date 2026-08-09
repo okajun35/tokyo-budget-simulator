@@ -205,3 +205,28 @@ test("identifies exactly one selected budget row without relying on color", asyn
   assert.equal(html.match(/aria-current="true"/g)?.length, 1);
   assert.equal(html.match(/>選択中</g)?.length, 1);
 });
+
+test("offers one detail cue for the selected category", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `detail-cue-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+
+  assert.equal(html.match(/href="#category-context"/g)?.length, 1);
+  assert.equal(html.match(/>この変更の意味を見る</g)?.length, 1);
+});

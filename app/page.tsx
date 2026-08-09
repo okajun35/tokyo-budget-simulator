@@ -98,7 +98,7 @@ export default function Home() {
                 <div className="budgetMetric"><small>成立予算</small><b>{money(item.baselineAmount100mYen)}</b></div>
                 <div className="sliderCell"><input aria-label={`${item.name}の予算`} type="range" min={Math.round(item.baselineAmount100mYen * .7)} max={Math.round(item.baselineAmount100mYen * 1.3)} value={values[item.id]} onChange={e => setValue(item.id, Number(e.target.value))} style={{"--accent": item.color} as React.CSSProperties}/></div>
                 <div className="budgetMetric"><small>あなたの案</small><b>{money(values[item.id])}</b></div>
-                <div className={`changeMetric ${direction}`}><small>変更</small><b>{changed ? `${delta > 0 ? "+" : ""}${money(delta)}` : "±0億円"}</b><em>{changed ? `${delta > 0 ? "+" : ""}${deltaRate.toFixed(1)}%` : "±0.0%"}</em></div>
+                <div className={`changeMetric ${direction}`}><small>変更</small><b>{changed ? `${delta > 0 ? "+" : ""}${money(delta)}` : "±0億円"}</b><em>{changed ? `${delta > 0 ? "+" : ""}${deltaRate.toFixed(1)}%` : "±0.0%"}</em>{selected === item.id && <a className="selectedDetailLink" href="#category-context" onClick={event => event.stopPropagation()}>この変更の意味を見る</a>}</div>
               </article>
             })}
           </section>
