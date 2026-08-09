@@ -9,12 +9,25 @@ export type BudgetRequestContext = {
   reason: string;
 };
 
+export type BudgetChangeOption = {
+  id: string;
+  title: string;
+  description: string;
+};
+
 export type BudgetCategory = {
   id: BudgetCategoryId;
   name: string;
+  /** シミュレーターの基準にする成立後当初予算額。 */
   baselineAmount100mYen: number;
   color: string;
   shortDescription: string;
+  definition: string;
+  mainUses: readonly string[];
+  changeOptions: readonly BudgetChangeOption[];
+  sourceIds: readonly string[];
+  caseIds: readonly string[];
+  participationRouteIds: readonly string[];
   request?: BudgetRequestContext;
   bureauAssessment?: string;
   governorAssessment?: string;
