@@ -152,3 +152,31 @@ test("places budget controls and category meaning in one workspace", async () =>
     /<aside class="contextPanel" id="category-context" aria-label="選択分野の変更の意味">/,
   );
 });
+
+test("shows enacted and proposed amounts with the change in all nine rows", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `rows-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+
+  assert.equal(html.match(/data-budget-category=/g)?.length, 9);
+  assert.match(html, /成立予算/);
+  assert.match(html, /あなたの案/);
+  assert.match(html, /±0億円/);
+  assert.match(html, /±0\.0%/);
+});

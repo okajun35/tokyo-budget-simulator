@@ -91,9 +91,14 @@ export default function Home() {
             {BUDGET_CATEGORIES.map(item => {
               const changed = values[item.id] !== item.baselineAmount100mYen;
               const delta = values[item.id] - item.baselineAmount100mYen;
-              return <article key={item.id} className={`budgetRow ${selected === item.id ? "selected" : ""}`} onClick={() => setSelected(item.id)}>
-                <div className="rowTitle"><span className="colorDot" style={{background:item.color}}/><div><h3>{item.name}</h3><small>{item.shortDescription}</small></div><strong>{money(values[item.id])}</strong></div>
-                <div className="sliderLine"><input aria-label={`${item.name}の予算`} type="range" min={Math.round(item.baselineAmount100mYen * .7)} max={Math.round(item.baselineAmount100mYen * 1.3)} value={values[item.id]} onChange={e => setValue(item.id, Number(e.target.value))} style={{"--accent": item.color} as React.CSSProperties}/><span className={changed ? delta > 0 ? "up" : "down" : ""}>{changed ? `${delta > 0 ? "+" : ""}${money(delta)}` : "基準"}</span></div>
+              const deltaRate = delta / item.baselineAmount100mYen * 100;
+              const direction = changed ? delta > 0 ? "up" : "down" : "unchanged";
+              return <article key={item.id} data-budget-category={item.id} className={`budgetRow ${selected === item.id ? "selected" : ""}`} onClick={() => setSelected(item.id)}>
+                <div className="rowIdentity"><span className="colorDot" style={{background:item.color}}/><div><h3>{item.name}</h3><small>{item.shortDescription}</small></div></div>
+                <div className="budgetMetric"><small>成立予算</small><b>{money(item.baselineAmount100mYen)}</b></div>
+                <div className="sliderCell"><input aria-label={`${item.name}の予算`} type="range" min={Math.round(item.baselineAmount100mYen * .7)} max={Math.round(item.baselineAmount100mYen * 1.3)} value={values[item.id]} onChange={e => setValue(item.id, Number(e.target.value))} style={{"--accent": item.color} as React.CSSProperties}/></div>
+                <div className="budgetMetric"><small>あなたの案</small><b>{money(values[item.id])}</b></div>
+                <div className={`changeMetric ${direction}`}><small>変更</small><b>{changed ? `${delta > 0 ? "+" : ""}${money(delta)}` : "±0億円"}</b><em>{changed ? `${delta > 0 ? "+" : ""}${deltaRate.toFixed(1)}%` : "±0.0%"}</em></div>
               </article>
             })}
           </section>
