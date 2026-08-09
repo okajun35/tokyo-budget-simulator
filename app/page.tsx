@@ -10,6 +10,8 @@ import {
   BUDGET_PROCESS_SUMMARY_STEPS,
 } from "@/features/learn-budget-process/budget-process-steps";
 import type { BudgetProcessSummaryStep } from "@/features/learn-budget-process/budget-process-step";
+import { CAUSAL_STRENGTH_LABELS } from "@/features/learn-from-budget-cases/budget-case";
+import { BUDGET_CASES } from "@/features/learn-from-budget-cases/budget-cases";
 import {
   calculateBudgetBalance,
   getBudgetAllocationRange,
@@ -45,6 +47,21 @@ export default function Home() {
     active.baselineAmount100mYen,
     values[active.id],
   );
+  const activeCases = BUDGET_CASES.filter(budgetCase =>
+    (active.caseIds as readonly string[]).includes(budgetCase.id),
+  );
+  const contextCases = [
+    {
+      scope: "domestic",
+      label: "国内事例",
+      budgetCase: activeCases.find(budgetCase => budgetCase.country === "日本"),
+    },
+    {
+      scope: "international",
+      label: "海外事例",
+      budgetCase: activeCases.find(budgetCase => budgetCase.country !== "日本"),
+    },
+  ] as const;
 
   const setValue = (id: BudgetCategoryId, value: number) => {
     setValues(v => ({ ...v, [id]: value }));
@@ -140,6 +157,10 @@ export default function Home() {
               <div className="contextSectionHead"><h3>配分を変える方法</h3><span>{active.changeOptions.length}つの検討例</span></div>
               <p className="contextCaution">実際の変更方法を示す検討例であり、実行可能な確定案ではありません。</p>
               <ol className="changeOptionList">{active.changeOptions.map((option, index) => <li key={option.id} data-change-option={option.id}><span>{index + 1}</span><div><b>{option.title}</b><p>{option.description}</p></div></li>)}</ol>
+            </section>
+            <section className="contextSection">
+              <div className="contextSectionHead"><h3>国内外の事例</h3><span>公的資料で確認</span></div>
+              <div className="budgetCaseList">{contextCases.map(({scope, label, budgetCase}) => budgetCase ? <details key={scope} data-budget-case-scope={scope}><summary><span>{label}</span><b>{budgetCase.title}</b></summary><div className="budgetCaseBody"><p className="caseMeta">{budgetCase.jurisdiction} · {budgetCase.period}</p><p>{budgetCase.budgetContext}</p><strong>{CAUSAL_STRENGTH_LABELS[budgetCase.causalStrength]}</strong><ul>{budgetCase.confirmedChanges.map(change => <li key={change}>{change}</li>)}</ul><p className="caseCaution">{budgetCase.caution}</p>{scope === "international" && <p className="caseCaution">制度や前提が異なるため、東京都で同じ結果になるとは限りません。</p>}<a href={budgetCase.sourceUrl} target="_blank" rel="noreferrer">公的資料を確認する ↗</a></div></details> : <div className="caseUnavailable" key={scope}><b>{label}</b><p>この分野は信頼できる事例をまだ収録していません。推測例は表示しません。</p></div>)}</div>
             </section>
             <div className="warning">目的別予算と局別要求は集計範囲が異なります。直接の差額比較ではありません。</div>
             <div className="timelineCard"><span className="stageTag request">各局要求</span>{active.request ? <><h3>{active.request.bureau}</h3><div className="requestNums"><span>R8要求<b>{money(active.request.requestedAmount100mYen)}</b></span><span>R7当初<b>{money(active.request.previousAmount100mYen)}</b></span></div><p>{active.request.reason}</p></> : <p>このプロトタイプでは、代表局の要求総額をまだ対応付けていません。推測値は表示しません。</p>}</div>
