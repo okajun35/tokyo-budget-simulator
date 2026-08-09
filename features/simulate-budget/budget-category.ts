@@ -1,13 +1,6 @@
-export type BudgetCategoryId =
-  | "welfare"
-  | "education"
-  | "industry"
-  | "environment"
-  | "city"
-  | "safety"
-  | "admin"
-  | "debt"
-  | "linked";
+import type { BudgetCategoryId } from "@/domain/tokyo-budget/budget-category-id";
+
+export type { BudgetCategoryId } from "@/domain/tokyo-budget/budget-category-id";
 
 export type BudgetRequestContext = {
   bureau: string;

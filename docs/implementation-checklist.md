@@ -68,8 +68,8 @@ PCレイアウト    docs/web-image.png
   - 配置：`features/find-participation-route/`
   - 完了条件：請願、陳情、都民の声、パブリックコメント等が画面コンポーネントから分離されている。
 
-- [ ] 2.4 国内外事例データの配置先を作る
-  - 推奨：事例を読む利用目的に対応するfeature内へ配置する
+- [x] 2.4 国内外事例データの配置先を作る
+  - 配置：`features/learn-from-budget-cases/`
   - 完了条件：各事例が `causal_strength`、出典、注意事項を持つ。
 
 - [ ] 2.5 予算成立過程データの配置先を作る
