@@ -13,7 +13,8 @@ import type { BudgetProcessSummaryStep } from "@/features/learn-budget-process/b
 import { CAUSAL_STRENGTH_LABELS } from "@/features/learn-from-budget-cases/budget-case";
 import { BUDGET_CASES } from "@/features/learn-from-budget-cases/budget-cases";
 import {
-  calculateBudgetBalance,
+  calculateBudgetAllocationSummary,
+  changeBudgetAllocation,
   getBudgetAllocationRange,
   type BudgetAllocations,
 } from "@/features/simulate-budget/budget-allocation";
@@ -27,8 +28,6 @@ import { createInitialBudgetSimulationState } from "@/features/simulate-budget/b
 import { BUDGET_SOURCES } from "@/features/trace-budget-sources/budget-sources";
 
 const money = (v: number) => `${Math.round(v).toLocaleString("ja-JP")}億円`;
-const signedMoney = (v: number) =>
-  v === 0 ? "±0億円" : `${v > 0 ? "+" : ""}${money(v)}`;
 const budgetBackgroundSources = {
   request: BUDGET_SOURCES.find(source => source.id === "request")!,
   bureauAssessment: BUDGET_SOURCES.find(source => source.id === "bureau")!,
@@ -45,8 +44,8 @@ export default function Home() {
   );
   const [tab, setTab] = useState<"sim" | "participate" | "sources">("sim");
   const [openStage, setOpenStage] = useState<BudgetProcessSummaryStep["id"] | null>(null);
-  const balance = useMemo(
-    () => calculateBudgetBalance(values, GENERAL_ACCOUNT_BASELINE_100M_YEN),
+  const allocationSummary = useMemo(
+    () => calculateBudgetAllocationSummary(values, GENERAL_ACCOUNT_BASELINE_100M_YEN),
     [values],
   );
   const active = BUDGET_CATEGORIES.find(x => x.id === selected)!;
@@ -74,7 +73,14 @@ export default function Home() {
   );
 
   const setValue = (id: BudgetCategoryId, value: number) => {
-    setValues(v => ({ ...v, [id]: value }));
+    const category = BUDGET_CATEGORIES.find(item => item.id === id)!;
+    setValues(allocations => changeBudgetAllocation({
+      allocations,
+      categoryId: id,
+      requestedAmount100mYen: value,
+      range: getBudgetAllocationRange(category.baselineAmount100mYen),
+      annualBudgetAmount100mYen: GENERAL_ACCOUNT_BASELINE_100M_YEN,
+    }));
     setSelected(id);
   };
   const reset = () => {
@@ -116,19 +122,19 @@ export default function Home() {
       </section>
 
       <section className="simulator" id="simulator">
-        <div className="sectionHead"><div><p className="eyebrow">ALLOCATION</p><h2>目的別に配分する</h2><p>スライダーは基準額の70〜130%。1億円単位です。</p></div><button className="reset" onClick={reset}>↺ 初期値に戻す</button></div>
+        <div className="sectionHead"><div><p className="eyebrow">ALLOCATION</p><h2>目的別に配分する</h2><p>先に分野を減額し、生まれた配分可能額を別の分野へ移します。スライダーは基準額の70〜130%、1億円単位です。</p></div><button className="reset" onClick={reset}>↺ 初期値に戻す</button></div>
         <aside className="simulationNotice" role="note">
           <strong>これは学習用の仮想配分です</strong>
           <p>操作結果は東京都の正式な予算案ではありません。制度上・財政上の実行可能性を保証するものではありません。</p>
         </aside>
-        <div className="budgetBalance" data-state={balance.status === "balanced" ? "ok" : balance.status === "shortage" ? "over" : "under"} aria-live="polite">
+        <div className="budgetBalance" data-state={allocationSummary.status} aria-live="polite">
           <div className="balanceMetrics">
-            <div><span>あなたの予算総額</span><strong>{money(balance.totalAmount100mYen)}</strong></div>
-            <div><span>成立予算との差額</span><strong>{signedMoney(balance.differenceAmount100mYen)}</strong></div>
-            <div><span>残額</span><strong>{signedMoney(balance.remainingAmount100mYen)}</strong></div>
+            <div><span>年間総予算</span><strong>{money(allocationSummary.annualBudgetAmount100mYen)}</strong></div>
+            <div><span>分野へ配分済み</span><strong>{money(allocationSummary.allocatedAmount100mYen)}</strong></div>
+            <div><span>配分可能額</span><strong>{money(allocationSummary.availableAmount100mYen)}</strong></div>
           </div>
-          <div className="balanceTrack"><i style={{width: `${Math.min(100, balance.totalAmount100mYen / GENERAL_ACCOUNT_BASELINE_100M_YEN * 100)}%`}} /></div>
-          <p>{balance.status === "balanced" ? "基準予算と一致しています" : balance.status === "shortage" ? `財源が ${money(balance.differenceAmount100mYen)} 不足しています` : `${money(balance.remainingAmount100mYen)} の余裕があります`}</p>
+          <div className="balanceTrack"><i style={{width: `${allocationSummary.allocatedAmount100mYen / allocationSummary.annualBudgetAmount100mYen * 100}%`}} /></div>
+          <p id="allocation-guidance">{allocationSummary.status === "fully-allocated" ? "全額を配分済みです。増やすには先に別の分野を減らしてください" : `${money(allocationSummary.availableAmount100mYen)}を別の分野へ配分できます`}</p>
         </div>
 
         <div className="simulatorWorkspace">
@@ -148,7 +154,7 @@ export default function Home() {
               return <article key={item.id} data-budget-category={item.id} aria-current={selected === item.id ? "true" : undefined} className={`budgetRow ${selected === item.id ? "selected" : ""}`} onClick={() => setSelected(item.id)}>
                 <div className="rowIdentity"><span className="colorDot" style={{background:item.color}}/><div><h3>{item.name}{selected === item.id && <span className="selectionState">選択中</span>}</h3><small>{item.shortDescription}</small></div></div>
                 <div className="budgetMetric"><small>成立予算</small><b>{money(item.baselineAmount100mYen)}</b></div>
-                <div className="sliderCell"><input aria-label={`${item.name}の予算`} type="range" min={range.minimumAmount100mYen} max={range.maximumAmount100mYen} value={values[item.id]} onChange={e => setValue(item.id, Number(e.target.value))} style={{"--accent": item.color} as React.CSSProperties}/></div>
+                <div className="sliderCell"><input aria-label={`${item.name}の予算`} aria-describedby="allocation-guidance" type="range" min={range.minimumAmount100mYen} max={range.maximumAmount100mYen} value={values[item.id]} onChange={e => setValue(item.id, Number(e.target.value))} style={{"--accent": item.color} as React.CSSProperties}/></div>
                 <div className="budgetMetric"><small>あなたの案</small><b>{money(values[item.id])}</b></div>
                 <div className={`changeMetric ${direction}`}><small>変更</small><b>{change.amountLabel}</b><em>{change.rateLabel}</em>{selected === item.id && <a className="selectedDetailLink" href="#category-context" onClick={event => event.stopPropagation()}>この変更の意味を見る</a>}</div>
               </article>
@@ -222,6 +228,6 @@ export default function Home() {
       <div className="dataCoverage"><h2>使用したCSV</h2><p>一般会計 歳入歳出予算／一般歳出 目的別内訳／一般会計歳出予算 性質別内訳／一般会計 歳入内訳／都税内訳／基金の残高推移／基金の積立・取崩状況／都債発行額と都債残高の推移</p></div>
     </section>}
 
-    <footer><div className="brand"><span className="brandMark">都</span><span>東京予算ラボ<small>非公式プロトタイプ</small></span></div><p>東京都の公式サービスではありません。金額単位未満の端数により合計が一致しない場合があります。</p><a href="https://odhackathon.metro.tokyo.lg.jp/issues/c10/clusters/" target="_blank" rel="noreferrer">都知事杯ODH テーマ ↗</a></footer>
+    <footer><div className="brand"><span className="brandMark">都</span><span>東京予算ラボ<small>非公式プロトタイプ</small></span></div><p>東京都の公式サービスではありません。シミュレーターの金額は1億円単位の仮想配分です。</p><a href="https://odhackathon.metro.tokyo.lg.jp/issues/c10/clusters/" target="_blank" rel="noreferrer">都知事杯ODH テーマ ↗</a></footer>
   </main>;
 }

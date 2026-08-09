@@ -10,11 +10,11 @@ export type BudgetAllocationRange = {
   maximumAmount100mYen: number;
 };
 
-export type BudgetBalance = {
-  totalAmount100mYen: number;
-  differenceAmount100mYen: number;
-  remainingAmount100mYen: number;
-  status: "balanced" | "shortage" | "surplus";
+export type BudgetAllocationSummary = {
+  annualBudgetAmount100mYen: number;
+  allocatedAmount100mYen: number;
+  availableAmount100mYen: number;
+  status: "fully-allocated" | "available";
 };
 
 export function getBudgetAllocationRange(
@@ -43,23 +43,51 @@ export function calculateBudgetTotal(
   return Object.values(allocations).reduce((sum, amount) => sum + amount, 0);
 }
 
-export function calculateBudgetBalance(
+export function calculateBudgetAllocationSummary(
   allocations: BudgetAllocations,
-  baselineTotalAmount100mYen: number,
-): BudgetBalance {
-  const totalAmount100mYen = calculateBudgetTotal(allocations);
-  const differenceAmount100mYen =
-    totalAmount100mYen - baselineTotalAmount100mYen;
+  annualBudgetAmount100mYen: number,
+): BudgetAllocationSummary {
+  const allocatedAmount100mYen = calculateBudgetTotal(allocations);
+  const availableAmount100mYen =
+    annualBudgetAmount100mYen - allocatedAmount100mYen;
 
   return {
-    totalAmount100mYen,
-    differenceAmount100mYen,
-    remainingAmount100mYen: -differenceAmount100mYen,
-    status:
-      differenceAmount100mYen > 0
-        ? "shortage"
-        : differenceAmount100mYen < 0
-          ? "surplus"
-          : "balanced",
+    annualBudgetAmount100mYen,
+    allocatedAmount100mYen,
+    availableAmount100mYen,
+    status: availableAmount100mYen > 0 ? "available" : "fully-allocated",
+  };
+}
+
+export function changeBudgetAllocation({
+  allocations,
+  categoryId,
+  requestedAmount100mYen,
+  range,
+  annualBudgetAmount100mYen,
+}: {
+  allocations: BudgetAllocations;
+  categoryId: BudgetCategoryId;
+  requestedAmount100mYen: number;
+  range: BudgetAllocationRange;
+  annualBudgetAmount100mYen: number;
+}): BudgetAllocations {
+  const currentAmount100mYen = allocations[categoryId];
+  const availableAmount100mYen =
+    annualBudgetAmount100mYen - calculateBudgetTotal(allocations);
+  const maximumAffordableAmount100mYen =
+    currentAmount100mYen + Math.max(0, availableAmount100mYen);
+  const amountInsideRange100mYen = Math.max(
+    range.minimumAmount100mYen,
+    Math.min(requestedAmount100mYen, range.maximumAmount100mYen),
+  );
+  const nextAmount100mYen = Math.min(
+    amountInsideRange100mYen,
+    maximumAffordableAmount100mYen,
+  );
+
+  return {
+    ...allocations,
+    [categoryId]: nextAmount100mYen,
   };
 }

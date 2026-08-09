@@ -493,7 +493,7 @@ test("labels what public information cannot establish without guessing", async (
   assert.match(panel, /推測値は表示しません/);
 });
 
-test("keeps total, difference, and remaining funds together", async () => {
+test("keeps the fixed annual budget, allocated amount, and available funds together", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `balance-${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
@@ -518,9 +518,10 @@ test("keeps total, difference, and remaining funds together", async () => {
   )?.[0];
 
   assert.ok(balance);
-  assert.match(balance, /あなたの予算総額/);
-  assert.match(balance, /成立予算との差額/);
-  assert.match(balance, /残額/);
+  assert.match(balance, /年間総予算/);
+  assert.match(balance, /分野へ配分済み/);
+  assert.match(balance, /配分可能額/);
+  assert.match(balance, /増やすには先に別の分野を減らしてください/);
 });
 
 test("clarifies that simulated allocations are not an executable official budget", async () => {
