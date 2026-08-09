@@ -1,34 +1,43 @@
-# vinext-starter
+# 東京予算ラボ
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+令和8年度東京都一般会計当初予算を題材にした、予算配分シミュレーターです。
+React／Next.js互換の[vinext](https://github.com/cloudflare/vinext)で動作します。
 
 ## Prerequisites
 
 - Node.js `>=22.13.0`
 - Linux with `flock`, `curl`, and GNU `timeout`
 
-## Sites Lifecycle
+## Local Development
 
-The Sites lifecycle CLI runs the locked dependency install before returning this checkout. Edit the source under `app/`, then checkpoint when a coherent milestone is ready to inspect or share. The remote Sites builder runs `npm run build` against the pushed commit. Do not repeat install or build as a normal pre-checkpoint step.
+依存関係を導入し、ローカル開発サーバーを起動します。
 
-This starter does not use `wrangler.jsonc`.
+```bash
+npm run install:ci
+npm run dev
+```
 
-`install:ci` is intentionally a single, non-retrying `npm ci`. It refuses a concurrent install for the same project, consumes a matching image-seeded npm cache with `--prefer-offline` while retaining registry fallback for a missing cache object, otherwise downloads and verifies the complete vinext tarball recorded in `package-lock.json`, limits npm to one socket, and terminates a stalled install. `build` applies a short timeout and then validates the Sites artifact. These helpers target Linux and use GNU `timeout`; they are not native macOS scripts.
+標準では `http://localhost:5173/` で起動します。
+
+`install:ci` is intentionally a single, non-retrying `npm ci`. It refuses a concurrent install for the same project, consumes a matching image-seeded npm cache with `--prefer-offline` while retaining registry fallback for a missing cache object, otherwise downloads and verifies the complete vinext tarball recorded in `package-lock.json`, limits npm to one socket, and terminates a stalled install. `build` applies a short timeout and then validates the generated Worker artifact. These helpers target Linux and use GNU `timeout`; they are not native macOS scripts.
 
 Scripts that need writable project-scoped home, npm, XDG, and temporary paths use `scripts/sites-env.sh`. The `dev` and `start` scripts honor the caller's runtime environment and keep Wrangler logs inside the checkout. The generated `.sites-runtime/` directory is disposable and ignored by Git.
 
-## Included Shape
+## Project Structure
 
-- edit site code under `app/`
+- `app/` はルーティングと画面構成を担当
+- `features/simulate-budget/` は予算配分のデータと計算を担当
+- `features/learn-budget-process/` は予算成立過程を担当
+- `features/find-participation-route/` は参加制度を担当
+- `features/trace-budget-sources/` は出典追跡を担当
+- `domain/tokyo-budget/` は複数機能で共有する東京都予算の概念を担当
 - `app/chatgpt-auth.ts` provides optional dispatch-owned ChatGPT sign-in helpers
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
 - `db/index.ts` reads the D1 binding from the Cloudflare Worker environment
 - `db/schema.ts` starts intentionally empty
 - `examples/d1/` contains an optional D1 example surface
 - `drizzle.config.ts` supports local migration generation when needed
+
+`.openai/hosting.json` とSitesマニフェストは使用しません。公開先はVercel、Cloudflare Pages、AWS Amplify等を候補として今後決定します。
 
 ## Workspace Auth Headers
 
@@ -92,10 +101,10 @@ actions tied to the current ChatGPT user. Leave public content anonymous.
 
 - `npm run install:ci`: perform the one bounded lockfile install
 - `npm run dev`: start the Vite/Vinext development server
-- `npm run build`: build and validate the deployable Sites artifact
+- `npm run build`: build and validate the local deployable artifact
 - `npm run start`: start the built Vinext application
 - `npm test`: build, validate, and verify the rendered development-preview metadata
-- `npm run validate:artifact`: recheck an existing artifact's manifest and ESM `default.fetch` export
+- `npm run validate:artifact`: recheck an existing artifact's ESM `default.fetch` export
 - `npm run db:generate`: generate Drizzle migrations after schema changes
 
 Use build and validation commands for targeted diagnosis after a remote failure, not as part of the normal checkpoint path.

@@ -1,0 +1,104 @@
+import type { BudgetSource } from "./budget-source";
+
+export const BUDGET_SOURCES = [
+  {
+    id: "enacted",
+    sourceUrl:
+      "https://www.zaimu.metro.tokyo.lg.jp/zaisei/yosan/r8/8yosangaiyounituite",
+    sourceTitle: "令和8年度予算概要",
+    sourceDate: "2026-04-24",
+    fiscalYear: 2026,
+    documentStage: "enacted_budget",
+    retrievedAt: "2026-08-06T21:50:00+09:00",
+    factOrInterpretation: "fact",
+  },
+  {
+    id: "csv",
+    sourceUrl:
+      "https://catalog.data.metro.tokyo.lg.jp/dataset/t000004d0000000005",
+    sourceTitle: "TOKYO予算見える化ボード データ一覧",
+    sourceDate: "2026-01-30",
+    fiscalYear: 2026,
+    documentStage: "enacted_budget",
+    retrievedAt: "2026-08-06T21:48:00+09:00",
+    factOrInterpretation: "fact",
+  },
+  {
+    id: "proposal",
+    sourceUrl:
+      "https://www.zaimu.metro.tokyo.lg.jp/zaisei/yosan/r8/8nendo_tokyotoyosan_an_gaiyou",
+    sourceTitle: "令和8年度東京都予算案の概要",
+    sourceDate: "2026-01-30",
+    fiscalYear: 2026,
+    documentStage: "proposal",
+    retrievedAt: "2026-08-06T21:51:00+09:00",
+    factOrInterpretation: "fact",
+  },
+  {
+    id: "request",
+    sourceUrl:
+      "https://www.zaimu.metro.tokyo.lg.jp/zaisei/yosan/r8/08yosanyokyujokyou_index/",
+    sourceTitle: "令和8年度予算要求",
+    sourceDate: "2025-11",
+    fiscalYear: 2026,
+    documentStage: "request",
+    retrievedAt: "2026-08-06T21:52:00+09:00",
+    factOrInterpretation: "fact",
+  },
+  {
+    id: "bureau",
+    sourceUrl:
+      "https://www.zaimu.metro.tokyo.lg.jp/zaisei/yosan/r8/8zaimukyokusateikekka",
+    sourceTitle: "令和8年度一般会計予算 財務局査定結果（事項別）",
+    sourceDate: "2026-01",
+    fiscalYear: 2026,
+    documentStage: "bureau_assessment",
+    retrievedAt: "2026-08-06T21:53:00+09:00",
+    factOrInterpretation: "fact",
+  },
+  {
+    id: "governor",
+    sourceUrl:
+      "https://www.zaimu.metro.tokyo.lg.jp/zaisei/yosan/r8/8chijisateikekka",
+    sourceTitle: "令和8年度一般会計予算 知事査定結果",
+    sourceDate: "2026-01-30",
+    fiscalYear: 2026,
+    documentStage: "governor_assessment",
+    retrievedAt: "2026-08-06T21:53:00+09:00",
+    factOrInterpretation: "fact",
+  },
+  {
+    id: "parties",
+    sourceUrl:
+      "https://www.zaimu.metro.tokyo.lg.jp/zaisei/yosan/r8/08seitoyobo",
+    sourceTitle: "令和8年度都議会各会派からの要望",
+    sourceDate: "2025-12",
+    fiscalYear: 2026,
+    documentStage: "external_request",
+    retrievedAt: "2026-08-06T21:51:00+09:00",
+    factOrInterpretation: "fact",
+  },
+  {
+    id: "groups",
+    sourceUrl:
+      "https://www.zaimu.metro.tokyo.lg.jp/zaisei/yosan/r8/08dantaiyobo_index",
+    sourceTitle: "各種団体からの東京都予算に対するヒアリング",
+    sourceDate: "2025-11",
+    fiscalYear: 2026,
+    documentStage: "external_request",
+    retrievedAt: "2026-08-06T21:51:00+09:00",
+    factOrInterpretation: "fact",
+  },
+  {
+    id: "evaluation",
+    sourceUrl:
+      "https://catalog.data.metro.tokyo.lg.jp/dataset/t000004d2000000024",
+    sourceTitle:
+      "TOKYO政策評価・事業評価・グループ連携事業評価見える化ボード",
+    sourceDate: "2026",
+    fiscalYear: 2026,
+    documentStage: "evaluation",
+    retrievedAt: "2026-08-06T21:49:00+09:00",
+    factOrInterpretation: "fact",
+  },
+] as const satisfies readonly BudgetSource[];
