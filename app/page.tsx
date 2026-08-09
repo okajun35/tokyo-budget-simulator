@@ -11,7 +11,7 @@ import {
 } from "@/features/learn-budget-process/budget-process-steps";
 import type { BudgetProcessSummaryStep } from "@/features/learn-budget-process/budget-process-step";
 import {
-  calculateBudgetTotal,
+  calculateBudgetBalance,
   createInitialBudgetAllocations,
   getBudgetAllocationRange,
   type BudgetAllocations,
@@ -34,8 +34,10 @@ export default function Home() {
   const [selected, setSelected] = useState<BudgetCategoryId>("welfare");
   const [tab, setTab] = useState<"sim" | "participate" | "sources">("sim");
   const [openStage, setOpenStage] = useState<BudgetProcessSummaryStep["id"] | null>(null);
-  const total = useMemo(() => calculateBudgetTotal(values), [values]);
-  const diff = total - GENERAL_ACCOUNT_BASELINE_100M_YEN;
+  const balance = useMemo(
+    () => calculateBudgetBalance(values, GENERAL_ACCOUNT_BASELINE_100M_YEN),
+    [values],
+  );
   const active = BUDGET_CATEGORIES.find(x => x.id === selected)!;
 
   const setValue = (id: BudgetCategoryId, value: number) => {
@@ -78,14 +80,14 @@ export default function Home() {
 
       <section className="simulator" id="simulator">
         <div className="sectionHead"><div><p className="eyebrow">ALLOCATION</p><h2>目的別に配分する</h2><p>スライダーは基準額の70〜130%。1億円単位です。</p></div><button className="reset" onClick={reset}>↺ 初期値に戻す</button></div>
-        <div className="budgetBalance" data-state={diff === 0 ? "ok" : diff > 0 ? "over" : "under"} aria-live="polite">
+        <div className="budgetBalance" data-state={balance.status === "balanced" ? "ok" : balance.status === "shortage" ? "over" : "under"} aria-live="polite">
           <div className="balanceMetrics">
-            <div><span>あなたの予算総額</span><strong>{money(total)}</strong></div>
-            <div><span>成立予算との差額</span><strong>{signedMoney(diff)}</strong></div>
-            <div><span>残額</span><strong>{signedMoney(-diff)}</strong></div>
+            <div><span>あなたの予算総額</span><strong>{money(balance.totalAmount100mYen)}</strong></div>
+            <div><span>成立予算との差額</span><strong>{signedMoney(balance.differenceAmount100mYen)}</strong></div>
+            <div><span>残額</span><strong>{signedMoney(balance.remainingAmount100mYen)}</strong></div>
           </div>
-          <div className="balanceTrack"><i style={{width: `${Math.min(100, total / GENERAL_ACCOUNT_BASELINE_100M_YEN * 100)}%`}} /></div>
-          <p>{diff === 0 ? "基準予算と一致しています" : diff > 0 ? `財源が ${money(diff)} 不足しています` : `${money(Math.abs(diff))} の余裕があります`}</p>
+          <div className="balanceTrack"><i style={{width: `${Math.min(100, balance.totalAmount100mYen / GENERAL_ACCOUNT_BASELINE_100M_YEN * 100)}%`}} /></div>
+          <p>{balance.status === "balanced" ? "基準予算と一致しています" : balance.status === "shortage" ? `財源が ${money(balance.differenceAmount100mYen)} 不足しています` : `${money(balance.remainingAmount100mYen)} の余裕があります`}</p>
         </div>
 
         <div className="simulatorWorkspace">

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  calculateBudgetBalance,
   calculateBudgetTotal,
   createInitialBudgetAllocations,
   getBudgetAllocationRange,
@@ -35,5 +36,29 @@ test("limits allocation controls to 70 through 130 percent of the baseline", () 
   assert.deepEqual(getBudgetAllocationRange(2_799), {
     minimumAmount100mYen: 1_959,
     maximumAmount100mYen: 3_639,
+  });
+});
+
+test("reports surplus when the user's total is below the enacted budget", () => {
+  const allocations = createInitialBudgetAllocations(BUDGET_CATEGORIES);
+  allocations.debt -= 840;
+
+  assert.deepEqual(calculateBudgetBalance(allocations, 96_530), {
+    totalAmount100mYen: 95_690,
+    differenceAmount100mYen: -840,
+    remainingAmount100mYen: 840,
+    status: "surplus",
+  });
+});
+
+test("reports shortage when the user's total exceeds the enacted budget", () => {
+  const allocations = createInitialBudgetAllocations(BUDGET_CATEGORIES);
+  allocations.welfare += 300;
+
+  assert.deepEqual(calculateBudgetBalance(allocations, 96_530), {
+    totalAmount100mYen: 96_830,
+    differenceAmount100mYen: 300,
+    remainingAmount100mYen: -300,
+    status: "shortage",
   });
 });
