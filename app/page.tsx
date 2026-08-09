@@ -39,14 +39,21 @@ export default function Home() {
     setSelected(id);
   };
   const reset = () => setValues(createInitialBudgetAllocations(BUDGET_CATEGORIES));
+  const showSimulatorSection = (sectionId: "simulator" | "budget-process") => {
+    setTab("sim");
+    requestAnimationFrame(() =>
+      document.getElementById(sectionId)?.scrollIntoView({ block: "start" }),
+    );
+  };
 
   return <main>
     <header className="topbar">
       <a className="brand" href="#top" aria-label="東京予算ラボ トップ"><span className="brandMark">都</span><span>東京予算ラボ<small>令和8年度・一般会計</small></span></a>
       <nav aria-label="主要メニュー">
-        <button className={tab === "sim" ? "active" : ""} onClick={() => setTab("sim")}>予算を組む</button>
+        <button className={tab === "sim" ? "active" : ""} onClick={() => showSimulatorSection("simulator")}>予算シミュレーター</button>
+        <button onClick={() => showSimulatorSection("budget-process")}>予算が決まるまで</button>
         <button className={tab === "participate" ? "active" : ""} onClick={() => setTab("participate")}>声を届ける</button>
-        <button className={tab === "sources" ? "active" : ""} onClick={() => setTab("sources")}>出典</button>
+        <button className={tab === "sources" ? "active" : ""} onClick={() => setTab("sources")}>出典・データ</button>
       </nav>
     </header>
 
@@ -68,7 +75,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="process" aria-label="予算成立までの段階">
+      <section className="process" id="budget-process" aria-label="予算成立までの段階">
         <p>予算は、最初から今の形ではありません。</p>
         <div>{BUDGET_PROCESS_OVERVIEW_STEPS.map((step, i) => <button key={step.documentStage} onClick={() => setOpenStage(openStage === step.documentStage ? null : step.documentStage)} className={openStage === step.documentStage ? "selected" : ""}><span>{i + 1}</span>{BUDGET_DOCUMENT_STAGE_LABELS[step.documentStage]}</button>)}</div>
         {openStage && <aside className="stageExplainer"><b>{BUDGET_DOCUMENT_STAGE_LABELS[openStage]}</b><p>{BUDGET_PROCESS_OVERVIEW_STEPS.find((step) => step.documentStage === openStage)?.summary}</p></aside>}

@@ -11,7 +11,7 @@ a { color:inherit; }
 .brand { display:flex; align-items:center; gap:12px; text-decoration:none; font-weight:800; line-height:1.05; letter-spacing:.02em; }
 .brand small { display:block; margin-top:5px; font-size:10px; color:var(--muted); letter-spacing:.12em; font-weight:600; }
 .brandMark { display:grid; place-items:center; width:37px; height:37px; border-radius:50%; color:white; background:var(--teal); font-family:serif; }
-.topbar nav { display:flex; height:100%; gap:26px; }
+.topbar nav { display:flex; height:100%; gap:18px; }
 .topbar nav button { position:relative; background:none; border:0; padding:0 4px; font-size:13px; font-weight:700; cursor:pointer; }
 .topbar nav button.active:after { content:""; position:absolute; left:0; right:0; bottom:0; height:3px; background:#e45c3d; }
 .hero { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr); gap:40px; align-items:center; padding:28px 5vw 32px; background:radial-gradient(circle at 85% 25%,#d5e5dc 0,transparent 28%),linear-gradient(135deg,#f8f6ef,#eee9dd); border-bottom:1px solid var(--line); }
