@@ -18,6 +18,7 @@
     "data:validate": "node scripts/validate-budget-data.ts",
     "audit:layout": "node scripts/audit-layout.mjs",
     "audit:links": "node scripts/audit-external-links.mjs",
+    "audit:demo": "node scripts/audit-demo.mjs",
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"
   },
   "dependencies": {
