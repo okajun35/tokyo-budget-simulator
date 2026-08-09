@@ -459,6 +459,113 @@ test("carries the selected category and amount to its detail page", async () => 
   assert.match(detailHtml, /あなたの案.*?18,730億円/);
 });
 
+test("renders the shared detail route for all nine budget categories", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `detail-routes-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const categoryIds = [
+    "welfare",
+    "education",
+    "industry",
+    "environment",
+    "city",
+    "safety",
+    "admin",
+    "debt",
+    "linked",
+  ];
+
+  for (const categoryId of categoryIds) {
+    const response = await worker.fetch(
+      new Request(`http://localhost/budget/${categoryId}`, {
+        headers: { accept: "text/html" },
+      }),
+      {
+        ASSETS: {
+          fetch: async () => new Response("Not found", { status: 404 }),
+        },
+      },
+      {
+        waitUntil() {},
+        passThroughOnException() {},
+      },
+    );
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, new RegExp(`data-budget-detail="${categoryId}"`));
+  }
+});
+
+test("falls back safely when the detail amount is invalid or outside its range", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `detail-fallback-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  for (const amount of ["invalid", "1958", "3640"]) {
+    const response = await worker.fetch(
+      new Request(`http://localhost/budget/debt?amount=${amount}`, {
+        headers: { accept: "text/html" },
+      }),
+      {
+        ASSETS: {
+          fetch: async () => new Response("Not found", { status: 404 }),
+        },
+      },
+      {
+        waitUntil() {},
+        passThroughOnException() {},
+      },
+    );
+    const html = await response.text();
+
+    assert.match(html, /あなたの案.*?2,799億円/);
+    assert.match(html, /指定された金額を利用できないため、成立予算額を表示しています/);
+  }
+});
+
+test("explains a budget change through the complete shared detail template", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `detail-template-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/budget/debt?amount=1959", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+  const normalizedHtml = html.replaceAll("<!-- -->", "");
+
+  assert.match(normalizedHtml, /成立予算.*?2,799億円/);
+  assert.match(normalizedHtml, /あなたの案.*?1,959億円/);
+  assert.match(normalizedHtml, /変更額.*?-840億円/);
+  assert.match(normalizedHtml, /変更率.*?-30\.0%/);
+  assert.match(normalizedHtml, /構成比.*?2\.9%.*?2\.0%/);
+  assert.match(normalizedHtml, /そもそも何のお金/);
+  assert.match(normalizedHtml, /主な用途/);
+  assert.match(normalizedHtml, /変更方法と検討の論点/);
+  assert.match(normalizedHtml, /data-evidence-kind="fact"/);
+  assert.match(normalizedHtml, /data-evidence-kind="case_fact"/);
+  assert.match(normalizedHtml, /data-evidence-kind="interpretation"/);
+  assert.match(normalizedHtml, /data-evidence-kind="unknown"/);
+  assert.match(normalizedHtml, /国内外の事例/);
+  assert.match(normalizedHtml, /東京都で現在の金額になった背景/);
+  assert.match(normalizedHtml, /詳しい公式資料/);
+  assert.match(normalizedHtml, /意見を伝える先/);
+  assert.match(normalizedHtml, /主な所管であり、予算分類との一対一対応ではありません/);
+  assert.match(normalizedHtml, /href="\/#simulator"[^>]*>.*?予算一覧へ戻る/);
+});
+
 test("labels what public information cannot establish without guessing", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `context-unknown-${process.pid}-${Date.now()}`);
