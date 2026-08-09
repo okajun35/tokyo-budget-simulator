@@ -54,9 +54,9 @@ export default function Home() {
       <section className="hero" id="top">
         <div>
           <p className="eyebrow">BUDGET SIMULATOR · FY2026</p>
-          <h1>9兆6,530億円を、<br/><em>あなたならどう配る？</em></h1>
-          <p className="lead">東京都の成立後当初予算を出発点に、目的別の配分を動かせます。数字を変えると、要求・査定・知事判断という予算編成の背景を追えます。</p>
-          <div className="heroActions"><a href="#simulator" className="primary">配分を動かす <span>↓</span></a><button onClick={() => setTab("sources")} className="textButton">データの扱いを見る</button></div>
+          <h1>東京都の予算を動かし、<em>変更の意味を知る。</em></h1>
+          <p className="lead">令和8年度の成立後当初予算を基準にした仮想シミュレーションです。数字を変えながら、要求・査定・議会を経て予算が決まる流れを学べます。</p>
+          <div className="heroActions"><a href="#simulator" className="primary">予算を動かしてみる <span>↓</span></a><button onClick={() => setTab("sources")} className="textButton">データの扱いを見る</button></div>
         </div>
         <div className="heroCard" aria-label="令和8年度予算の概要">
           <span className="stamp">成立後</span>
