@@ -290,9 +290,10 @@ test("explains the selected category and offers multiple ways to change it", asy
   assert.ok(panel);
   assert.match(panel, /そもそも何のお金？/);
   assert.match(panel, /高齢者、障害者、子ども・子育て世帯への福祉/);
-  assert.equal(panel.match(/data-change-option=/g)?.length, 3);
+  assert.equal(panel.match(/data-change-option=/g)?.length, 4);
   assert.match(panel, /給付対象や単価を見直す/);
-  assert.match(panel, /施設・相談サービスを見直す/);
+  assert.match(panel, /施設・相談サービスの時間や人員を見直す/);
+  assert.match(panel, /補助率や上限額を見直す/);
   assert.match(panel, /新規事業の規模や時期を見直す/);
   assert.match(panel, /確定案ではありません/);
 });
@@ -564,6 +565,72 @@ test("explains a budget change through the complete shared detail template", asy
   assert.match(normalizedHtml, /意見を伝える先/);
   assert.match(normalizedHtml, /主な所管であり、予算分類との一対一対応ではありません/);
   assert.match(normalizedHtml, /href="\/#simulator"[^>]*>.*?予算一覧へ戻る/);
+});
+
+test("renders the completed content for debt, welfare, and education", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `detailed-categories-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const cases = [
+    {
+      path: "/budget/debt?amount=1959",
+      patterns: [
+        /都債.*?元金.*?利子.*?償還.*?借換え.*?新規発行.*?基金/s,
+        /既に発行した都債の返済義務が消えるわけではなく/,
+        /新規発行・借換え時の条件/,
+        /東京都財務局「債券について」/,
+        /夕張市財政再建計画/,
+        /プエルトリコの債務危機/,
+      ],
+    },
+    {
+      path: "/budget/welfare?amount=18730",
+      patterns: [
+        /高齢者福祉.*?障害福祉.*?子育て・児童福祉.*?医療提供体制.*?保健・健康施策/s,
+        /給付対象や単価/,
+        /施設・相談サービスの時間や人員/,
+        /補助率や上限額/,
+        /飯能市の在宅・障害・高齢者福祉事業/,
+        /イングランドの成人社会福祉支出/,
+      ],
+    },
+    {
+      path: "/budget/education?amount=16762",
+      patterns: [
+        /学校運営と教職員.*?学校施設の整備・更新.*?図書館.*?文化施設・文化事業.*?スポーツ・生涯学習/s,
+        /学校・施設の統合や更新延期/,
+        /教職員・支援職員の人員体制/,
+        /選択科目・行事/,
+        /図書館・文化施設の開館日や時間/,
+        /飯能市立図書館のサービス見直し/,
+        /イングランドの学校が財政圧力へ対応した方法/,
+      ],
+    },
+  ];
+
+  for (const detailCase of cases) {
+    const response = await worker.fetch(
+      new Request(`http://localhost${detailCase.path}`, {
+        headers: { accept: "text/html" },
+      }),
+      {
+        ASSETS: {
+          fetch: async () => new Response("Not found", { status: 404 }),
+        },
+      },
+      {
+        waitUntil() {},
+        passThroughOnException() {},
+      },
+    );
+    const html = (await response.text()).replaceAll("<!-- -->", "");
+
+    assert.equal(response.status, 200);
+    for (const pattern of detailCase.patterns) {
+      assert.match(html, pattern, `${detailCase.path}: ${pattern}`);
+    }
+    assert.match(html, /東京都で同じ結果が起きるとの予測ではありません/);
+  }
 });
 
 test("labels what public information cannot establish without guessing", async () => {

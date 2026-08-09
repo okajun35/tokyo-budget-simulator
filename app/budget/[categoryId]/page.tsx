@@ -16,6 +16,9 @@ import {
   createBudgetDetailComparison,
   resolveBudgetDetailAmount,
 } from "@/features/understand-budget-change/budget-detail";
+import {
+  findDetailedBudgetCategory,
+} from "@/features/understand-budget-change/detailed-budget-categories";
 import { BUDGET_SOURCES } from "@/features/trace-budget-sources/budget-sources";
 
 type BudgetDetailPageProps = {
@@ -72,6 +75,7 @@ export default async function BudgetDetailPage({
   const categoryParticipationRoutes = PARTICIPATION_ROUTES.filter(route =>
     (category.participationRouteIds as readonly string[]).includes(route.id),
   );
+  const detailedCategory = findDetailedBudgetCategory(category.id);
   const changeVerb = comparison.changeAmount100mYen > 0
     ? "増やしました"
     : comparison.changeAmount100mYen < 0
@@ -110,6 +114,14 @@ export default async function BudgetDetailPage({
         <p className="detailLead">{category.definition}</p>
         <h3>主な用途</h3>
         <ul className="detailUseList">{category.mainUses.map(use => <li key={use}>{use}</li>)}</ul>
+        {detailedCategory && <>
+          <h3 className="detailSubheading">用語を整理する</h3>
+          <dl className="detailConceptList">{detailedCategory.keyConcepts.map(concept => <div key={concept.term}>
+            <dt>{concept.term}</dt>
+            <dd>{concept.explanation}</dd>
+          </div>)}</dl>
+          <aside className="detailImportantNote"><b>このシミュレーションを読むうえで重要なこと</b><p>{detailedCategory.importantNote}</p></aside>
+        </>}
       </section>
 
       <section className="budgetDetailSection" aria-labelledby="options-heading">
@@ -168,13 +180,22 @@ export default async function BudgetDetailPage({
       <section className="budgetDetailSection" aria-labelledby="sources-heading">
         <p className="sectionLabel">OFFICIAL SOURCES</p>
         <h2 id="sources-heading">詳しい公式資料</h2>
-        <div className="detailSourceList">{categorySources.map(source => <article key={source.id}>
-          <span className={`stageTag ${source.documentStage}`}>{BUDGET_DOCUMENT_STAGE_LABELS[source.documentStage]}</span>
-          <h3>{source.sourceTitle}</h3>
-          <p><b>この資料で分かること：</b>{source.targetTableOrItem}</p>
-          <p>資料日 {source.sourceDate}／取得日 {source.retrievedAt}</p>
-          <a href={source.sourceUrl} target="_blank" rel="noreferrer">公式資料を開く ↗</a>
-        </article>)}</div>
+        <div className="detailSourceList">
+          {categorySources.map(source => <article key={source.id}>
+            <span className={`stageTag ${source.documentStage}`}>{BUDGET_DOCUMENT_STAGE_LABELS[source.documentStage]}</span>
+            <h3>{source.sourceTitle}</h3>
+            <p><b>この資料で分かること：</b>{source.targetTableOrItem}</p>
+            <p>資料日 {source.sourceDate}／取得日 {source.retrievedAt}</p>
+            <a href={source.sourceUrl} target="_blank" rel="noreferrer">公式資料を開く ↗</a>
+          </article>)}
+          {detailedCategory?.referenceSources.map(source => <article key={source.id}>
+            <span className="detailReferenceTag">用語・財政資料</span>
+            <h3>{source.title}</h3>
+            <p><b>この資料で分かること：</b>{source.whatCanBeLearned}</p>
+            <p>資料日 {source.sourceDate}／取得日 {source.retrievedAt}</p>
+            <a href={source.url} target="_blank" rel="noreferrer">公式資料を開く ↗</a>
+          </article>)}
+        </div>
       </section>
 
       <section className="budgetDetailSection" aria-labelledby="participation-heading">

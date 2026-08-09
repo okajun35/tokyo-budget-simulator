@@ -102,6 +102,33 @@ test("uses available funds to increase another category", () => {
   );
 });
 
+test("redistributes the 30 percent debt reduction to education without changing the annual total", () => {
+  const allocations = createInitialBudgetAllocations(BUDGET_CATEGORIES);
+  const reduced = changeBudgetAllocation({
+    allocations,
+    categoryId: "debt",
+    requestedAmount100mYen: 1_959,
+    range: getBudgetAllocationRange(2_799),
+    annualBudgetAmount100mYen: 96_530,
+  });
+  const redistributed = changeBudgetAllocation({
+    allocations: reduced,
+    categoryId: "education",
+    requestedAmount100mYen: 16_762,
+    range: getBudgetAllocationRange(15_922),
+    annualBudgetAmount100mYen: 96_530,
+  });
+
+  assert.equal(redistributed.debt, 1_959);
+  assert.equal(redistributed.education, 16_762);
+  assert.deepEqual(calculateBudgetAllocationSummary(redistributed, 96_530), {
+    annualBudgetAmount100mYen: 96_530,
+    allocatedAmount100mYen: 96_530,
+    availableAmount100mYen: 0,
+    status: "fully-allocated",
+  });
+});
+
 test("does not increase a category beyond the available funds", () => {
   const allocations = createInitialBudgetAllocations(BUDGET_CATEGORIES);
   const unchanged = changeBudgetAllocation({

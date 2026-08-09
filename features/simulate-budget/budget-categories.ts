@@ -53,8 +53,13 @@ export const BUDGET_CATEGORIES = [
       },
       {
         id: "welfare-services",
-        title: "施設・相談サービスを見直す",
-        description: "運営費は変わりますが、開館日や支援体制との両立が必要です。",
+        title: "施設・相談サービスの時間や人員を見直す",
+        description: "運営費は変わりますが、開館日・利用時間や人員配置との両立が必要です。",
+      },
+      {
+        id: "welfare-subsidy",
+        title: "補助率や上限額を見直す",
+        description: "支出は変わりますが、利用者や事業者の負担にも影響します。",
       },
       {
         id: "welfare-schedule",
@@ -99,18 +104,23 @@ export const BUDGET_CATEGORIES = [
     changeOptions: [
       {
         id: "education-facilities",
-        title: "施設の配置や更新時期を見直す",
+        title: "学校・施設の統合や更新延期を検討する",
         description: "整備費は変わりますが、利用距離や老朽化対応への影響があります。",
       },
       {
         id: "education-staffing",
-        title: "教職員・支援職員の体制を見直す",
+        title: "教職員・支援職員の人員体制を見直す",
         description: "人件費は変わりますが、学級運営や個別支援との両立が必要です。",
       },
       {
         id: "education-programs",
-        title: "事業や助成の規模を見直す",
+        title: "選択科目・行事・助成の規模を見直す",
         description: "支出は変わりますが、学習・文化活動の機会にも影響します。",
+      },
+      {
+        id: "education-hours",
+        title: "図書館・文化施設の開館日や時間を見直す",
+        description: "運営費は変わりますが、利用できる曜日や時間帯にも影響します。",
       },
     ],
     sourceIds: COMMON_SOURCE_IDS,
@@ -331,8 +341,8 @@ export const BUDGET_CATEGORIES = [
     changeOptions: [
       {
         id: "debt-refinancing",
-        title: "返済時期を組み替える",
-        description: "当年度負担は変わりますが、返済義務そのものは消えません。",
+        title: "返済時期を組み替え、借換えを検討する",
+        description: "当年度負担は変わりますが、借換え後も返済義務そのものは消えません。",
       },
       {
         id: "debt-other-funds",
@@ -341,8 +351,13 @@ export const BUDGET_CATEGORIES = [
       },
       {
         id: "debt-new-issuance",
-        title: "将来の都債発行を抑える",
+        title: "将来の新規都債発行を抑える",
         description: "将来負担を抑えられる可能性がありますが、現在の事業財源にも影響します。",
+      },
+      {
+        id: "debt-issuance-terms",
+        title: "新規発行・借換え時の条件を検討する",
+        description: "利率や償還期間は市場環境などに左右され、既に約束した支払条件を一方的に変更できるという意味ではありません。",
       },
     ],
     sourceIds: COMMON_SOURCE_IDS,

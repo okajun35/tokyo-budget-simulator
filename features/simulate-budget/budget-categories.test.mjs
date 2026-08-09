@@ -60,3 +60,24 @@ test("provides the shared detail references required by every category", () => {
     );
   }
 });
+
+test("provides the concrete change methods required by the three detailed categories", () => {
+  const expectedWordsByCategory = {
+    debt: ["返済", "基金", "新規", "借換え", "条件"],
+    welfare: ["対象", "単価", "時間", "補助", "人員"],
+    education: ["統合", "時間", "人員", "行事", "更新延期"],
+  };
+
+  for (const [categoryId, expectedWords] of Object.entries(
+    expectedWordsByCategory,
+  )) {
+    const category = BUDGET_CATEGORIES.find(item => item.id === categoryId);
+    const optionText = category.changeOptions
+      .map(option => `${option.title}${option.description}`)
+      .join(" ");
+
+    for (const word of expectedWords) {
+      assert.match(optionText, new RegExp(word), `${categoryId}: ${word}`);
+    }
+  }
+});
