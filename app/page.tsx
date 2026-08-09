@@ -86,6 +86,10 @@ export default function Home() {
 
       <section className="simulator" id="simulator">
         <div className="sectionHead"><div><p className="eyebrow">ALLOCATION</p><h2>目的別に配分する</h2><p>スライダーは基準額の70〜130%。1億円単位です。</p></div><button className="reset" onClick={reset}>↺ 初期値に戻す</button></div>
+        <aside className="simulationNotice" role="note">
+          <strong>これは学習用の仮想配分です</strong>
+          <p>操作結果は東京都の正式な予算案ではありません。制度上・財政上の実行可能性を保証するものではありません。</p>
+        </aside>
         <div className="budgetBalance" data-state={balance.status === "balanced" ? "ok" : balance.status === "shortage" ? "over" : "under"} aria-live="polite">
           <div className="balanceMetrics">
             <div><span>あなたの予算総額</span><strong>{money(balance.totalAmount100mYen)}</strong></div>

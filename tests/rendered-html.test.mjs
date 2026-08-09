@@ -261,6 +261,37 @@ test("keeps total, difference, and remaining funds together", async () => {
   assert.match(balance, /残額/);
 });
 
+test("clarifies that simulated allocations are not an executable official budget", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `simulation-notice-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+  const simulator = html.match(
+    /<section class="simulator" id="simulator">.*?<section class="process"/,
+  )?.[0];
+
+  assert.ok(simulator);
+  assert.match(
+    simulator,
+    /<aside class="simulationNotice" role="note">.*?学習用の仮想配分.*?東京都の正式な予算案ではありません.*?実行可能性を保証するものではありません.*?<\/aside>/,
+  );
+});
+
 test("introduces the budget process after the simulator", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `process-order-${process.pid}-${Date.now()}`);
