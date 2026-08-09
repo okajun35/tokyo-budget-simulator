@@ -2,6 +2,108 @@
 
 These instructions apply to the entire repository.
 
+## Product purpose and north star
+
+- The product name is **東京予算ラボ**. It is an unofficial learning and information-exploration prototype, not a Tokyo Metropolitan Government service.
+- The baseline is the enacted FY2026 (令和8年度) initial Tokyo general-account budget. Do not silently replace it with a proposal, request, assessment, another fiscal year, or a layout-mock value.
+- The central purpose is to let a person experience that, within a limited total budget, increasing one priority requires reducing or leaving money unallocated elsewhere, and then help that person think about what Tokyo should prioritize.
+- The intended outcome is fiscal understanding and a path to civic participation. The service should connect numbers to their meaning, concrete ways a budget could change, public cases, Tokyo's budget process, responsible bureaus, and official participation routes.
+- The product is not intended to find the single correct budget, reproduce every rule of real budget formulation, predict social outcomes, accept opinions, or promise that a submitted opinion changes the budget.
+
+The core experience is:
+
+```text
+Understand the FY2026 baseline
+  -> redistribute a fixed annual total across nine fields
+  -> experience trade-offs
+  -> understand what the selected field and change mean
+  -> inspect public cases and evidential limits
+  -> learn how Tokyo's budget is decided
+  -> reach official participation routes
+```
+
+Keep the top-page explanation brief enough that a first-time user can reach the simulator directly. The budget-process explanation comes after the allocation experience and also has its own page. Do not add a mandatory start/introduction screen without first making it an explicit UX decision with the user.
+
+## Simulator concept and invariants
+
+- The annual general-account total is fixed at 96,530 hundred-million yen (9兆6,530億円) for the current FY2026 experience.
+- The nine enacted baseline allocations add up to that annual total. Reducing field A creates the same amount of available funds; increasing field B consumes those funds. The UI must not allow allocations to exceed the fixed total.
+- Each field is currently adjustable from 70% through 130% of its baseline, in increments of 1 hundred-million yen. “70% of baseline” means a 30% reduction, not a 70% reduction.
+- Always show the annual total, allocated amount, and available amount together while the user is changing allocations.
+- A simulated allocation is a learning exercise, not an executable official budget. Do not infer which individual project, contract, law, staffing level, or outcome would change unless supported by public evidence.
+- The simulator deliberately focuses on distributing a fixed total. It does not currently model multiple fiscal years, tax-policy changes, economic forecasts, borrowing capacity, or fund balances as controls.
+
+基金、都債、都税 are displayed as “動かせない前提”, but this must never be explained as if they are legally or practically immutable:
+
+- 都税 is revenue affected by the tax system, the economy, corporate earnings, land values, and forecasts.
+- 都債 is borrowing that can provide current resources while creating future principal and interest obligations.
+- 基金 is a balance held across fiscal years; drawing it down adds current resources but reduces future room, while accumulating it does the reverse.
+- They are outside the current controls because they are revenue, financing, and inter-year balance concepts rather than the nine purpose-based expenditure destinations. Making them controllable would turn the product into a broader, multi-year fiscal simulator.
+- The top cards must explain both “what it is” and “why this screen does not move it”. `/fiscal-context` provides the detailed explanation and official source route.
+
+## Information architecture and reading order
+
+- `/` — short purpose statement, FY2026 overview, fixed-total simulator, selected-field context, budget-process summary, and fiscal-condition cards.
+- `/budget/[categoryId]` — inherited user amount, meaning, uses, change options, domestic/international cases, Tokyo budget background, sources, responsible bureaus, and participation routes for one of the nine fields.
+- `/budget-process` — requests, Finance Bureau assessment, governor assessment, proposal, assembly review, enactment, execution, settlement, and evaluation as separate stages.
+- `/participation` — category-aware official routes such as 都民の声, public comments, petitions, and written requests, including what each route can and cannot do.
+- `/sources` — provenance, document stage, retrieval date, source type, license status, and app usage.
+- `/about` — prototype status and interpretive limits.
+- `/fiscal-context` — what funds, Tokyo bonds, and metropolitan taxes are; what changes imply; and why they are outside the current simulator controls.
+
+The normal learning order is allocation first, meaning and trade-offs second, budget process third, and participation routes last. Links may let informed users skip ahead, but page changes should preserve this narrative.
+
+## Evidence and wording rules
+
+- Keep enacted budget, proposal, bureau requests, Finance Bureau assessment, and governor assessment as distinct document stages. Never describe a proposal or requested amount as the enacted baseline.
+- Distinguish four kinds of information in data and wording:
+  - `fact`: a claim or number stated in an official primary source.
+  - `case_fact`: a fact about another jurisdiction supported by a public source.
+  - `interpretation`: the app's explanation or a possible way to think about a change.
+  - `unknown`: something public material cannot establish without guessing.
+- Public cases explain what happened elsewhere; they are not predictions of what would happen in Tokyo. Preserve caveats about different institutions and conditions.
+- Do not generate unsupported numbers such as people helped, percentage improvement, savings, or causal effects.
+- Use visible “外部リンク” wording for links that leave the site. Preserve retrieval dates and source metadata.
+- Layout images under `docs/` are visual references only. Their numbers are not budget data. Structured data produced from official material takes priority for years and amounts.
+- The official CSV workflow and its reproducibility are described in `docs/data-refresh.md`. Keep data acquisition, normalization, and validation separate from page composition.
+
+## Purpose-driven code map
+
+- `app/` owns routes and page composition only.
+- `features/simulate-budget/` owns the nine fields, baseline allocations, fixed-total redistribution, ranges, and simulation state.
+- `features/understand-budget-change/` owns detailed explanations for a selected allocation change.
+- `features/understand-fiscal-context/` owns the fund, bond, and tax explanations used by the top cards and fiscal-context page.
+- `features/learn-budget-process/` owns the stages by which the budget is formed and evaluated.
+- `features/learn-from-budget-cases/` owns domestic and international public cases and their evidence limits.
+- `features/find-participation-route/` owns official participation mechanisms.
+- `features/trace-budget-sources/` owns source and provenance metadata.
+- `features/prepare-budget-data/` and `scripts/` own fetch, normalization, validation, and reproducible audits.
+
+When adding behavior, put it under the user purpose that would cause it to change. Do not move these domains into generic `components`, `utils`, or `data` directories merely to reduce file count.
+
+## Current handoff state
+
+As of 2026-08-09:
+
+- Sections 2 through 17 of `docs/implementation-checklist.md` have been implemented and checked. Section 18 is the next formal MVP final-acceptance pass; its unchecked boxes are an acceptance review, not evidence that the preceding implementation is missing.
+- The most recent completed change is commit `546f3a8`, which added explanatory fiscal cards and `/fiscal-context`.
+- The last verification passed 90 tests, production build, ESLint, the two-minute demo audit, desktop/mobile layout and heading audits over seven primary pages, keyboard checks, and 39 unique external links with zero failures.
+- The worktree was clean after the last commit. Confirm this with `git status --short` at the start of the next session rather than assuming it remains clean.
+- The primary handoff documents are:
+  - `docs/tokyo_budget_lab_spec_v0.1.md` for product scope and rationale.
+  - `docs/implementation-checklist.md` for completion state and the next acceptance pass.
+  - `docs/two-minute-demo.md` for the intended two-minute story.
+  - `docs/data-refresh.md` for reproducible data updates.
+  - `docs/web-image.png` and `docs/レイアウト-補足.md` for layout direction only.
+
+At the beginning of the next session:
+
+1. Read this file and the relevant checklist section before editing.
+2. Run `git status --short` and inspect recent commits so user work is not overwritten.
+3. Start locally with `npm run dev` when a visual check is needed.
+4. Continue with section 18 only if the user wants the final acceptance pass; otherwise follow the user's new priority.
+5. Preserve completed decisions unless new evidence or an explicit user decision changes them. Record any changed product decision in this file or the checklist so another agent can reconstruct why.
+
 ## Development flow
 
 - Use test-driven development in the t-wada style: Red, Green, Refactor.
