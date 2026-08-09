@@ -459,6 +459,40 @@ test("carries the selected category and amount to its detail page", async () => 
   assert.match(detailHtml, /あなたの案.*?18,730億円/);
 });
 
+test("labels what public information cannot establish without guessing", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `context-unknown-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+  const panel = html.match(
+    /<aside class="contextPanel" id="category-context" aria-label="選択分野の変更の意味">.*?<\/aside>/,
+  )?.[0];
+
+  assert.ok(panel);
+  assert.match(panel, /data-evidence-status="unknown"/);
+  assert.match(panel, /公開情報だけでは判断できないこと/);
+  assert.match(panel, /何人改善するか/);
+  assert.match(panel, /何％向上するか/);
+  assert.match(panel, /どの事業を変更すれば実行できるか/);
+  assert.match(panel, /因果関係/);
+  assert.match(panel, /推測値は表示しません/);
+});
+
 test("keeps total, difference, and remaining funds together", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `balance-${process.pid}-${Date.now()}`);
