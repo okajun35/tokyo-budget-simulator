@@ -40,7 +40,7 @@ const viewports = [
   { name: "desktop", width: 1440, height: 900, mobile: false },
   { name: "mobile", width: 390, height: 844, mobile: true },
 ];
-const paths = ["/", "/budget/debt?amount=1959", "/budget-process", "/participation?category=debt", "/sources", "/about"];
+const paths = ["/", "/budget/debt?amount=1959", "/budget-process", "/participation?category=debt", "/sources", "/about", "/fiscal-context"];
 const results = [];
 
 for (const viewport of viewports) {

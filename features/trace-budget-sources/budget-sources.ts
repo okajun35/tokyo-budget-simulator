@@ -16,8 +16,8 @@ export const BUDGET_SOURCES = [
     sourceType: "local_government",
     license: LICENSE_UNCONFIRMED,
     targetPage: "令和8年度予算概要",
-    targetTableOrItem: "一般会計の規模および目的別歳出",
-    appUsage: ["シミュレーターの基準額", "予算成立過程の成立予算"],
+    targetTableOrItem: "一般会計の規模、目的別歳出、都税、基金および都債",
+    appUsage: ["シミュレーターの基準額", "予算成立過程の成立予算", "財政条件の詳細"],
   },
   {
     id: "csv",

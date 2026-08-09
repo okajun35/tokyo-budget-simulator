@@ -192,6 +192,46 @@ test("explains the status and limits of the prototype on an independent page", a
   assert.match(html, /href="\/sources"/);
 });
 
+test("explains the fiscal conditions and their relationship to the simulator on an independent page", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `fiscal-context-page-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/fiscal-context", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = (await response.text()).replaceAll("<!-- -->", "");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /data-fiscal-context-page="fy2026"/);
+  assert.match(html, /歳入・財源.*?年間総予算.*?9分野の歳出配分/s);
+  assert.match(html, /変えられないという意味ではありません/);
+  assert.equal(html.match(/data-fiscal-context-detail=/g)?.length, 3);
+  for (const phrase of [
+    "基金",
+    "都債",
+    "都税",
+    "どんな仕組みか",
+    "増減すると何が起こるか",
+    "このシミュレーターで操作しない理由",
+    "令和8年度の数値",
+    "東京都の公式資料を確認する（外部リンク）",
+  ]) {
+    assert.match(html, new RegExp(phrase));
+  }
+});
+
 test("renders participation routes for the selected budget category without collecting data", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `participation-page-${process.pid}-${Date.now()}`);
@@ -319,6 +359,38 @@ test("shows the fiscal year, general account, and main revenue at the top", asyn
   assert.match(overview, /9兆6,530億円/);
   assert.match(overview, /主要財源・都税/);
   assert.match(overview, /7兆3,856億円/);
+});
+
+test("explains each fiscal condition on the top page and links to its detail", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `fiscal-cards-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = (await response.text()).replaceAll("<!-- -->", "");
+  const fiscalFacts = html.match(/<section class="fiscalFacts">.*?<\/section>/s)?.[0];
+
+  assert.ok(fiscalFacts);
+  assert.match(fiscalFacts, /実際には変化しますが/);
+  assert.match(fiscalFacts, /9分野の歳出とは性質が異な/);
+  assert.equal(fiscalFacts.match(/data-fiscal-context-card=/g)?.length, 3);
+  for (const [id, name] of [["fund", "基金"], ["bond", "都債"], ["tax", "都税"]]) {
+    assert.match(fiscalFacts, new RegExp(`${name}.*?どんなもの.*?この画面で動かさない理由`, "s"));
+    assert.match(fiscalFacts, new RegExp(`href="/fiscal-context#${id}"`));
+  }
 });
 
 test("places budget controls and category meaning in one workspace", async () => {

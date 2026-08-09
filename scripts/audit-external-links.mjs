@@ -19,6 +19,7 @@ const paths = [
   "/participation",
   "/sources",
   "/about",
+  "/fiscal-context",
   ...categoryIds.map(categoryId => `/budget/${categoryId}`),
   ...categoryIds.map(categoryId => `/participation?category=${categoryId}`),
 ];

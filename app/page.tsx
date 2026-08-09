@@ -23,6 +23,7 @@ import type { BudgetCategoryId } from "@/features/simulate-budget/budget-categor
 import { describeBudgetChange } from "@/features/simulate-budget/budget-change";
 import { createInitialBudgetSimulationState } from "@/features/simulate-budget/budget-simulation-state";
 import { BUDGET_SOURCES } from "@/features/trace-budget-sources/budget-sources";
+import { FISCAL_CONTEXTS } from "@/features/understand-fiscal-context/fiscal-contexts";
 
 const money = (v: number) => `${Math.round(v).toLocaleString("ja-JP")}億円`;
 const budgetBackgroundSources = {
@@ -206,8 +207,14 @@ export default function Home() {
       </section>
 
       <section className="fiscalFacts">
-        <div className="sectionHead"><div><p className="eyebrow">FISCAL CONTEXT</p><h2>動かせない前提も見る</h2></div></div>
-        <div className="factGrid"><article><span>基金残高</span><strong>1兆4,505億円</strong><p>R8年度末・当初予算。積立543億円、取崩8,381億円。</p></article><article><span>都債</span><strong>発行 2,226億円</strong><p>R8年度末残高は4兆2,372億円。</p></article><article><span>都税</span><strong>7兆3,856億円</strong><p>法人二税2兆7,126億円、固定資産税・都市計画税1兆8,541億円。</p></article></div>
+        <div className="sectionHead"><div><p className="eyebrow">FISCAL CONTEXT</p><h2>動かせない前提も見る</h2><p className="fiscalFactsLead">都税・都債・基金は実際には変化しますが、9分野の歳出とは性質が異なります。このシミュレーターでは年間総予算を固定して配分を考えるため、操作対象にしていません。</p></div></div>
+        <div className="factGrid">{FISCAL_CONTEXTS.map(context => <article key={context.id} data-fiscal-context-card={context.id}>
+          <div className="factCardHeading"><span>{context.roleLabel}</span><h3>{context.name}</h3></div>
+          <strong>{context.amountLabel}</strong>
+          <p className="factAmountNote">{context.amountNote}</p>
+          <div className="factExplanation"><h4>どんなもの</h4><p>{context.summary}</p><h4>この画面で動かさない理由</h4><p>{context.simulatorReason}</p></div>
+          <a href={`/fiscal-context#${context.id}`}>{context.name}を詳しく見る →</a>
+        </article>)}</div>
         <p className="csvBadge">✓ 公式CSVを参照し、成立予算概要と照合。取得・正規化・検証手順をリポジトリに保持しています。</p>
       </section>
     <footer><div className="brand"><span className="brandMark">都</span><span>東京予算ラボ<small>非公式プロトタイプ</small></span></div><p>東京都の公式サービスではありません。シミュレーターの金額は1億円単位の仮想配分です。</p><nav className="footerLinks" aria-label="サイト情報"><a href="/about">このサイトについて</a><a href="https://odhackathon.metro.tokyo.lg.jp/issues/c10/clusters/" target="_blank" rel="noreferrer">都知事杯ODH テーマ（外部リンク）↗</a></nav></footer>
