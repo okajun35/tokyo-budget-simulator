@@ -59,6 +59,7 @@ for (const viewport of viewports) {
         path: location.pathname + location.search,
         clientWidth: document.documentElement.clientWidth,
         scrollWidth: document.documentElement.scrollWidth,
+        loadDurationMs: Math.round(performance.getEntriesByType('navigation')[0]?.duration ?? 0),
         headings: Array.from(document.querySelectorAll('h1,h2,h3,h4,h5,h6')).map(heading => ({ level: Number(heading.tagName[1]), text: heading.textContent.trim() })),
         mobileDetailDisplay: document.querySelector('[data-mobile-detail-link]') ? getComputedStyle(document.querySelector('[data-mobile-detail-link]')).display : null,
         contextPanelDisplay: document.querySelector('.contextPanel') ? getComputedStyle(document.querySelector('.contextPanel')).display : null,
@@ -146,8 +147,10 @@ for (const result of results) {
   const headingLevels = result.headings.map(heading => heading.level);
   const headingsValid = headingLevels.filter(level => level === 1).length === 1 &&
     headingLevels.every((level, index) => index === 0 || level <= headingLevels[index - 1] + 1);
-  if (overflow || !headingsValid) failed = true;
-  console.log(JSON.stringify({ ...result, overflow, headingsValid }));
+  const loadTimeValid = result.viewport !== "desktop" || result.path !== "/" || result.loadDurationMs < 3000;
+  if (overflow || !headingsValid || !loadTimeValid) failed = true;
+  const { headings, ...layoutResult } = result;
+  console.log(JSON.stringify({ ...layoutResult, headingCount: headings.length, overflow, headingsValid, loadTimeValid }));
 }
 
 const keyboardValid = keyboardAudit.select.educationPressed === "true" &&
