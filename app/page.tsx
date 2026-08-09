@@ -192,6 +192,7 @@ export default function Home() {
               <button onClick={() => setTab("participate")}>各制度のできること・できないことを見る →</button>
             </section>
             <div className="noForecast"><b>効果量は計算しません</b><p>予算増減と成果の因果関係が公式資料で示されない限り、「何人改善」「何％向上」といった推測はしません。</p><button onClick={() => setTab("sources")}>政策・事業評価の出典を見る →</button></div>
+            <a className="detailLink" href={`/budget/${active.id}?amount=${values[active.id]}`}>詳しく見る <span>選択分野とあなたの案を引き継ぐ →</span></a>
           </aside>
         </div>
       </section>

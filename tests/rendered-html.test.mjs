@@ -413,6 +413,52 @@ test("links the selected category to its lead bureaus and participation routes",
   assert.match(panel, /予算への反映は保証されません/);
 });
 
+test("carries the selected category and amount to its detail page", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `context-detail-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const env = {
+    ASSETS: {
+      fetch: async () => new Response("Not found", { status: 404 }),
+    },
+  };
+  const executionContext = {
+    waitUntil() {},
+    passThroughOnException() {},
+  };
+
+  const homeResponse = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    env,
+    executionContext,
+  );
+  const homeHtml = await homeResponse.text();
+  const panel = homeHtml.match(
+    /<aside class="contextPanel" id="category-context" aria-label="選択分野の変更の意味">.*?<\/aside>/,
+  )?.[0];
+
+  assert.ok(panel);
+  assert.match(
+    panel,
+    /<a class="detailLink" href="\/budget\/welfare\?amount=18730">詳しく見る/,
+  );
+
+  const detailResponse = await worker.fetch(
+    new Request("http://localhost/budget/welfare?amount=18730", {
+      headers: { accept: "text/html" },
+    }),
+    env,
+    executionContext,
+  );
+  const detailHtml = await detailResponse.text();
+
+  assert.equal(detailResponse.status, 200);
+  assert.match(detailHtml, /福祉と保健/);
+  assert.match(detailHtml, /あなたの案.*?18,730億円/);
+});
+
 test("keeps total, difference, and remaining funds together", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `balance-${process.pid}-${Date.now()}`);

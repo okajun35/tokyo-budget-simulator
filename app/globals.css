@@ -126,6 +126,19 @@ input[type="range"]::-webkit-slider-thumb { appearance:none; width:16px; height:
 .noForecast { margin-top:15px; padding:16px; background:#edf4ff; border-radius:7px; }
 .noForecast p { margin:6px 0 10px; color:#50615d; font-size:10px; line-height:1.7; }
 .noForecast button { padding:0; background:none; border:0; color:var(--teal); font-size:10px; font-weight:800; cursor:pointer; }
+.detailLink { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; padding:12px 14px; background:var(--teal); color:white; font-size:10px; font-weight:900; text-decoration:none; }
+.detailLink span { font-size:8px; font-weight:700; }
+.budgetDetailPage { min-height:100vh; padding:48px 5vw; background:#f3f6fb; }
+.budgetDetailHeader { max-width:900px; margin:0 auto 28px; }
+.budgetDetailHeader>a { color:var(--teal); font-size:11px; font-weight:800; text-decoration:none; }
+.budgetDetailHeader h1 { margin:20px 0 8px; font-family:"Yu Mincho","Hiragino Mincho ProN",serif; font-size:clamp(36px,5vw,64px); }
+.budgetDetailHeader p { color:var(--muted); font-size:12px; }
+.budgetDetailPreview { max-width:900px; margin:0 auto; padding:28px; background:white; border:1px solid var(--line); border-top:5px solid var(--teal); }
+.budgetDetailMetrics { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.budgetDetailMetrics article { padding:18px; background:#f3f6fa; }
+.budgetDetailMetrics span { display:block; color:var(--muted); font-size:10px; }
+.budgetDetailMetrics strong { display:block; margin-top:7px; font-size:24px; }
+.budgetDetailPreview>p { margin:20px 0 0; color:var(--muted); font-size:11px; line-height:1.8; }
 .fiscalFacts { background:#102b50; color:white; }
 .fiscalFacts .eyebrow { color:#9bc0f2; }.fiscalFacts .sectionHead h2 { color:white; }
 .factGrid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:#385778; border:1px solid #385778; }
