@@ -151,6 +151,47 @@ test("renders traceable budget and case sources on an independent page", async (
   assert.match(html, /外部リンク/);
 });
 
+test("explains the status and limits of the prototype on an independent page", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `about-page-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/about", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = (await response.text()).replaceAll("<!-- -->", "");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /data-about-page="prototype"/);
+  for (const phrase of [
+    "東京都の公式サービスではありません",
+    "学習・情報探索用の非公式プロトタイプ",
+    "実行可能な予算案とは限りません",
+    "特定の事業変更を一意に決められません",
+    "東京都の結果を予測するものではありません",
+    "確認できない成果数値は生成しません",
+    "端数処理により公式資料と合計差が生じる可能性",
+    "リンク先は更新・移動する可能性",
+    "データ取得日",
+    "2026-08-09",
+  ]) {
+    assert.match(html, new RegExp(phrase));
+  }
+  assert.equal(html.match(/data-about-notice=/g)?.length, 6);
+  assert.match(html, /href="\/sources"/);
+});
+
 test("renders participation routes for the selected budget category without collecting data", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `participation-page-${process.pid}-${Date.now()}`);
