@@ -92,7 +92,63 @@ test("offers all four primary navigation destinations", async () => {
     navigation,
     /<a(?=[^>]*href=["']\/participation\?category=welfare["'])[^>]*>声を届ける/,
   );
-  assert.match(navigation, />出典・データ</);
+  assert.match(
+    navigation,
+    /<a(?=[^>]*href=["']\/sources["'])[^>]*>出典・データ/,
+  );
+});
+
+test("renders traceable budget and case sources on an independent page", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `sources-page-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/sources", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = (await response.text()).replaceAll("<!-- -->", "");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /data-sources-page="fy2026"/);
+  assert.equal(html.match(/data-budget-source=/g)?.length, 13);
+  assert.equal(html.match(/data-budget-case-source=/g)?.length, 6);
+  for (const label of [
+    "資料日・年度",
+    "取得日",
+    "資料段階",
+    "出典種別",
+    "ライセンス",
+    "対象ページ・項目",
+    "アプリ内の使用箇所",
+  ]) {
+    assert.match(html, new RegExp(label));
+  }
+  for (const stage of [
+    "成立予算",
+    "予算案",
+    "各局要求",
+    "財務局査定",
+    "知事査定",
+    "政策・事業評価",
+    "外部要望",
+  ]) {
+    assert.match(html, new RegExp(stage));
+  }
+  assert.match(html, /事実.*?東京都等の一次資料/s);
+  assert.match(html, /事例.*?他地域の公的資料/s);
+  assert.match(html, /解釈.*?検討例/s);
+  assert.match(html, /外部リンク/);
 });
 
 test("renders participation routes for the selected budget category without collecting data", async () => {

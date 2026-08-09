@@ -2,9 +2,6 @@
 
 import { useMemo, useState } from "react";
 
-import {
-  BUDGET_DOCUMENT_STAGE_LABELS,
-} from "@/domain/tokyo-budget/budget-document-stage";
 import { PARTICIPATION_ROUTES } from "@/features/find-participation-route/participation-routes";
 import {
   BUDGET_PROCESS_SUMMARY_STEPS,
@@ -42,7 +39,6 @@ export default function Home() {
   const [selected, setSelected] = useState<BudgetCategoryId>(() =>
     createInitialBudgetSimulationState(BUDGET_CATEGORIES).selectedCategoryId,
   );
-  const [tab, setTab] = useState<"sim" | "sources">("sim");
   const [openStage, setOpenStage] = useState<BudgetProcessSummaryStep["id"] | null>(null);
   const allocationSummary = useMemo(
     () => calculateBudgetAllocationSummary(values, GENERAL_ACCOUNT_BASELINE_100M_YEN),
@@ -89,7 +85,6 @@ export default function Home() {
     setSelected(initialState.selectedCategoryId);
   };
   const showSimulatorSection = (sectionId: "simulator" | "budget-process") => {
-    setTab("sim");
     requestAnimationFrame(() =>
       document.getElementById(sectionId)?.scrollIntoView({ block: "start" }),
     );
@@ -99,20 +94,19 @@ export default function Home() {
     <header className="topbar">
       <a className="brand" href="#top" aria-label="東京予算ラボ トップ"><span className="brandMark">都</span><span>東京予算ラボ<small>令和8年度・一般会計</small></span></a>
       <nav aria-label="主要メニュー">
-        <button className={tab === "sim" ? "active" : ""} onClick={() => showSimulatorSection("simulator")}>予算シミュレーター</button>
+        <button className="active" onClick={() => showSimulatorSection("simulator")}>予算シミュレーター</button>
         <a href="/budget-process">予算が決まるまで</a>
         <a href={`/participation?category=${selected}`}>声を届ける</a>
-        <button className={tab === "sources" ? "active" : ""} onClick={() => setTab("sources")}>出典・データ</button>
+        <a href="/sources">出典・データ</a>
       </nav>
     </header>
 
-    {tab === "sim" && <>
       <section className="hero" id="top">
         <div>
           <p className="eyebrow">BUDGET SIMULATOR · FY2026</p>
           <h1>東京都の予算を動かし、<em>変更の意味を知る。</em></h1>
           <p className="lead">令和8年度の成立後当初予算を基準にした仮想シミュレーションです。数字を変えながら、要求・査定・議会を経て予算が決まる流れを学べます。</p>
-          <div className="heroActions"><a href="#simulator" className="primary">予算を動かしてみる <span>↓</span></a><button onClick={() => setTab("sources")} className="textButton">データの扱いを見る</button></div>
+          <div className="heroActions"><a href="#simulator" className="primary">予算を動かしてみる <span>↓</span></a><a href="/sources" className="textButton">データの扱いを見る</a></div>
         </div>
         <div className="overviewCards" aria-label="令和8年度予算の概要">
           <article><span className="overviewIcon" aria-hidden="true">暦</span><small>対象年度</small><strong>令和8年度</strong><em>2026年度</em></article>
@@ -197,7 +191,7 @@ export default function Home() {
               <p className="participationCaution">どの制度も、提出による予算への反映は保証されません。</p>
               <a className="participationDetailLink" href={`/participation?category=${active.id}`}>各制度のできること・できないことを見る →</a>
             </section>
-            <div className="noForecast" data-evidence-status="unknown" role="note"><span>公開情報だけでは判断できないこと</span><b>効果量と実行方法は計算しません</b><ul><li>あなたの配分で何人改善するか、何％向上するか</li><li>どの事業を変更すれば実行できるか</li><li>予算増減と成果の因果関係</li></ul><p>公式資料で確認できないため、推測値は表示しません。</p><button onClick={() => setTab("sources")}>政策・事業評価の出典を見る →</button></div>
+            <div className="noForecast" data-evidence-status="unknown" role="note"><span>公開情報だけでは判断できないこと</span><b>効果量と実行方法は計算しません</b><ul><li>あなたの配分で何人改善するか、何％向上するか</li><li>どの事業を変更すれば実行できるか</li><li>予算増減と成果の因果関係</li></ul><p>公式資料で確認できないため、推測値は表示しません。</p><a href="/sources">政策・事業評価の出典を見る →</a></div>
             <a className="detailLink" href={`/budget/${active.id}?amount=${values[active.id]}`}>詳しく見る <span>選択分野とあなたの案を引き継ぐ →</span></a>
           </aside>
         </div>
@@ -215,15 +209,6 @@ export default function Home() {
         <div className="factGrid"><article><span>基金残高</span><strong>1兆4,505億円</strong><p>R8年度末・当初予算。積立543億円、取崩8,381億円。</p></article><article><span>都債</span><strong>発行 2,226億円</strong><p>R8年度末残高は4兆2,372億円。</p></article><article><span>都税</span><strong>7兆3,856億円</strong><p>法人二税2兆7,126億円、固定資産税・都市計画税1兆8,541億円。</p></article></div>
         <p className="csvBadge">✓ 画面の基準値は8種類の公式CSVから機械取得。PDFからの手入力は背景説明に限定。</p>
       </section>
-    </>}
-
-    {tab === "sources" && <section className="subpage sourcesPage">
-      <p className="eyebrow">PROVENANCE</p><h1>数字の「いつ・どの段階」を<br/>消さない。</h1><p className="intro">成立予算、予算案、各局要求、財務局査定、知事査定、外部要望を別データとして保持しています。会派・団体の要望は東京都の確定政策として扱いません。</p>
-      <div className="priority"><h2>採用優先順位</h2><ol><li>成立後の予算概要・予算説明書</li><li>令和8年度CSV</li><li>予算案</li><li>知事査定</li><li>財務局査定</li><li>各局要求</li><li>会派・団体要望</li></ol></div>
-      <div className="sourceList">{BUDGET_SOURCES.map(s => <article key={s.id}><div><span className={`stageTag ${s.documentStage}`}>{BUDGET_DOCUMENT_STAGE_LABELS[s.documentStage]}</span><h3>{s.sourceTitle}</h3><a href={s.sourceUrl} target="_blank" rel="noreferrer">一次資料を開く ↗</a></div><dl><dt>source_date</dt><dd>{s.sourceDate}</dd><dt>fiscal_year</dt><dd>{s.fiscalYear}</dd><dt>document_stage</dt><dd>{s.documentStage}</dd><dt>retrieved_at</dt><dd>{s.retrievedAt}</dd><dt>fact_or_interpretation</dt><dd>{s.factOrInterpretation}</dd></dl></article>)}</div>
-      <div className="dataCoverage"><h2>使用したCSV</h2><p>一般会計 歳入歳出予算／一般歳出 目的別内訳／一般会計歳出予算 性質別内訳／一般会計 歳入内訳／都税内訳／基金の残高推移／基金の積立・取崩状況／都債発行額と都債残高の推移</p></div>
-    </section>}
-
     <footer><div className="brand"><span className="brandMark">都</span><span>東京予算ラボ<small>非公式プロトタイプ</small></span></div><p>東京都の公式サービスではありません。シミュレーターの金額は1億円単位の仮想配分です。</p><a href="https://odhackathon.metro.tokyo.lg.jp/issues/c10/clusters/" target="_blank" rel="noreferrer">都知事杯ODH テーマ ↗</a></footer>
   </main>;
 }
