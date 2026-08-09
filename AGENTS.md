@@ -86,7 +86,7 @@ When adding behavior, put it under the user purpose that would cause it to chang
 As of 2026-08-09:
 
 - Sections 2 through 17 of `docs/implementation-checklist.md` have been implemented and checked. Section 18 is the next formal MVP final-acceptance pass; its unchecked boxes are an acceptance review, not evidence that the preceding implementation is missing.
-- The most recent completed change is commit `546f3a8`, which added explanatory fiscal cards and `/fiscal-context`.
+- Fiscal-context implementation is recorded in commit `546f3a8`; later commits document the handoff and demo narrative. Inspect `git log` for the actual latest state instead of treating a hash in this file as the branch tip.
 - The last verification passed 90 tests, production build, ESLint, the two-minute demo audit, desktop/mobile layout and heading audits over seven primary pages, keyboard checks, and 39 unique external links with zero failures.
 - The worktree was clean after the last commit. Confirm this with `git status --short` at the start of the next session rather than assuming it remains clean.
 - The primary handoff documents are:
