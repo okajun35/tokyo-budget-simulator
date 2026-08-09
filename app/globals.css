@@ -112,6 +112,15 @@ input[type="range"]::-webkit-slider-thumb { appearance:none; width:16px; height:
 .timelineCard h3 { margin:10px 0; font-size:13px; }
 .timelineCard p { margin:10px 0 0; color:#5a6664; font-size:11px; line-height:1.7; }
 .timelineCard>a { display:inline-block; margin-top:8px; color:var(--teal); font-size:8px; font-weight:800; }
+.bureauMappingNote,.participationCaution { margin:8px 0; color:var(--muted); font-size:8px; line-height:1.6; }
+.leadBureauLinks { display:flex; flex-wrap:wrap; gap:5px; }
+.leadBureauLinks a { padding:5px 7px; border:1px solid #b8cdea; color:#31547f; font-size:8px; font-weight:800; text-decoration:none; }
+.participationLinks { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:8px; }
+.participationLinks a { padding:8px; background:#f3f6fa; text-decoration:none; }
+.participationLinks b,.participationLinks span { display:block; font-size:8px; }
+.participationLinks b { color:var(--teal); }
+.participationLinks span { margin-top:3px; color:var(--muted); line-height:1.5; }
+.participationContext>button { padding:0; border:0; background:none; color:var(--teal); cursor:pointer; font-size:8px; font-weight:800; }
 .stageTag { display:inline-block; padding:4px 7px; color:white; background:#777; font-size:9px; letter-spacing:.08em; font-weight:900; }
 .stageTag.request { background:#9a7935; }.stageTag.bureau,.stageTag.bureau_assessment { background:#436b9b; }.stageTag.governor,.stageTag.governor_assessment { background:#934f72; }.stageTag.enacted_budget { background:var(--teal); }.stageTag.proposal { background:#655a8e; }.stageTag.external_request { background:#8b6956; }.stageTag.evaluation { background:#4c7b52; }
 .noForecast { margin-top:15px; padding:16px; background:#edf4ff; border-radius:7px; }

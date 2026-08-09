@@ -9,6 +9,25 @@ const COMMON_PARTICIPATION_ROUTE_IDS = [
   "petition",
   "written-request",
 ] as const;
+const BUREAUS = {
+  welfare: { name: "福祉局", url: "https://www.fukushi.metro.tokyo.lg.jp/" },
+  health: { name: "保健医療局", url: "https://www.hokeniryo.metro.tokyo.lg.jp/" },
+  education: { name: "教育庁", url: "https://www.kyoiku.metro.tokyo.lg.jp/" },
+  culture: { name: "生活文化局", url: "https://www.seikatubunka.metro.tokyo.lg.jp/" },
+  sports: { name: "スポーツ推進本部", url: "https://www.sports-tokyo-info.metro.tokyo.lg.jp/" },
+  industry: { name: "産業労働局", url: "https://www.sangyo-rodo.metro.tokyo.lg.jp/" },
+  environment: { name: "環境局", url: "https://www.kankyo.metro.tokyo.lg.jp/" },
+  urbanDevelopment: { name: "都市整備局", url: "https://www.toshiseibi.metro.tokyo.lg.jp/" },
+  housing: { name: "住宅政策本部", url: "https://www.juutakuseisaku.metro.tokyo.lg.jp/" },
+  construction: { name: "建設局", url: "https://www.kensetsu.metro.tokyo.lg.jp/" },
+  police: { name: "警視庁", url: "https://www.keishicho.metro.tokyo.lg.jp/" },
+  fire: { name: "東京消防庁", url: "https://www.tfd.metro.tokyo.lg.jp/" },
+  policy: { name: "政策企画局", url: "https://www.seisakukikaku.metro.tokyo.lg.jp/" },
+  generalAffairs: { name: "総務局", url: "https://www.soumu.metro.tokyo.lg.jp/" },
+  digital: { name: "デジタルサービス局", url: "https://www.digitalservice.metro.tokyo.lg.jp/" },
+  finance: { name: "財務局", url: "https://www.zaimu.metro.tokyo.lg.jp/" },
+  tax: { name: "主税局", url: "https://www.tax.metro.tokyo.lg.jp/" },
+} as const;
 
 export const BUDGET_CATEGORIES = [
   {
@@ -48,6 +67,7 @@ export const BUDGET_CATEGORIES = [
       "case-hanno-welfare-review-2026",
       "case-england-adult-social-care",
     ],
+    leadBureaus: [BUREAUS.welfare, BUREAUS.health],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
     request: {
       bureau: "福祉局＋保健医療局",
@@ -98,6 +118,7 @@ export const BUDGET_CATEGORIES = [
       "case-hanno-library-2026",
       "case-england-school-financial-pressure",
     ],
+    leadBureaus: [BUREAUS.education, BUREAUS.culture, BUREAUS.sports],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
     request: {
       bureau: "教育庁（代表）",
@@ -144,6 +165,7 @@ export const BUDGET_CATEGORIES = [
     ],
     sourceIds: COMMON_SOURCE_IDS,
     caseIds: [],
+    leadBureaus: [BUREAUS.industry],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
     bureauAssessment:
       "例：金融支援は3,415.76億円→3,394.00億円、創業支援は150.08億円→145.73億円。",
@@ -182,6 +204,7 @@ export const BUDGET_CATEGORIES = [
     ],
     sourceIds: COMMON_SOURCE_IDS,
     caseIds: [],
+    leadBureaus: [BUREAUS.environment],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
     request: {
       bureau: "環境局（代表）",
@@ -228,6 +251,7 @@ export const BUDGET_CATEGORIES = [
     ],
     sourceIds: COMMON_SOURCE_IDS,
     caseIds: [],
+    leadBureaus: [BUREAUS.urbanDevelopment, BUREAUS.housing, BUREAUS.construction],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
     bureauAssessment:
       "例：道路整備は267.31億円→265.33億円、公園整備は367.02億円→344.33億円。",
@@ -261,6 +285,7 @@ export const BUDGET_CATEGORIES = [
     ],
     sourceIds: COMMON_SOURCE_IDS,
     caseIds: [],
+    leadBureaus: [BUREAUS.police, BUREAUS.fire],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
   },
   {
@@ -291,6 +316,7 @@ export const BUDGET_CATEGORIES = [
     ],
     sourceIds: COMMON_SOURCE_IDS,
     caseIds: [],
+    leadBureaus: [BUREAUS.policy, BUREAUS.generalAffairs, BUREAUS.digital],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
   },
   {
@@ -324,6 +350,7 @@ export const BUDGET_CATEGORIES = [
       "case-yubari-financial-reconstruction",
       "case-puerto-rico-debt-restructuring",
     ],
+    leadBureaus: [BUREAUS.finance],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
   },
   {
@@ -358,6 +385,7 @@ export const BUDGET_CATEGORIES = [
     ],
     sourceIds: COMMON_SOURCE_IDS,
     caseIds: [],
+    leadBureaus: [BUREAUS.finance, BUREAUS.tax, BUREAUS.generalAffairs],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
   },
 ] as const satisfies readonly BudgetCategory[];

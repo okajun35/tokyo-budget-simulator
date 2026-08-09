@@ -378,6 +378,41 @@ test("separates each Tokyo budget stage behind the enacted amount", async () => 
   assert.match(panel, /本シミュレーターの初期値/);
 });
 
+test("links the selected category to its lead bureaus and participation routes", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `context-participation-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  const response = await worker.fetch(
+    new Request("http://localhost/", {
+      headers: { accept: "text/html" },
+    }),
+    {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    },
+    {
+      waitUntil() {},
+      passThroughOnException() {},
+    },
+  );
+  const html = await response.text();
+  const panel = html.match(
+    /<aside class="contextPanel" id="category-context" aria-label="選択分野の変更の意味">.*?<\/aside>/,
+  )?.[0];
+
+  assert.ok(panel);
+  assert.match(panel, /意見を伝える先/);
+  assert.match(panel, /href="https:\/\/www\.fukushi\.metro\.tokyo\.lg\.jp\/"[^>]*>福祉局/);
+  assert.match(panel, /href="https:\/\/www\.hokeniryo\.metro\.tokyo\.lg\.jp\/"[^>]*>保健医療局/);
+  assert.match(panel, /主な所管.*?一対一対応ではありません/);
+  assert.match(panel, />都民の声</);
+  assert.match(panel, />請願</);
+  assert.match(panel, />陳情</);
+  assert.match(panel, /予算への反映は保証されません/);
+});
+
 test("keeps total, difference, and remaining funds together", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `balance-${process.pid}-${Date.now()}`);

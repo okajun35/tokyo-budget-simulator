@@ -52,5 +52,11 @@ test("provides the shared detail references required by every category", () => {
     assert.ok(category.sourceIds.length > 0);
     assert.ok(Array.isArray(category.caseIds));
     assert.ok(category.participationRouteIds.length > 0);
+    assert.ok(category.leadBureaus.length > 0);
+    assert.ok(
+      category.leadBureaus.every(
+        (bureau) => bureau.name.length > 0 && /^https:\/\//.test(bureau.url),
+      ),
+    );
   }
 });

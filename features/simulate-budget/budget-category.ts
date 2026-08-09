@@ -15,6 +15,11 @@ export type BudgetChangeOption = {
   description: string;
 };
 
+export type BudgetBureauLink = {
+  name: string;
+  url: string;
+};
+
 export type BudgetCategory = {
   id: BudgetCategoryId;
   name: string;
@@ -28,6 +33,7 @@ export type BudgetCategory = {
   sourceIds: readonly string[];
   caseIds: readonly string[];
   participationRouteIds: readonly string[];
+  leadBureaus: readonly BudgetBureauLink[];
   request?: BudgetRequestContext;
   bureauAssessment?: string;
   governorAssessment?: string;

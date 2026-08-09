@@ -69,6 +69,9 @@ export default function Home() {
       budgetCase: activeCases.find(budgetCase => budgetCase.country !== "日本"),
     },
   ] as const;
+  const activeParticipationRoutes = PARTICIPATION_ROUTES.filter(route =>
+    (active.participationRouteIds as readonly string[]).includes(route.id),
+  );
 
   const setValue = (id: BudgetCategoryId, value: number) => {
     setValues(v => ({ ...v, [id]: value }));
@@ -179,6 +182,14 @@ export default function Home() {
                 <article className="timelineCard" data-budget-background-stage="proposal"><span className="stageTag proposal">予算案</span><p>知事査定などを反映して都議会へ提出した段階で、まだ成立予算ではありません。このパネルでは成立額と混ぜて表示しません。</p><a href={budgetBackgroundSources.proposal.sourceUrl} target="_blank" rel="noreferrer">予算案資料 ↗</a></article>
                 <article className="timelineCard" data-budget-background-stage="enacted_budget"><span className="stageTag enacted_budget">成立予算</span><h3>{money(active.baselineAmount100mYen)}</h3><p>都議会の議決後に成立した当初予算です。本シミュレーターの初期値として使用しています。</p><a href={budgetBackgroundSources.enactedBudget.sourceUrl} target="_blank" rel="noreferrer">成立後の予算概要 ↗</a></article>
               </div>
+            </section>
+            <section className="contextSection participationContext">
+              <div className="contextSectionHead"><h3>意見を伝える先</h3><span>公式案内へ移動</span></div>
+              <p className="bureauMappingNote">目的別予算に関係する主な所管です。組織別予算との一対一対応ではありません。</p>
+              <div className="leadBureauLinks">{active.leadBureaus.map(bureau => <a key={bureau.name} href={bureau.url} target="_blank" rel="noreferrer">{bureau.name} ↗</a>)}</div>
+              <div className="participationLinks">{activeParticipationRoutes.map(route => <a key={route.id} href={route.officialGuideUrl} target="_blank" rel="noreferrer"><b>{route.title}</b><span>{route.canDo}</span></a>)}</div>
+              <p className="participationCaution">どの制度も、提出による予算への反映は保証されません。</p>
+              <button onClick={() => setTab("participate")}>各制度のできること・できないことを見る →</button>
             </section>
             <div className="noForecast"><b>効果量は計算しません</b><p>予算増減と成果の因果関係が公式資料で示されない限り、「何人改善」「何％向上」といった推測はしません。</p><button onClick={() => setTab("sources")}>政策・事業評価の出典を見る →</button></div>
           </aside>
