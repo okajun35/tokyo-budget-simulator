@@ -29,6 +29,21 @@ const fetchTopPageHtml = async label => {
 
 const processSection = html => html.match(/<section class="process"[^>]*>.*?<\/section>/)?.[0];
 
+test("says each stage in plain words before the formal summary", async () => {
+  const section = processSection(await fetchTopPageHtml("process-plain-words"));
+
+  assert.ok(section, "予算成立過程のセクションが見つからない");
+
+  for (const step of BUDGET_PROCESS_SUMMARY_STEPS) {
+    assert.ok(step.plainMeaning.length > 0, `${step.label} の言い換えがない`);
+    assert.ok(
+      step.plainMeaning.length <= 30,
+      `${step.label} の言い換えが${step.plainMeaning.length}字で長い`,
+    );
+    assert.ok(section.includes(step.plainMeaning), `${step.label} の言い換えが表示されていない`);
+  }
+});
+
 test("shows every budget process stage without waiting for a click", async () => {
   const section = processSection(await fetchTopPageHtml("process-diagram"));
 

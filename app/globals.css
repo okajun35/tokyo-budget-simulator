@@ -35,6 +35,9 @@ a { color:inherit; }
 .processFlow>li+li:before { content:"→"; position:absolute; top:50%; left:-20px; transform:translateY(-50%); color:#7193bc; font-size:17px; font-style:normal; }
 .processFlow span { display:grid; place-items:center; width:26px; height:26px; flex:none; border-radius:50%; color:#31547f; background:#e9f0fb; font-size:12px; font-weight:900; }
 .processFlow b { margin-top:11px; font-size:14px; line-height:1.4; }
+.processFlow em { margin-top:7px; color:#23405d; font-size:13px; font-style:normal; font-weight:700; line-height:1.6; word-break:auto-phrase; }
+.processFlow em:before { content:"「"; }
+.processFlow em:after { content:"」"; }
 .processFlow small { margin-top:8px; color:var(--muted); font-size:12px; line-height:1.7; }
 .processDetailLink { display:inline-flex; align-items:center; min-height:44px; margin-top:18px; color:var(--teal); font-size:15px; font-weight:900; text-decoration:none; }
 .simulator,.fiscalFacts,.subpage { padding:52px 5vw; }

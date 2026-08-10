@@ -28,5 +28,7 @@ export type BudgetProcessOverviewStep = BudgetProcessStep & {
 export type BudgetProcessSummaryStep = {
   id: string;
   label: string;
+  /** 行政用語のままでは意味が取りにくいため、この段階で誰が何をするのかを短く言い換える。 */
+  plainMeaning: string;
   summary: string;
 };

@@ -135,6 +135,7 @@ export default function Home() {
         <ol className="processFlow">{BUDGET_PROCESS_SUMMARY_STEPS.map((step, i) => <li key={step.id} data-budget-process-summary-stage={step.id}>
           <span aria-hidden="true">{i + 1}</span>
           <b>{step.label}</b>
+          <em>{step.plainMeaning}</em>
           <small>{step.summary}</small>
         </li>)}</ol>
         <a className="processDetailLink" href="/budget-process">全過程と令和8年度の公式資料を見る →</a>
