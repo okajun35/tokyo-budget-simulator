@@ -27,6 +27,8 @@ export type BudgetCategory = {
   baselineAmount100mYen: number;
   color: string;
   shortDescription: string;
+  /** 政策判断だけでは増減できない性質を持つ分野にだけ添える。 */
+  adjustmentNote?: string;
   definition: string;
   detailedExplanation?: string;
   mainUses: readonly string[];

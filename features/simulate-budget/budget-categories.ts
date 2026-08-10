@@ -345,6 +345,8 @@ export const BUDGET_CATEGORIES = [
     baselineAmount100mYen: 2_799,
     color: "#b17860",
     shortDescription: "都債の返済などに使うお金",
+    adjustmentNote:
+      "過去に発行した都債の返済義務です。今年度やめればゼロになる費用ではありません。",
     definition:
       "過去に発行した都債の元金返済と利子支払いなど、借入れに伴う義務を履行するための経費です。",
     mainUses: ["都債の元金償還", "都債の利子支払い"],
@@ -384,6 +386,8 @@ export const BUDGET_CATEGORIES = [
     baselineAmount100mYen: 21_053,
     color: "#98963f",
     shortDescription: "区市町村などへ配分するお金",
+    adjustmentNote:
+      "税収や制度上の算定に連動する経費です。政策判断だけで自由に増減できる性質ではありません。",
     definition:
       "税収等に連動して区市町村などへ配分する交付金や、制度上必要となる経費です。",
     detailedExplanation:
