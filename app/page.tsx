@@ -135,7 +135,8 @@ export default function Home() {
                 <div className="budgetMetric"><small>成立予算</small><b>{money(item.baselineAmount100mYen)}</b></div>
                 <div className="sliderCell"><input aria-label={`${item.name}の予算`} aria-describedby="allocation-guidance" type="range" min={range.minimumAmount100mYen} max={range.maximumAmount100mYen} value={values[item.id]} onChange={e => setValue(item.id, Number(e.target.value))} style={{"--accent": item.color} as React.CSSProperties}/></div>
                 <div className="budgetMetric"><small>あなたの案</small><b>{money(values[item.id])}</b></div>
-                <div className={`changeMetric ${direction}`}><small>変更</small><b>{change.amountLabel}</b><em>{change.rateLabel}</em>{selected === item.id && <a className="selectedDetailLink" href="#category-context" onClick={event => event.stopPropagation()}>この変更の意味を見る</a>}</div>
+                <div className={`changeMetric ${direction}`}><small>変更</small><b>{change.amountLabel}</b><em>{change.rateLabel}</em></div>
+                {selected === item.id && <a className="selectedDetailLink" href="#category-context">この変更の意味を見る</a>}
                 <a data-mobile-detail-link={item.id} href={`/budget/${item.id}?amount=${values[item.id]}`} className="mobileDetailLink" onClick={event => event.stopPropagation()}>詳しく見る <span>→</span></a>
               </article>
             })}
