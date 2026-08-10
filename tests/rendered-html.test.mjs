@@ -122,7 +122,7 @@ test("renders traceable budget and case sources on an independent page", async (
   assert.equal(response.status, 200);
   assert.match(html, /data-sources-page="fy2026"/);
   assert.equal(html.match(/data-budget-source=/g)?.length, 13);
-  assert.equal(html.match(/data-budget-case-source=/g)?.length, 7);
+  assert.equal(html.match(/data-budget-case-source=/g)?.length, 13);
   for (const label of [
     "資料日・年度",
     "取得日",

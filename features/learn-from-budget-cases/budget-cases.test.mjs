@@ -21,7 +21,7 @@ test("provides one domestic and one international case for each detailed categor
 test("keeps every case traceable and explicit about evidential limits", () => {
   const ids = BUDGET_CASES.map((budgetCase) => budgetCase.id);
 
-  assert.equal(BUDGET_CASES.length, 7);
+  assert.equal(BUDGET_CASES.length, 13);
   assert.equal(new Set(ids).size, ids.length);
 
   for (const budgetCase of BUDGET_CASES) {

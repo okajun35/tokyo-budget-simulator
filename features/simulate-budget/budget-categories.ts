@@ -176,7 +176,7 @@ export const BUDGET_CATEGORIES = [
       },
     ],
     sourceIds: COMMON_SOURCE_IDS,
-    caseIds: [],
+    caseIds: ["case-hanno-tourism-facilities", "case-england-colleges"],
     leadBureaus: [BUREAUS.industry],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
     bureauAssessment:
@@ -217,7 +217,7 @@ export const BUDGET_CATEGORIES = [
       },
     ],
     sourceIds: COMMON_SOURCE_IDS,
-    caseIds: [],
+    caseIds: ["case-hanno-mountain-water-subsidy"],
     leadBureaus: [BUREAUS.environment],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
     request: {
@@ -266,7 +266,7 @@ export const BUDGET_CATEGORIES = [
       },
     ],
     sourceIds: COMMON_SOURCE_IDS,
-    caseIds: [],
+    caseIds: ["case-yubari-consolidated-facility", "case-england-local-roads"],
     leadBureaus: [BUREAUS.urbanDevelopment, BUREAUS.housing, BUREAUS.construction],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
     bureauAssessment:
@@ -335,7 +335,7 @@ export const BUDGET_CATEGORIES = [
       },
     ],
     sourceIds: COMMON_SOURCE_IDS,
-    caseIds: [],
+    caseIds: ["case-england-hmrc-customer-service"],
     leadBureaus: [BUREAUS.policy, BUREAUS.generalAffairs, BUREAUS.digital],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
   },
