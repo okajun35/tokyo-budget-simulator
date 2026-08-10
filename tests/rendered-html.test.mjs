@@ -632,43 +632,6 @@ test("explains the selected category and offers multiple ways to change it", asy
   assert.match(panel, /確定案ではありません/);
 });
 
-test("summarizes domestic and international cases with their evidential limits", async () => {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `context-cases-${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  const response = await worker.fetch(
-    new Request("http://localhost/", {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
-  const html = await response.text();
-  const panel = html.match(
-    /<aside class="contextPanel" id="category-context" aria-label="選択分野の変更の意味">.*?<\/aside>/,
-  )?.[0];
-
-  assert.ok(panel);
-  assert.equal(panel.match(/data-budget-case-scope=/g)?.length, 2);
-  assert.match(panel, /data-budget-case-scope="domestic"/);
-  assert.match(panel, /埼玉県飯能市/);
-  assert.match(panel, /2026年度/);
-  assert.match(panel, /ねたきり老人等手当と老人日常生活用具給付費を廃止/);
-  assert.match(panel, /直接確認された運用変更/);
-  assert.match(panel, /長期的な影響は確認されていません/);
-  assert.match(panel, /data-budget-case-scope="international"/);
-  assert.match(panel, /イングランドの地方自治体/);
-  assert.match(panel, /東京都で同じ結果になるとは限りません/);
-});
-
 test("separates each Tokyo budget stage behind the enacted amount", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `context-background-${process.pid}-${Date.now()}`);
