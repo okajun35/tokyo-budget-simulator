@@ -37,6 +37,23 @@ const topPageHtml = async label => {
   return (await response.text()).replaceAll("<!-- -->", "");
 };
 
+test("answers why the total cannot grow, where the question arises", async () => {
+  const html = await topPageHtml("why-fixed-total");
+  const balance = html.match(/<div class="budgetBalance"[^>]*>[\s\S]*?<\/button><\/div><\/div>/)?.[0]
+    ?? html.match(/<div class="budgetBalance"[^>]*>[\s\S]*?<\/div><\/div>/)?.[0];
+
+  assert.ok(balance, "年間総予算のセクションが見つからない");
+  assert.match(
+    balance,
+    /<a(?=[^>]*href="\/fiscal-context")[^>]*>なぜ増やせない？/,
+    "配分可能額のそばに理由への導線がない",
+  );
+  assert.match(balance, /年間総予算/);
+  assert.match(balance, /分野へ配分済み/);
+  assert.match(balance, /配分可能額/);
+  assert.match(balance, /初期値に戻す/);
+});
+
 test("keeps the reset control with the amounts it resets", async () => {
   const html = await topPageHtml("reset-in-balance");
   const balance = html.match(/<div class="budgetBalance"[^>]*>[\s\S]*?<\/button><\/div>/)?.[0];

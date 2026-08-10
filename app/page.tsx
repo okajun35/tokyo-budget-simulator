@@ -83,7 +83,10 @@ export default function Home() {
           </div>
           <div className="balanceTrack" aria-hidden="true"><i style={{width: `${allocationSummary.allocatedAmount100mYen / allocationSummary.annualBudgetAmount100mYen * 100}%`}} /></div>
           <p id="allocation-guidance">{allocationSummary.status === "fully-allocated" ? "全額を配分済みです。増やすには先に別の分野を減らしてください" : `${money(allocationSummary.availableAmount100mYen)}を別の分野へ配分できます`}</p>
-          <button className="reset" onClick={reset}>↺ 初期値に戻す</button>
+          <div className="balanceActions">
+            <a className="fixedTotalReason" href="/fiscal-context">なぜ増やせない？ →</a>
+            <button className="reset" onClick={reset}>↺ 初期値に戻す</button>
+          </div>
         </div>
 
         <div className="simulatorWorkspace">
