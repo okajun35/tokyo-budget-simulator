@@ -43,6 +43,21 @@ const viewports = [
 const paths = ["/", "/budget/debt?amount=1959", "/budget-process", "/participation?category=debt", "/sources", "/about", "/fiscal-context"];
 const results = [];
 
+// 開発サーバは初回の変換に時間がかかる。固定の待ち時間では読み込み前の
+// 空のDOMを測ってしまうため、描画が終わるまで待ってから測定する。
+const waitForRenderedPage = async () => {
+  for (let attempt = 0; attempt < 60; attempt++) {
+    const response = await command("Runtime.evaluate", {
+      expression: `document.readyState === "complete" && document.querySelectorAll("h1,h2,h3,h4,h5,h6").length > 0`,
+      returnByValue: true,
+    });
+    if (response.result.value === true) return true;
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  return false;
+};
+
+
 for (const viewport of viewports) {
   await command("Emulation.setDeviceMetricsOverride", {
     width: viewport.width,
@@ -53,7 +68,7 @@ for (const viewport of viewports) {
 
   for (const path of paths) {
     await command("Page.navigate", { url: `${siteUrl}${path}` });
-    await new Promise(resolve => setTimeout(resolve, 250));
+    await waitForRenderedPage();
     const response = await command("Runtime.evaluate", {
       expression: `JSON.stringify({
         path: location.pathname + location.search,
@@ -79,6 +94,7 @@ await command("Emulation.setDeviceMetricsOverride", {
   mobile: false,
 });
 await command("Page.navigate", { url: `${siteUrl}/` });
+await waitForRenderedPage();
 
 // 開発サーバではハイドレーションが終わる前に押しても何も起きない。
 // 固定の待ち時間ではなく、選択が反映されるまで押し直して判定する。
