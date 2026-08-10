@@ -19,6 +19,7 @@
     "audit:layout": "node scripts/audit-layout.mjs",
     "audit:links": "node scripts/audit-external-links.mjs",
     "audit:demo": "node scripts/audit-demo.mjs",
+    "audit:panel": "node scripts/audit-context-panel.mjs",
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"
   },
   "dependencies": {

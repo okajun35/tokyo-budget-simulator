@@ -111,9 +111,12 @@ export default function Home() {
             })}
           </section>
 
-          <aside className="contextPanel" id="category-context" aria-label="選択分野の変更の意味" tabIndex={0}>
+          <aside className="contextPanel" id="category-context" aria-label="選択分野の変更の意味">
+            <div className="contextPanelHead">
             <p className="panelKicker">いま見ている分野</p><h2>{active.name}</h2>
             <div className="amountCompare"><span>成立予算<b>{money(active.baselineAmount100mYen)}</b></span><span>あなたの案<b>{money(values[active.id])}</b></span><span>変更額<b>{activeChange.amountLabel}</b></span><span>変更率<b>{activeChange.rateLabel}</b></span></div>
+            </div>
+            <div className="contextPanelBody" tabIndex={0} aria-label="選択分野の説明">
             <section className="contextSection categoryMeaning">
               <h3>そもそも何のお金？</h3>
               <p>{active.definition}</p>
@@ -124,11 +127,14 @@ export default function Home() {
               <p className="contextCaution">実際の変更方法を示す検討例であり、実行可能な確定案ではありません。</p>
               <ol className="changeOptionList">{active.changeOptions.map((option, index) => <li key={option.id} data-change-option={option.id}><span>{index + 1}</span><div><b>{option.title}</b><p>{option.description}</p></div></li>)}</ol>
             </section>
+            </div>
+            <div className="contextPanelFoot">
             <p className="participationContext">
               <a className="participationDetailLink" href={`/participation?category=${active.id}`}>この分野の参加制度と所管局を見る →</a>
               <small>どの制度も、提出による予算への反映は保証されません。</small>
             </p>
             <a className="detailLink" href={`/budget/${active.id}?amount=${values[active.id]}`}>詳しく見る <span>選択分野とあなたの案を引き継ぐ →</span></a>
+            </div>
           </aside>
         </div>
       </section>

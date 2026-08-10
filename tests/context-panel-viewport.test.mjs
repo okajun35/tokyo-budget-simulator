@@ -14,29 +14,9 @@ const ruleFor = (selector, { inside } = {}) => {
   return rule;
 };
 
-test("keeps the sticky context panel inside the viewport", () => {
-  const panel = ruleFor(".contextPanel");
-
-  assert.match(panel, /position:sticky/);
-  assert.match(panel, /max-height:calc\(100vh - \d+px\)/);
-  assert.match(panel, /overflow-y:auto/);
-});
-
-test("stops the panel scroll from taking over the page scroll", () => {
-  assert.match(ruleFor(".contextPanel"), /overscroll-behavior:contain/);
-});
-
-test("lets the panel flow with the page once the columns stack", () => {
-  const panel = ruleFor(".contextPanel", { inside: 950 });
-
-  assert.match(panel, /position:relative/);
-  assert.match(panel, /max-height:none/);
-  assert.match(panel, /overflow:visible/);
-});
-
-test("lets a keyboard user scroll the panel", async () => {
+const topPageHtml = async label => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `panel-keyboard-${process.pid}-${Date.now()}`);
+  workerUrl.searchParams.set("test", `${label}-${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   const response = await worker.fetch(
@@ -53,10 +33,57 @@ test("lets a keyboard user scroll the panel", async () => {
       passThroughOnException() {},
     },
   );
-  const html = await response.text();
-  const openingTag = html.match(/<aside class="contextPanel"[^>]*>/)?.[0];
 
-  assert.ok(openingTag, "選択分野のパネルが見つからない");
+  assert.equal(response.status, 200);
+  return (await response.text()).replaceAll("<!-- -->", "");
+};
+
+test("keeps the sticky context panel inside the viewport", () => {
+  const panel = ruleFor(".contextPanel");
+
+  assert.match(panel, /position:sticky/);
+  assert.match(panel, /max-height:calc\(100vh - \d+px\)/);
+});
+
+test("scrolls the explanation without moving the panel frame", () => {
+  const panel = ruleFor(".contextPanel");
+  const body = ruleFor(".contextPanelBody");
+
+  assert.doesNotMatch(panel, /overflow/);
+  assert.match(panel, /display:flex/);
+  assert.match(panel, /flex-direction:column/);
+  assert.match(body, /overflow-y:auto/);
+  assert.match(body, /overscroll-behavior:contain/);
+  assert.match(body, /min-height:0/);
+});
+
+test("lets the panel flow with the page once the columns stack", () => {
+  const panel = ruleFor(".contextPanel", { inside: 950 });
+  const body = ruleFor(".contextPanelBody", { inside: 950 });
+
+  assert.match(panel, /position:relative/);
+  assert.match(panel, /max-height:none/);
+  assert.match(body, /overflow:visible/);
+});
+
+test("keeps the detail route reachable without scrolling the panel", async () => {
+  const html = await topPageHtml("panel-foot-route");
+  const foot = html.match(/<div class="contextPanelFoot">.*?<\/div><\/aside>/)?.[0];
+
+  assert.ok(foot, "パネル下部の固定領域が見つからない");
+  assert.match(foot, /class="detailLink"/);
+  assert.match(foot, /class="participationDetailLink"/);
+  assert.ok(
+    html.indexOf('class="contextPanelBody"') < html.indexOf('class="contextPanelFoot"'),
+    "固定領域がスクロール領域の内側にある",
+  );
+});
+
+test("lets a keyboard user scroll the explanation", async () => {
+  const html = await topPageHtml("panel-keyboard");
+  const openingTag = html.match(/<div class="contextPanelBody"[^>]*>/)?.[0];
+
+  assert.ok(openingTag, "スクロール領域が見つからない");
   assert.match(openingTag, /tabindex="0"/);
-  assert.match(openingTag, /aria-label="選択分野の変更の意味"/);
+  assert.match(openingTag, /aria-label="選択分野の説明"/);
 });
