@@ -61,14 +61,21 @@ test("keeps the change options on the category detail page", async () => {
   assert.match(detail, /給付対象や単価を見直す/);
 });
 
+test("offers one route per destination from the panel", async () => {
+  const panel = await topPanel("panel-one-route-each");
+  const routes = [...panel.matchAll(/href="([^"]+)"/g)].map(match => match[1]);
+
+  assert.deepEqual(routes, [
+    "/budget/welfare?amount=18730",
+    "/participation?category=welfare",
+  ]);
+});
+
 test("still states on the top page that a change has more than one method", async () => {
   const panel = await topPanel("panel-change-caution");
 
   assert.match(panel, /一つに決まりません/);
-  assert.match(
-    panel,
-    /<a[^>]*href="\/budget\/welfare\?amount=18730#options-heading"[^>]*>変更方法と論点を見る/,
-  );
+  assert.match(panel, /変更方法と論点/);
 });
 
 test("keeps the field meaning and both routes visible without scrolling the panel", async () => {

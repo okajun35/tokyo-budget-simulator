@@ -59,7 +59,7 @@ export default function Home() {
         <div>
           <p className="eyebrow">BUDGET SIMULATOR · FY2026</p>
           <h1>東京都の予算を動かし、<em>変更の意味を知る。</em></h1>
-          <p className="lead">令和8年度の成立後当初予算を基準にした仮想シミュレーションです。数字を変えながら、要求・査定・議会を経て予算が決まる流れを学べます。</p>
+          <p className="lead"><span>令和8年度の成立後当初予算を基準にした仮想シミュレーションです。</span><span>数字を変えながら、要求・査定・議会を経て予算が決まる流れを学べます。</span></p>
           <div className="heroActions"><a href="#simulator" className="primary">予算を動かしてみる <span>↓</span></a><a href="/sources" className="textButton">データの扱いを見る</a></div>
         </div>
         <div className="overviewCards" aria-label="令和8年度予算の概要">
@@ -120,11 +120,8 @@ export default function Home() {
               <p>{active.definition}</p>
               <ul className="mainUseTags">{active.mainUses.map(use => <li key={use}>{use}</li>)}</ul>
             </section>
-            <section className="contextSection">
-              <p className="contextCaution">実際の変え方は一つに決まりません。</p>
-              <a className="changeOptionsLink" href={`/budget/${active.id}?amount=${values[active.id]}#options-heading`}>変更方法と論点を見る（{active.changeOptions.length}つの検討例）→</a>
-            </section>
-            <a className="detailLink" href={`/budget/${active.id}?amount=${values[active.id]}`}>詳しく見る <span>選択分野とあなたの案を引き継ぐ →</span></a>
+            <p className="contextCaution">実際の変え方は一つに決まりません。</p>
+            <a className="detailLink" href={`/budget/${active.id}?amount=${values[active.id]}`}>詳しく見る <span>変更方法と論点、事例、出典まで →</span></a>
             <p className="participationContext">
               <a className="participationDetailLink" href={`/participation?category=${active.id}`}>この分野の参加制度と所管局を見る →</a>
               <small>提出による予算への反映は保証されません。</small>
