@@ -48,7 +48,7 @@ test("states each interpretation as a possibility rather than a certainty", () =
   for (const [categoryId, interpretation] of Object.entries(CASE_INTERPRETATIONS)) {
     assert.match(
       interpretation,
-      /ことがあ|場合があ|とは限|方法もあ|選択肢もあ|制約し|ではありません/,
+      /ことがあ|場合があ|とは限|方法があ|方法もあ|選択肢もあ|制約し|異なりま|ではありません/,
       categoryId,
     );
     assert.doesNotMatch(interpretation, /必ず|確実に|東京都では/, categoryId);

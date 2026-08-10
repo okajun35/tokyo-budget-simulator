@@ -5,7 +5,9 @@ import {
 } from "@/domain/tokyo-budget/budget-document-stage";
 import { PARTICIPATION_ROUTES } from "@/features/find-participation-route/participation-routes";
 import {
-  CAUSAL_STRENGTH_LABELS,
+  BUDGET_CASE_CHANGE_TYPE_DESCRIPTIONS,
+  BUDGET_CASE_CHANGE_TYPE_LABELS,
+  BUDGET_CASE_SOURCE_KIND_LABELS,
 } from "@/features/learn-from-budget-cases/budget-case";
 import { BUDGET_CASES } from "@/features/learn-from-budget-cases/budget-cases";
 import { CASE_INTERPRETATIONS } from "@/features/learn-from-budget-cases/case-interpretations";
@@ -153,18 +155,28 @@ export default async function BudgetDetailPage({
       <section className="budgetDetailSection" aria-labelledby="cases-heading">
         <p className="sectionLabel">PUBLIC CASES</p>
         <h2 id="cases-heading">金額を減らすと、現実には何が変わったのか</h2>
-        <p className="detailLead">国内外の事例から、財政対策として実際に支出を減らした自治体や国で、公的資料に記録された変更を示します。</p>
+        <p className="detailLead">国内外の事例から、財政対策として実際に支出を変えた自治体や国で、公的資料に記録された変更を示します。</p>
         {caseInterpretation && <p className="caseInterpretation">{caseInterpretation}</p>}
-        <p className="detailCaution">同じ割合を減らしても、東京都で同じ結果になるとは限りません。制度、財政状況、人口などの条件が異なります。</p>
+        <p className="detailCaution">同じ割合を変えても、東京都で同じ結果になるとは限りません。制度、財政状況、人口などの条件が異なります。</p>
+        <details className="caseTagLegend">
+          <summary>？ 事例の見方</summary>
+          <dl>{Object.entries(BUDGET_CASE_CHANGE_TYPE_LABELS).map(([changeType, label]) => <div key={changeType}>
+            <dt>{label}</dt>
+            <dd>{BUDGET_CASE_CHANGE_TYPE_DESCRIPTIONS[changeType as keyof typeof BUDGET_CASE_CHANGE_TYPE_DESCRIPTIONS]}</dd>
+          </div>)}</dl>
+          <p>1件の事例に複数付きます。「サービス縮小」と「負担移転」が並べば、支出が減った先に負担が移ったことを表します。</p>
+        </details>
         {categoryCases.length > 0 ? <div className="detailCaseGrid">{categoryCases.map(budgetCase => <article key={budgetCase.id}>
           <div className="detailCaseHeading"><span>{budgetCase.country === "日本" ? "国内事例" : "海外事例"}</span><h3>{budgetCase.title}</h3></div>
-          <dl><dt>実施地域</dt><dd>{budgetCase.jurisdiction}</dd><dt>実施時期</dt><dd>{budgetCase.period}</dd><dt>財政・政策上の背景</dt><dd>{budgetCase.budgetContext}</dd></dl>
-          <h4>公的資料で確認された変更</h4>
+          <ul className="caseChangeTypes">{budgetCase.changeTypes.map(changeType => <li key={changeType} data-case-change-type={changeType}>{BUDGET_CASE_CHANGE_TYPE_LABELS[changeType]}</li>)}</ul>
+          <dl><dt>実施地域</dt><dd>{budgetCase.jurisdiction}</dd><dt>実施時期</dt><dd>{budgetCase.period}</dd><dt>変更した理由</dt><dd>{budgetCase.budgetContext}</dd></dl>
+          <h4>何を変えた？</h4>
+          <p>{budgetCase.whatChanged}</p>
+          <h4>何が確認された？</h4>
           <ul>{budgetCase.confirmedChanges.map(change => <li key={change}>{change}</li>)}</ul>
-          <p><b>長期成果：</b>{budgetCase.measuredLongTermOutcome ?? "この資料では確認できません。"}</p>
-          <p><b>因果の強さ：</b>{CAUSAL_STRENGTH_LABELS[budgetCase.causalStrength]}</p>
-          <p className="detailCaution">{budgetCase.caution}</p>
-          <a href={budgetCase.sourceUrl} target="_blank" rel="noreferrer">{budgetCase.sourceTitle}（{budgetCase.sourceDate}・外部リンク）↗</a>
+          <h4>まだ分からないこと</h4>
+          <p className="detailCaution">{budgetCase.whatRemainsUnknown}</p>
+          <a href={budgetCase.sourceUrl} target="_blank" rel="noreferrer">{budgetCase.sourceTitle}（{BUDGET_CASE_SOURCE_KIND_LABELS[budgetCase.sourceKind]}・{budgetCase.sourceDate}・外部リンク）↗</a>
         </article>)}</div> : <div className="detailUnavailable" data-evidence-kind="unknown"><b>事例は未収録です</b><p>信頼できる公的事例を確認できるまで、推測例は表示しません。</p></div>}
       </section>
 

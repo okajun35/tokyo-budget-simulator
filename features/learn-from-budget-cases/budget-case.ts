@@ -1,22 +1,49 @@
 import type { BudgetCategoryId } from "@/domain/tokyo-budget/budget-category-id";
 
-export type CausalStrength =
-  | "direct_operational_change"
-  | "audited_impact"
-  | "associated_change"
-  | "projected_risk";
+/**
+ * 事例は「成功」「失敗」で分類しない。どの種類の変更だったかだけを示す。
+ * 1件に複数付けてよく、たとえば「サービス縮小」と「負担移転」が並べば
+ * 支出が減った先に負担が移ったことが読み取れる。
+ */
+export type BudgetCaseChangeType =
+  | "service_reduction"
+  | "efficiency_reorganization"
+  | "burden_shift"
+  | "deferral";
 
-export const CAUSAL_STRENGTH_LABELS = {
-  direct_operational_change: "直接確認された運用変更",
-  audited_impact: "監査・調査で確認された影響",
-  associated_change: "関連して確認された変化",
-  projected_risk: "資料上で予測されたリスク",
-} as const satisfies Record<CausalStrength, string>;
+export const BUDGET_CASE_CHANGE_TYPE_LABELS = {
+  service_reduction: "サービス縮小",
+  efficiency_reorganization: "効率化・再編",
+  burden_shift: "負担移転",
+  deferral: "将来への先送り",
+} as const satisfies Record<BudgetCaseChangeType, string>;
 
-export type BudgetCaseSourceType =
+export const BUDGET_CASE_CHANGE_TYPE_DESCRIPTIONS = {
+  service_reduction: "対象、時間、人員、施設などを減らした",
+  efficiency_reorganization: "統合、共同化、業務変更などで支出構造を変えた",
+  burden_shift: "住民、家族、職員、別部署などへ負担が移った",
+  deferral: "修繕、更新、返済などを後年度へ移した",
+} as const satisfies Record<BudgetCaseChangeType, string>;
+
+/**
+ * 資料の確かさは内部で管理する。1が最も直接的で、4は関連事例。
+ * 画面には出さない。「レベル2」と書かれても利用者には良し悪しが伝わらないため、
+ * 代わりに `BUDGET_CASE_SOURCE_KIND_LABELS` で出典の種類を言葉で示す。
+ */
+export type BudgetCaseEvidenceLevel = 1 | 2 | 3 | 4;
+
+export type BudgetCaseSourceKind =
   | "local_government"
+  | "national_government"
   | "national_audit_office"
   | "government_inspectorate";
+
+export const BUDGET_CASE_SOURCE_KIND_LABELS = {
+  local_government: "自治体公式",
+  national_government: "政府機関",
+  national_audit_office: "公的監査",
+  government_inspectorate: "公的評価機関",
+} as const satisfies Record<BudgetCaseSourceKind, string>;
 
 export type BudgetCase = {
   id: string;
@@ -25,14 +52,19 @@ export type BudgetCase = {
   jurisdiction: string;
   country: string;
   period: string;
+  /** なぜ変更したのか。 */
   budgetContext: string;
+  changeTypes: readonly BudgetCaseChangeType[];
+  /** 何を変えたのか。決めた内容を一文で。 */
+  whatChanged: string;
+  /** 何が確認されたのか。資料に記録された具体の変化。 */
   confirmedChanges: readonly string[];
-  measuredLongTermOutcome: string | null;
-  causalStrength: CausalStrength;
-  sourceType: BudgetCaseSourceType;
+  /** まだ分からないこと。資料では確認できない範囲を明示する。 */
+  whatRemainsUnknown: string;
+  evidenceLevel: BudgetCaseEvidenceLevel;
+  sourceKind: BudgetCaseSourceKind;
   sourceUrl: string;
   sourceTitle: string;
   sourceDate: string;
   retrievedAt: string;
-  caution: string;
 };

@@ -4,6 +4,7 @@ import {
   BUDGET_DOCUMENT_STAGE_LABELS,
 } from "@/domain/tokyo-budget/budget-document-stage";
 import { BUDGET_CATEGORIES } from "@/features/simulate-budget/budget-categories";
+import { BUDGET_CASE_SOURCE_KIND_LABELS } from "@/features/learn-from-budget-cases/budget-case";
 import { BUDGET_CASES } from "@/features/learn-from-budget-cases/budget-cases";
 import { BUDGET_SOURCES } from "@/features/trace-budget-sources/budget-sources";
 
@@ -68,12 +69,12 @@ export default function SourcesPage() {
           <div><span>{budgetCase.country === "日本" ? "国内事例" : "海外事例"}</span><h3>{budgetCase.title}</h3><p>{budgetCase.jurisdiction}／{budgetCase.period}</p></div>
           <dl>
             <dt>資料日・取得日</dt><dd>{budgetCase.sourceDate}／{budgetCase.retrievedAt}</dd>
-            <dt>出典種別</dt><dd>{sourceTypeLabels[budgetCase.sourceType]}</dd>
+            <dt>出典種別</dt><dd>{BUDGET_CASE_SOURCE_KIND_LABELS[budgetCase.sourceKind]}</dd>
             <dt>ライセンス</dt><dd>リンク先の利用条件を確認</dd>
             <dt>対象ページ・項目</dt><dd>{budgetCase.sourceTitle}／確認された変更内容</dd>
             <dt>アプリ内の使用箇所</dt><dd>{categories.map(category => `${category.name}の詳細`).join("／")}</dd>
           </dl>
-          <p className="caseSourceCaution">{budgetCase.caution}</p>
+          <p className="caseSourceCaution">{budgetCase.whatRemainsUnknown}</p>
           <a href={budgetCase.sourceUrl} target="_blank" rel="noreferrer">公的資料を開く（外部リンク）↗</a>
         </article>;
       })}</div>

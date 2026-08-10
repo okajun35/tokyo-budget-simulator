@@ -302,7 +302,7 @@ export const BUDGET_CATEGORIES = [
       },
     ],
     sourceIds: COMMON_SOURCE_IDS,
-    caseIds: [],
+    caseIds: ["case-england-fire-and-rescue"],
     leadBureaus: [BUREAUS.police, BUREAUS.fire],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
   },
