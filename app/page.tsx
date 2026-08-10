@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 
-import { PARTICIPATION_ROUTES } from "@/features/find-participation-route/participation-routes";
 import {
   BUDGET_PROCESS_SUMMARY_STEPS,
 } from "@/features/learn-budget-process/budget-process-steps";
@@ -37,9 +36,6 @@ export default function Home() {
   const activeChange = describeBudgetChange(
     active.baselineAmount100mYen,
     values[active.id],
-  );
-  const activeParticipationRoutes = PARTICIPATION_ROUTES.filter(route =>
-    (active.participationRouteIds as readonly string[]).includes(route.id),
   );
 
   const setValue = (id: BudgetCategoryId, value: number) => {
@@ -128,14 +124,10 @@ export default function Home() {
               <p className="contextCaution">実際の変更方法を示す検討例であり、実行可能な確定案ではありません。</p>
               <ol className="changeOptionList">{active.changeOptions.map((option, index) => <li key={option.id} data-change-option={option.id}><span>{index + 1}</span><div><b>{option.title}</b><p>{option.description}</p></div></li>)}</ol>
             </section>
-            <section className="contextSection participationContext">
-              <div className="contextSectionHead"><h3>意見を伝える先</h3><span>公式案内へ移動</span></div>
-              <p className="bureauMappingNote">目的別予算に関係する主な所管です。組織別予算との一対一対応ではありません。</p>
-              <div className="leadBureauLinks">{active.leadBureaus.map(bureau => <a key={bureau.name} href={bureau.url} target="_blank" rel="noreferrer">{bureau.name}（外部リンク）↗</a>)}</div>
-              <div className="participationLinks">{activeParticipationRoutes.map(route => <a key={route.id} href={route.officialGuideUrl} target="_blank" rel="noreferrer"><b>{route.title}（外部リンク）</b><span>{route.canDo}</span></a>)}</div>
-              <p className="participationCaution">どの制度も、提出による予算への反映は保証されません。</p>
-              <a className="participationDetailLink" href={`/participation?category=${active.id}`}>各制度のできること・できないことを見る →</a>
-            </section>
+            <p className="participationContext">
+              <a className="participationDetailLink" href={`/participation?category=${active.id}`}>この分野の参加制度と所管局を見る →</a>
+              <small>どの制度も、提出による予算への反映は保証されません。</small>
+            </p>
             <div className="noForecast" data-evidence-status="unknown" role="note"><span>公開情報だけでは判断できないこと</span><b>効果量と実行方法は計算しません</b><ul><li>あなたの配分で何人改善するか、何％向上するか</li><li>どの事業を変更すれば実行できるか</li><li>予算増減と成果の因果関係</li></ul><p>公式資料で確認できないため、推測値は表示しません。</p><a href="/sources">政策・事業評価の出典を見る →</a></div>
             <a className="detailLink" href={`/budget/${active.id}?amount=${values[active.id]}`}>詳しく見る <span>選択分野とあなたの案を引き継ぐ →</span></a>
           </aside>

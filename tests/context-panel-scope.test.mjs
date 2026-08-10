@@ -52,6 +52,34 @@ test("keeps public cases on the category detail page", async () => {
   assert.match(html, /東京都で同じ結果が起きるとの予測ではありません/);
 });
 
+test("keeps the participation routes out of the top panel", async () => {
+  const panel = await topPanel("panel-without-participation");
+
+  assert.doesNotMatch(panel, /意見を伝える先/);
+  assert.doesNotMatch(panel, /組織別予算との一対一対応ではありません/);
+  assert.doesNotMatch(panel, /都民の声/);
+  assert.doesNotMatch(panel, /請願/);
+});
+
+test("still reaches the participation page for the selected category from the top panel", async () => {
+  const panel = await topPanel("panel-participation-link");
+
+  assert.match(
+    panel,
+    /<a(?=[^>]*class="participationDetailLink")(?=[^>]*href="\/participation\?category=welfare")[^>]*>/,
+  );
+  assert.match(panel, /反映は保証されません/);
+});
+
+test("keeps the participation routes on the category detail page", async () => {
+  const html = await fetchHtml("/budget/welfare?amount=18730", "detail-with-participation");
+
+  assert.match(html, /意見を伝える先/);
+  assert.match(html, /福祉局/);
+  assert.match(html, /都民の声/);
+  assert.match(html, /請願/);
+});
+
 test("keeps the document stage background out of the top panel", async () => {
   const panel = await topPanel("panel-without-background");
 
