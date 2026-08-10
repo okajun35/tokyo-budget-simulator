@@ -771,7 +771,7 @@ test("renders the complete minimum detail for the remaining six categories", asy
     assert.equal(response.status, 200);
     assert.match(html, new RegExp(expectedText));
     assert.match(html, /公開情報だけでは分からないこと/);
-    assert.match(html, /東京都で同じ結果が起きるとの予測ではありません/);
+    assert.match(html, /東京都で同じ結果になるとは限りません/);
     assert.ok(sourceSection);
     assert.equal(sourceSection.match(/公式資料を開く/g)?.length, 2);
   }
@@ -908,7 +908,7 @@ test("renders the completed content for debt, welfare, and education", async () 
     for (const pattern of detailCase.patterns) {
       assert.match(html, pattern, `${detailCase.path}: ${pattern}`);
     }
-    assert.match(html, /東京都で同じ結果が起きるとの予測ではありません/);
+    assert.match(html, /東京都で同じ結果になるとは限りません/);
   }
 });
 

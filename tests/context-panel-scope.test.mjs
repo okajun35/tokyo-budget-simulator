@@ -49,7 +49,7 @@ test("keeps public cases on the category detail page", async () => {
   assert.match(html, /飯能市の在宅・障害・高齢者福祉事業/);
   assert.match(html, /ねたきり老人等手当と老人日常生活用具給付費を廃止/);
   assert.match(html, /イングランドの成人社会福祉支出/);
-  assert.match(html, /東京都で同じ結果が起きるとの予測ではありません/);
+  assert.match(html, /東京都で同じ結果になるとは限りません/);
 });
 
 test("keeps the evidence boundary out of the top panel", async () => {

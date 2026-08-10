@@ -143,6 +143,7 @@ input[type="range"]::-webkit-slider-thumb { appearance:none; width:16px; height:
 .budgetDetailSection>h2 { margin:0; font-family:"Yu Mincho","Hiragino Mincho ProN",serif; font-size:clamp(25px,3vw,36px); }
 .budgetDetailSection>h3 { margin:22px 0 10px; font-size:14px; }
 .detailLead { margin:12px 0 0; color:#52615f; font-size:12px; line-height:1.8; }
+.caseInterpretation { margin:14px 0 0; max-width:900px; padding:16px 18px; border-left:4px solid var(--teal); background:#eff5fd; color:#23405d; font-size:14px; font-weight:700; line-height:1.9; word-break:auto-phrase; }
 .detailUseList { display:flex; flex-wrap:wrap; gap:7px; margin:0; padding:0; list-style:none; }
 .detailUseList li { padding:7px 10px; border-radius:999px; background:#edf3fb; color:#31547f; font-size:10px; font-weight:700; }
 .detailSubheading { margin-top:28px; }

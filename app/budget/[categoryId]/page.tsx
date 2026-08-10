@@ -8,6 +8,7 @@ import {
   CAUSAL_STRENGTH_LABELS,
 } from "@/features/learn-from-budget-cases/budget-case";
 import { BUDGET_CASES } from "@/features/learn-from-budget-cases/budget-cases";
+import { CASE_INTERPRETATIONS } from "@/features/learn-from-budget-cases/case-interpretations";
 import {
   BUDGET_CATEGORIES,
   GENERAL_ACCOUNT_BASELINE_100M_YEN,
@@ -69,6 +70,7 @@ export default async function BudgetDetailPage({
   const categoryCases = BUDGET_CASES.filter(budgetCase =>
     (category.caseIds as readonly string[]).includes(budgetCase.id),
   );
+  const caseInterpretation = CASE_INTERPRETATIONS[category.id];
   const categorySources = BUDGET_SOURCES.filter(source =>
     (category.sourceIds as readonly string[]).includes(source.id),
   );
@@ -150,8 +152,10 @@ export default async function BudgetDetailPage({
 
       <section className="budgetDetailSection" aria-labelledby="cases-heading">
         <p className="sectionLabel">PUBLIC CASES</p>
-        <h2 id="cases-heading">国内外の事例</h2>
-        <p className="detailLead">他地域の事例は検討材料であり、東京都で同じ結果が起きるとの予測ではありません。</p>
+        <h2 id="cases-heading">金額を減らすと、現実には何が変わったのか</h2>
+        <p className="detailLead">国内外の事例から、財政対策として実際に支出を減らした自治体や国で、公的資料に記録された変更を示します。</p>
+        {caseInterpretation && <p className="caseInterpretation">{caseInterpretation}</p>}
+        <p className="detailCaution">同じ割合を減らしても、東京都で同じ結果になるとは限りません。制度、財政状況、人口などの条件が異なります。</p>
         {categoryCases.length > 0 ? <div className="detailCaseGrid">{categoryCases.map(budgetCase => <article key={budgetCase.id}>
           <div className="detailCaseHeading"><span>{budgetCase.country === "日本" ? "国内事例" : "海外事例"}</span><h3>{budgetCase.title}</h3></div>
           <dl><dt>実施地域</dt><dd>{budgetCase.jurisdiction}</dd><dt>実施時期</dt><dd>{budgetCase.period}</dd><dt>財政・政策上の背景</dt><dd>{budgetCase.budgetContext}</dd></dl>
