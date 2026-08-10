@@ -128,7 +128,6 @@ export default function Home() {
               <a className="participationDetailLink" href={`/participation?category=${active.id}`}>この分野の参加制度と所管局を見る →</a>
               <small>どの制度も、提出による予算への反映は保証されません。</small>
             </p>
-            <div className="noForecast" data-evidence-status="unknown" role="note"><span>公開情報だけでは判断できないこと</span><b>効果量と実行方法は計算しません</b><ul><li>あなたの配分で何人改善するか、何％向上するか</li><li>どの事業を変更すれば実行できるか</li><li>予算増減と成果の因果関係</li></ul><p>公式資料で確認できないため、推測値は表示しません。</p><a href="/sources">政策・事業評価の出典を見る →</a></div>
             <a className="detailLink" href={`/budget/${active.id}?amount=${values[active.id]}`}>詳しく見る <span>選択分野とあなたの案を引き継ぐ →</span></a>
           </aside>
         </div>

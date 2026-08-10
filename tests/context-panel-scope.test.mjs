@@ -52,6 +52,24 @@ test("keeps public cases on the category detail page", async () => {
   assert.match(html, /東京都で同じ結果が起きるとの予測ではありません/);
 });
 
+test("keeps the evidence boundary out of the top panel", async () => {
+  const panel = await topPanel("panel-without-evidence-boundary");
+
+  assert.doesNotMatch(panel, /data-evidence-status="unknown"/);
+  assert.doesNotMatch(panel, /公開情報だけでは判断できないこと/);
+});
+
+test("keeps the evidence boundary on the category detail page", async () => {
+  const html = await fetchHtml("/budget/welfare?amount=18730", "detail-with-evidence-boundary");
+
+  assert.match(html, /どこまで確かに言える/);
+  assert.match(html, /data-evidence-kind="fact"/);
+  assert.match(html, /data-evidence-kind="case_fact"/);
+  assert.match(html, /data-evidence-kind="interpretation"/);
+  assert.match(html, /data-evidence-kind="unknown"/);
+  assert.match(html, /公開情報だけでは分からないこと/);
+});
+
 test("keeps the participation routes out of the top panel", async () => {
   const panel = await topPanel("panel-without-participation");
 

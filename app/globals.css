@@ -122,11 +122,6 @@ input[type="range"]::-webkit-slider-thumb { appearance:none; width:16px; height:
 .participationDetailLink { display:inline-flex; align-items:center; min-height:44px; color:var(--teal); font-size:14px; font-weight:800; text-decoration:none; }
 .stageTag { display:inline-block; padding:4px 7px; color:white; background:#777; font-size:9px; letter-spacing:.08em; font-weight:900; }
 .stageTag.request { background:#9a7935; }.stageTag.bureau,.stageTag.bureau_assessment { background:#436b9b; }.stageTag.governor,.stageTag.governor_assessment { background:#934f72; }.stageTag.enacted_budget { background:var(--teal); }.stageTag.proposal { background:#655a8e; }.stageTag.external_request { background:#8b6956; }.stageTag.evaluation { background:#4c7b52; }
-.noForecast { margin-top:15px; padding:16px; background:#edf4ff; border-radius:7px; }
-.noForecast>span { display:block; margin-bottom:5px; color:var(--teal); font-size:8px; font-weight:900; }
-.noForecast ul { margin:7px 0; padding-left:18px; color:#50615d; font-size:9px; line-height:1.7; }
-.noForecast p { margin:6px 0 10px; color:#50615d; font-size:10px; line-height:1.7; }
-.noForecast>a { color:var(--teal); font-size:10px; font-weight:800; text-decoration:none; }
 .detailLink { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:44px; margin-top:12px; padding:12px 14px; background:var(--teal); color:white; font-size:15px; font-weight:900; text-decoration:none; }
 .detailLink span { font-size:12px; font-weight:700; }
 .budgetDetailPage { min-height:100vh; padding:48px 5vw 72px; background:#f3f6fb; }
