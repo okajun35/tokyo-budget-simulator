@@ -70,7 +70,7 @@ export default function Home() {
       </section>
 
       <section className="simulator" id="simulator">
-        <div className="sectionHead"><div><p className="eyebrow">ALLOCATION</p><h2>目的別に配分する</h2><p>先に分野を減額し、生まれた配分可能額を別の分野へ移します。スライダーは基準額の70〜130%、1億円単位です。</p></div><button className="reset" onClick={reset}>↺ 初期値に戻す</button></div>
+        <div className="sectionHead"><div><p className="eyebrow">ALLOCATION</p><h2>目的別に配分する</h2><p>先に分野を減額し、生まれた配分可能額を別の分野へ移します。スライダーは基準額の70〜130%、1億円単位です。</p></div></div>
         <aside className="simulationNotice" role="note">
           <strong>これは学習用の仮想配分です</strong>
           <p>操作結果は東京都の正式な予算案ではありません。制度上・財政上の実行可能性を保証するものではありません。</p>
@@ -83,6 +83,7 @@ export default function Home() {
           </div>
           <div className="balanceTrack" aria-hidden="true"><i style={{width: `${allocationSummary.allocatedAmount100mYen / allocationSummary.annualBudgetAmount100mYen * 100}%`}} /></div>
           <p id="allocation-guidance">{allocationSummary.status === "fully-allocated" ? "全額を配分済みです。増やすには先に別の分野を減らしてください" : `${money(allocationSummary.availableAmount100mYen)}を別の分野へ配分できます`}</p>
+          <button className="reset" onClick={reset}>↺ 初期値に戻す</button>
         </div>
 
         <div className="simulatorWorkspace">
@@ -112,29 +113,22 @@ export default function Home() {
           </section>
 
           <aside className="contextPanel" id="category-context" aria-label="選択分野の変更の意味">
-            <div className="contextPanelHead">
-            <p className="panelKicker">いま見ている分野</p><h2>{active.name}</h2>
+            <h2>{active.name}</h2>
             <div className="amountCompare"><span>成立予算<b>{money(active.baselineAmount100mYen)}</b></span><span>あなたの案<b>{money(values[active.id])}</b></span><span>変更額<b>{activeChange.amountLabel}</b></span><span>変更率<b>{activeChange.rateLabel}</b></span></div>
-            </div>
-            <div className="contextPanelBody" tabIndex={0} aria-label="選択分野の説明">
             <section className="contextSection categoryMeaning">
               <h3>そもそも何のお金？</h3>
               <p>{active.definition}</p>
-              <ul>{active.mainUses.map(use => <li key={use}>{use}</li>)}</ul>
+              <ul className="mainUseTags">{active.mainUses.map(use => <li key={use}>{use}</li>)}</ul>
             </section>
             <section className="contextSection">
-              <div className="contextSectionHead"><h3>配分を変える方法</h3><span>{active.changeOptions.length}つの検討例</span></div>
-              <p className="contextCaution">実際の変更方法を示す検討例であり、実行可能な確定案ではありません。</p>
-              <ol className="changeOptionList">{active.changeOptions.map((option, index) => <li key={option.id} data-change-option={option.id}><span>{index + 1}</span><div><b>{option.title}</b><p>{option.description}</p></div></li>)}</ol>
+              <p className="contextCaution">実際の変え方は一つに決まりません。</p>
+              <a className="changeOptionsLink" href={`/budget/${active.id}?amount=${values[active.id]}#options-heading`}>変更方法と論点を見る（{active.changeOptions.length}つの検討例）→</a>
             </section>
-            </div>
-            <div className="contextPanelFoot">
+            <a className="detailLink" href={`/budget/${active.id}?amount=${values[active.id]}`}>詳しく見る <span>選択分野とあなたの案を引き継ぐ →</span></a>
             <p className="participationContext">
               <a className="participationDetailLink" href={`/participation?category=${active.id}`}>この分野の参加制度と所管局を見る →</a>
-              <small>どの制度も、提出による予算への反映は保証されません。</small>
+              <small>提出による予算への反映は保証されません。</small>
             </p>
-            <a className="detailLink" href={`/budget/${active.id}?amount=${values[active.id]}`}>詳しく見る <span>選択分野とあなたの案を引き継ぐ →</span></a>
-            </div>
           </aside>
         </div>
       </section>

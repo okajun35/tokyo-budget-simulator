@@ -597,41 +597,6 @@ test("shows the selected category and its complete comparison in the context pan
   assert.match(panel, /変更率.*?±0\.0%/);
 });
 
-test("explains the selected category and offers multiple ways to change it", async () => {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `context-meaning-${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  const response = await worker.fetch(
-    new Request("http://localhost/", {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
-  const html = await response.text();
-  const panel = html.match(
-    /<aside class="contextPanel"[^>]*>.*?<\/aside>/,
-  )?.[0];
-
-  assert.ok(panel);
-  assert.match(panel, /そもそも何のお金？/);
-  assert.match(panel, /高齢者、障害者、子ども・子育て世帯への福祉/);
-  assert.equal(panel.match(/data-change-option=/g)?.length, 4);
-  assert.match(panel, /給付対象や単価を見直す/);
-  assert.match(panel, /施設・相談サービスの時間や人員を見直す/);
-  assert.match(panel, /補助率や上限額を見直す/);
-  assert.match(panel, /新規事業の規模や時期を見直す/);
-  assert.match(panel, /確定案ではありません/);
-});
-
 test("carries the selected category and amount to its detail page", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `context-detail-${process.pid}-${Date.now()}`);

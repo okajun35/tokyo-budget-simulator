@@ -4,23 +4,22 @@ import test from "node:test";
 
 const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
 
-const ruleFor = (selector, { inside } = {}) => {
-  const source = inside
-    ? css.match(new RegExp(`@media \\(max-width:${inside}px\\)[^\\n]*`))?.[0] ?? ""
-    : css.replace(/@media[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, "");
-  const rule = source.match(new RegExp(`\\${selector}\\s*\\{([^{}]*)\\}`))?.[1];
+const baseCss = css.replace(/@media[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, "");
 
-  assert.ok(rule, `${selector} の宣言が見つからない${inside ? `（${inside}px）` : ""}`);
+const baseRuleFor = selector => {
+  const rule = baseCss.match(new RegExp(`\\${selector}\\s*\\{([^{}]*)\\}`))?.[1];
+
+  assert.ok(rule, `${selector} の宣言が見つからない`);
   return rule;
 };
 
-const topPageHtml = async label => {
+const fetchHtml = async (path, label) => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${label}-${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   const response = await worker.fetch(
-    new Request("http://localhost/", {
+    new Request(`http://localhost${path}`, {
       headers: { accept: "text/html" },
     }),
     {
@@ -38,52 +37,47 @@ const topPageHtml = async label => {
   return (await response.text()).replaceAll("<!-- -->", "");
 };
 
-test("keeps the sticky context panel inside the viewport", () => {
-  const panel = ruleFor(".contextPanel");
+const topPanel = async label => {
+  const panel = (await fetchHtml("/", label)).match(/<aside class="contextPanel"[^>]*>[\s\S]*?<\/aside>/)?.[0];
 
-  assert.match(panel, /position:sticky/);
-  assert.match(panel, /max-height:calc\(100vh - \d+px\)/);
-});
+  assert.ok(panel, "選択分野のパネルが見つからない");
+  return panel;
+};
 
-test("scrolls the explanation without moving the panel frame", () => {
-  const panel = ruleFor(".contextPanel");
-  const body = ruleFor(".contextPanelBody");
+test("never clips the panel content", () => {
+  const panel = baseRuleFor(".contextPanel");
 
+  assert.doesNotMatch(panel, /max-height/);
   assert.doesNotMatch(panel, /overflow/);
-  assert.match(panel, /display:flex/);
-  assert.match(panel, /flex-direction:column/);
-  assert.match(body, /overflow-y:auto/);
-  assert.match(body, /overscroll-behavior:contain/);
-  assert.match(body, /min-height:0/);
 });
 
-test("lets the panel flow with the page once the columns stack", () => {
-  const panel = ruleFor(".contextPanel", { inside: 950 });
-  const body = ruleFor(".contextPanelBody", { inside: 950 });
+test("keeps the change options on the category detail page", async () => {
+  const panel = await topPanel("panel-without-options");
+  const detail = await fetchHtml("/budget/welfare?amount=18730", "detail-with-options");
 
-  assert.match(panel, /position:relative/);
-  assert.match(panel, /max-height:none/);
-  assert.match(body, /overflow:visible/);
+  assert.doesNotMatch(panel, /data-change-option=/);
+  assert.doesNotMatch(panel, /給付対象や単価を見直す/);
+  assert.match(detail, /変更方法と検討の論点/);
+  assert.match(detail, /給付対象や単価を見直す/);
 });
 
-test("keeps the detail route reachable without scrolling the panel", async () => {
-  const html = await topPageHtml("panel-foot-route");
-  const foot = html.match(/<div class="contextPanelFoot">.*?<\/div><\/aside>/)?.[0];
+test("still states on the top page that a change has more than one method", async () => {
+  const panel = await topPanel("panel-change-caution");
 
-  assert.ok(foot, "パネル下部の固定領域が見つからない");
-  assert.match(foot, /class="detailLink"/);
-  assert.match(foot, /class="participationDetailLink"/);
-  assert.ok(
-    html.indexOf('class="contextPanelBody"') < html.indexOf('class="contextPanelFoot"'),
-    "固定領域がスクロール領域の内側にある",
+  assert.match(panel, /一つに決まりません/);
+  assert.match(
+    panel,
+    /<a[^>]*href="\/budget\/welfare\?amount=18730#options-heading"[^>]*>変更方法と論点を見る/,
   );
 });
 
-test("lets a keyboard user scroll the explanation", async () => {
-  const html = await topPageHtml("panel-keyboard");
-  const openingTag = html.match(/<div class="contextPanelBody"[^>]*>/)?.[0];
+test("keeps the field meaning and both routes visible without scrolling the panel", async () => {
+  const panel = await topPanel("panel-core");
 
-  assert.ok(openingTag, "スクロール領域が見つからない");
-  assert.match(openingTag, /tabindex="0"/);
-  assert.match(openingTag, /aria-label="選択分野の説明"/);
+  assert.match(panel, /そもそも何のお金？/);
+  assert.match(panel, /高齢者、障害者、子ども・子育て世帯への福祉/);
+  assert.match(panel, /class="mainUseTags"/);
+  assert.match(panel, /class="detailLink"/);
+  assert.match(panel, /class="participationDetailLink"/);
+  assert.doesNotMatch(panel, /class="contextPanelBody"/);
 });
