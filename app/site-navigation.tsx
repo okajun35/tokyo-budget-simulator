@@ -5,6 +5,7 @@ const SITE_MENU = [
   { href: "/budget-process", label: "予算が決まるまで" },
   { href: "/participation", label: "声を届ける" },
   { href: "/sources", label: "出典・データ" },
+  { href: "/about", label: "このサイトについて" },
 ] as const;
 
 export function SiteHeader() {

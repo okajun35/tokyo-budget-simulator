@@ -60,7 +60,7 @@ export default function Home() {
           <p className="eyebrow">BUDGET SIMULATOR · FY2026</p>
           <h1>東京都の予算を動かし、<em>変更の意味を知る。</em></h1>
           <p className="lead">令和8年度の成立後当初予算を基準にした仮想シミュレーションです。数字を変えながら予算が決まる流れを学べます。</p>
-          <div className="heroActions"><a href="#simulator" className="primary">予算を動かしてみる <span>↓</span></a><a href="/sources" className="textButton">データの扱いを見る</a></div>
+          <div className="heroActions"><a href="#simulator" className="primary">予算を動かしてみる <span>↓</span></a><a href="/about" className="textButton">このサイトについて</a></div>
         </div>
         <div className="overviewCards" aria-label="令和8年度予算の概要">
           <article><span className="overviewIcon" aria-hidden="true">暦</span><small>対象年度</small><strong>令和8年度</strong><em>2026年度</em></article>
