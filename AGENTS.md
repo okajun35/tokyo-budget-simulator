@@ -50,6 +50,24 @@ The operating experience is modelled on Liverpool's Budget Challenge. Four thing
 
 When assessing the product against the concept, measure coverage rather than presence. As of 2026-08-10 the weakest stage is 意味を知る, because public cases exist for three of nine fields; `/about` derives that count from the data so the page cannot overstate it.
 
+### Intended reader and how to write for them
+
+The reader is a 高校生以上の、東京都の予算に詳しくない一般都民: high-school and university students, and residents without specialist fiscal knowledge. Classroom and workshop use is a secondary audience. Two audiences are explicitly out of scope: analysts who need a practitioner tool, and primary or junior-high teaching material.
+
+This choice fixes the vocabulary rule. Writing for junior-high readers would require explaining 都債, 基金, 財政調整, 議会, and 査定 from first principles and would turn the product into fiscal-education material. Writing only for engaged adults would give up the accessibility that makes the product worth building.
+
+Therefore keep the official term and add the meaning in one line at its first appearance on a screen. Do not replace 公債費 with 借金返済のお金, because a reader who moves on to Tokyo's own documents will meet 公債費 there.
+
+| Official term | First appearance on screen |
+| --- | --- |
+| 公債費 | 公債費（都債の返済などに使うお金） |
+| 査定 | 査定（要求された事業や金額を確認・調整すること） |
+| 借換え | 借換え（新たに借りて、以前の借入を返すこと） |
+| 起債 | 起債（都債を発行して資金を調達すること） |
+| 交付金 | 交付金（国や自治体などから一定の目的・制度に基づいて渡されるお金） |
+
+The same rule applies to process stages. `BUDGET_PROCESS_SUMMARY_STEPS` carries a `plainMeaning` of at most 30 characters beside each formal label, so 各局予算要求 reads as 「来年度、この事業にこれだけ必要です」 without losing the official name.
+
 ## Simulator concept and invariants
 
 - The annual general-account total is fixed at 96,530 hundred-million yen (9兆6,530億円) for the current FY2026 experience.
