@@ -79,12 +79,19 @@ test("names the fields whose public cases are already collected", async () => {
   const html = await fetchAboutHtml("about-case-coverage");
   const collected = BUDGET_CATEGORIES.filter(category => category.caseIds.length > 0);
 
-  assert.ok(collected.length > 0 && collected.length < BUDGET_CATEGORIES.length);
+  assert.ok(collected.length > 0);
   assert.match(
     html,
     new RegExp(`${collected.length}分野`),
     `収録済み ${collected.length} 分野という記載がない`,
   );
+
+  if (collected.length === BUDGET_CATEGORIES.length) {
+    assert.match(html, /すべてに収録/, "全分野に収録済みであることを述べていない");
+    assert.doesNotMatch(html, /残る分野では/, "収録済みなのに未収録の断り書きが残っている");
+    return;
+  }
+
   for (const category of collected) {
     assert.ok(html.includes(category.name), category.name);
   }

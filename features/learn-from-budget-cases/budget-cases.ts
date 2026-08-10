@@ -342,4 +342,58 @@ export const BUDGET_CASES = [
     sourceDate: "2024-05-15",
     retrievedAt: RETRIEVED_AT,
   },
+  {
+    id: "case-japan-fire-service-consolidation",
+    title: "消防庁が示す消防の広域化による効率化",
+    categoryIds: ["safety"],
+    jurisdiction: "日本の市町村消防本部",
+    country: "日本",
+    period: "令和6年版消防白書時点",
+    budgetContext:
+      "人口減少のもとで、小規模な消防本部の人材と装備の確保、大規模災害への対応力確保が課題",
+    changeTypes: ["efficiency_reorganization"],
+    whatChanged:
+      "複数市町村の消防事務を共同処理・委託して消防本部を広域化し、総務部門と通信指令部門を効率化して人員を消火・救急部門へ再配置します。",
+    confirmedChanges: [
+      "総務部門と通信指令部門の効率化により、人員を消火・救急部門へ再配置できると説明",
+      "施設・設備の整備経費の削減効果を挙げている",
+      "現場体制、初動体制、専門職配置、大規模災害対応の充実を目的としている",
+    ],
+    whatRemainsUnknown:
+      "消防費を減らして成功した特定自治体の独立した評価ではなく、消防庁が広域化制度の一般的な効果を説明している資料です。効率化の方法として管理・指令部門の共同化があり得ることを示すために使います。東京都はすでに東京消防庁という大規模組織であり、同じ効率化の余地があるとは限りません。",
+    evidenceLevel: 3,
+    sourceKind: "national_government",
+    sourceUrl:
+      "https://www.fdma.go.jp/publication/hakusho/r6/chapter2/section2/68079.html",
+    sourceTitle: "令和6年版消防白書 消防の広域化の必要性と効果",
+    sourceDate: "2025",
+    retrievedAt: RETRIEVED_AT,
+  },
+  {
+    id: "case-england-local-authorities",
+    title: "イングランドの地方自治体で削減が特定分野へ偏った",
+    categoryIds: ["environment", "linked"],
+    jurisdiction: "イングランドの地方自治体",
+    country: "イギリス",
+    period: "2010年度から2016年度",
+    budgetContext: "中央政府から地方自治体への資金が大幅に減少",
+    changeTypes: ["service_reduction", "efficiency_reorganization"],
+    whatChanged:
+      "全分野を均等に削るのではなく、社会福祉を比較的優先し、その分だけ福祉以外の分野で支出をより大きく減らしました。",
+    confirmedChanges: [
+      "計画・開発が52.8%減、住宅サービスが45.6%減",
+      "道路・交通が37.1%減、文化関連サービスが34.9%減",
+      "週1回以上ごみ収集を受ける世帯が33.7%減",
+      "自治体補助バスの走行距離（ロンドン外）が48.4%減、図書館数が10.3%減",
+    ],
+    whatRemainsUnknown:
+      "法定義務、需要、政策上の優先順位によって、削減は特定の分野へ偏ります。どの分野を優先したかで住民の生活がどう変わったかまでは、この資料では確認できません。英国の自治体制度は東京都と権限も財源も異なります。",
+    evidenceLevel: 2,
+    sourceKind: "national_audit_office",
+    sourceUrl:
+      "https://www.nao.org.uk/reports/financial-sustainability-of-local-authorities-2018/",
+    sourceTitle: "Financial sustainability of local authorities 2018",
+    sourceDate: "2018-03-08",
+    retrievedAt: RETRIEVED_AT,
+  },
 ] as const satisfies readonly BudgetCase[];

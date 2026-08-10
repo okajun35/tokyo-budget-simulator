@@ -37,7 +37,9 @@ export default function AboutPage() {
         </div>
       </li>)}</ol>
       <p className="aboutCaseCoverage">
-        国内外の公的事例は、公的資料で確認できた分野から順に収録しています。現在は{caseCoverage.length}分野（{caseCoverage.map(category => category.name).join("、")}）に収録済みで、残る分野では推測による事例を表示しません。
+        {caseCoverage.length === BUDGET_CATEGORIES.length
+          ? `国内外の公的事例は${caseCoverage.length}分野すべてに収録しています。分野ごとに、公的資料で確認できた変更だけを示し、確認できないことは確認できないと書きます。`
+          : `国内外の公的事例は、公的資料で確認できた分野から順に収録しています。現在は${caseCoverage.length}分野（${caseCoverage.map(category => category.name).join("、")}）に収録済みで、残る分野では推測による事例を表示しません。`}
       </p>
     </section>
 
