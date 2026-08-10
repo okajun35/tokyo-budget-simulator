@@ -79,23 +79,33 @@ await command("Emulation.setDeviceMetricsOverride", {
   mobile: false,
 });
 await command("Page.navigate", { url: `${siteUrl}/` });
-await new Promise(resolve => setTimeout(resolve, 250));
-await command("Runtime.evaluate", {
-  expression: "document.querySelector('[data-budget-select-control=education]').focus()",
-});
-await command("Input.dispatchKeyEvent", {
-  type: "keyDown",
-  key: " ",
-  code: "Space",
-  windowsVirtualKeyCode: 32,
-});
-await command("Input.dispatchKeyEvent", {
-  type: "keyUp",
-  key: " ",
-  code: "Space",
-  windowsVirtualKeyCode: 32,
-});
-await new Promise(resolve => setTimeout(resolve, 100));
+
+// 開発サーバではハイドレーションが終わる前に押しても何も起きない。
+// 固定の待ち時間ではなく、選択が反映されるまで押し直して判定する。
+const pressSpaceOnEducationRow = async () => {
+  await command("Runtime.evaluate", {
+    expression: "document.querySelector('[data-budget-select-control=education]').focus()",
+  });
+  for (const type of ["keyDown", "keyUp"]) {
+    await command("Input.dispatchKeyEvent", {
+      type,
+      key: " ",
+      code: "Space",
+      windowsVirtualKeyCode: 32,
+    });
+  }
+  await new Promise(resolve => setTimeout(resolve, 150));
+  const response = await command("Runtime.evaluate", {
+    expression:
+      "document.querySelector('[data-budget-select-control=education]').getAttribute('aria-pressed')",
+    returnByValue: true,
+  });
+  return response.result.value === "true";
+};
+
+for (let attempt = 0; attempt < 20; attempt++) {
+  if (await pressSpaceOnEducationRow()) break;
+}
 const selectAuditResponse = await command("Runtime.evaluate", {
   expression: `JSON.stringify({
     educationPressed: document.querySelector('[data-budget-select-control=education]').getAttribute('aria-pressed'),
