@@ -126,6 +126,7 @@ export const BUDGET_CATEGORIES = [
     sourceIds: COMMON_SOURCE_IDS,
     caseIds: [
       "case-hanno-library-2026",
+      "case-england-school-resource-management",
       "case-england-school-financial-pressure",
     ],
     leadBureaus: [BUREAUS.education, BUREAUS.culture, BUREAUS.sports],
@@ -335,7 +336,7 @@ export const BUDGET_CATEGORIES = [
       },
     ],
     sourceIds: COMMON_SOURCE_IDS,
-    caseIds: ["case-england-hmrc-customer-service"],
+    caseIds: ["case-hanno-emergency-fiscal-plan", "case-england-hmrc-customer-service"],
     leadBureaus: [BUREAUS.policy, BUREAUS.generalAffairs, BUREAUS.digital],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
   },

@@ -396,4 +396,63 @@ export const BUDGET_CASES = [
     sourceDate: "2018-03-08",
     retrievedAt: RETRIEVED_AT,
   },
+  {
+    id: "case-hanno-emergency-fiscal-plan",
+    title: "飯能市が全事務事業を見直した緊急財政対策",
+    categoryIds: ["admin"],
+    jurisdiction: "埼玉県飯能市",
+    country: "日本",
+    period: "2025年度から2026年度",
+    budgetContext:
+      "将来にわたり持続可能な行財政運営を確立するため、財政調整基金等の残高確保と、歳入規模に見合った歳出への転換を目標に掲げた",
+    changeTypes: [
+      "service_reduction",
+      "efficiency_reorganization",
+      "burden_shift",
+      "deferral",
+    ],
+    whatChanged:
+      "一つの方法に頼らず、人件費、市単独事業、公共施設、建設事業、受益者負担を同時に見直しました。",
+    confirmedChanges: [
+      "総人件費の抑制",
+      "市単独事業の廃止・休止・縮小",
+      "公共施設の再編",
+      "建設事業の選択と集中",
+      "受益者負担の見直し",
+    ],
+    whatRemainsUnknown:
+      "同じ自治体の同じ財政対策でも、サービスを休止する、補助率を下げる、施設を閉鎖する、投資の優先順位を変えるなど、方法は一つではありません。個々の見直しが住民の生活へどう影響したかは、この資料では確認できません。",
+    evidenceLevel: 1,
+    sourceKind: "local_government",
+    sourceUrl:
+      "https://www.city.hanno.lg.jp/shiseijoho/zaisei/kinkyuzaiseitaisaku/11841.html",
+    sourceTitle: "緊急財政対策の取組状況",
+    sourceDate: "2026-02",
+    retrievedAt: RETRIEVED_AT,
+  },
+  {
+    id: "case-england-school-resource-management",
+    title: "イングランドの学校の資源管理を改善する取組",
+    categoryIds: ["education"],
+    jurisdiction: "イングランドの学校",
+    country: "イギリス",
+    period: "2016年度以降",
+    budgetContext: "学校の財政持続性を高めるための教育省による支援",
+    changeTypes: ["efficiency_reorganization"],
+    whatChanged:
+      "教育省が学校の資源管理の改善と節約を支援するプログラムを実施しました。",
+    confirmedChanges: [
+      "会計検査院は、これらの取組が学校の節約に一定の価値を加えたと評価",
+      "一方で、データが十分でなく、プログラムの完全な効果と費用対効果は評価できないと指摘",
+    ],
+    whatRemainsUnknown:
+      "行政の効率化が成功したと断定できる資料ではありません。効率化の余地は存在しますが、サービス水準を維持したまま節約できたかを測るには、データが足りないという例です。効率化を理由に予算を減らす場合、代わりの手段が機能したかを測ってから減らす必要があります。",
+    evidenceLevel: 2,
+    sourceKind: "national_audit_office",
+    sourceUrl:
+      "https://www.nao.org.uk/reports/financial-sustainability-of-schools-in-england/",
+    sourceTitle: "Financial sustainability of schools in England",
+    sourceDate: "2016-12-14",
+    retrievedAt: RETRIEVED_AT,
+  },
 ] as const satisfies readonly BudgetCase[];
