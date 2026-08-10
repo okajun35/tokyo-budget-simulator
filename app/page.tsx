@@ -6,7 +6,6 @@ import { PARTICIPATION_ROUTES } from "@/features/find-participation-route/partic
 import {
   BUDGET_PROCESS_SUMMARY_STEPS,
 } from "@/features/learn-budget-process/budget-process-steps";
-import type { BudgetProcessSummaryStep } from "@/features/learn-budget-process/budget-process-step";
 import { CAUSAL_STRENGTH_LABELS } from "@/features/learn-from-budget-cases/budget-case";
 import { BUDGET_CASES } from "@/features/learn-from-budget-cases/budget-cases";
 import {
@@ -40,7 +39,6 @@ export default function Home() {
   const [selected, setSelected] = useState<BudgetCategoryId>(() =>
     createInitialBudgetSimulationState(BUDGET_CATEGORIES).selectedCategoryId,
   );
-  const [openStage, setOpenStage] = useState<BudgetProcessSummaryStep["id"] | null>(null);
   const allocationSummary = useMemo(
     () => calculateBudgetAllocationSummary(values, GENERAL_ACCOUNT_BASELINE_100M_YEN),
     [values],
@@ -186,8 +184,11 @@ export default function Home() {
 
       <section className="process" id="budget-process" aria-label="予算成立までの段階">
         <p>現実の予算は、どうやって決まる？</p>
-        <div>{BUDGET_PROCESS_SUMMARY_STEPS.map((step, i) => <button key={step.id} onClick={() => setOpenStage(openStage === step.id ? null : step.id)} className={openStage === step.id ? "selected" : ""}><span>{i + 1}</span>{step.label}</button>)}</div>
-        {openStage && <aside className="stageExplainer"><b>{BUDGET_PROCESS_SUMMARY_STEPS.find((step) => step.id === openStage)?.label}</b><p>{BUDGET_PROCESS_SUMMARY_STEPS.find((step) => step.id === openStage)?.summary}</p></aside>}
+        <ol className="processFlow">{BUDGET_PROCESS_SUMMARY_STEPS.map((step, i) => <li key={step.id} data-budget-process-summary-stage={step.id}>
+          <span aria-hidden="true">{i + 1}</span>
+          <b>{step.label}</b>
+          <small>{step.summary}</small>
+        </li>)}</ol>
         <a className="processDetailLink" href="/budget-process">全過程と令和8年度の公式資料を見る →</a>
       </section>
 
