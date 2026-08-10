@@ -94,3 +94,24 @@
 - `npm run lint`
 - `npm run build`
 - `npm run audit:layout` / `npm run audit:demo` … ポート9223でChromeを起動した環境が必要。実ブラウザでの見た目と2分デモの通過確認は、この環境が用意できるときに行う。
+
+## 実施記録
+
+### 2026-08-10：方針1〜3を実施
+
+| 方針 | コミット | 追加した回帰テスト |
+| --- | --- | --- |
+| この文書 | `bb5a9d9` | — |
+| 1. 共通ヘッダー・フッター | `a9b391a` | `tests/site-navigation.test.mjs` |
+| 2. 戻る・詳細リンクの拡大 | `828e5bd` | `tests/navigation-legibility.test.mjs` |
+| 3. 予算成立過程の図化 | `f6d47a6` | `tests/budget-process-diagram.test.mjs` |
+
+主な変更点。
+
+- `app/site-navigation.tsx` に `SiteHeader` と `SiteFooter` を置き、`app/layout.tsx` から全ページへ適用した。トップページ内の重複と、ナビ内でボタンとリンクが混在していた状態を解消した。
+- 戻る導線8種を15px、詳細導線5種を14〜15pxとし、`min-height:44px` を全幅で適用した。選択行の詳細キューは変更額セルの中から行全幅の帯へ移した。帯は常に1行だけ存在するため、選択を変えても一覧全体の高さは変わらない。
+- トップの予算成立過程を `<ol class="processFlow">` の常時表示に変更し、`openStage` の状態と `.stageExplainer` を削除した。矢印は狭幅で下向きに切り替える。
+
+検証結果：`npm run build` 成功、`node --test` 99件すべて成功、`npm run lint` 指摘なし。`audit:layout` と `audit:demo` はChromeのデバッグポートが必要なため未実行。
+
+残りは方針4（右パネルの4ブロックを既存ページへ戻す）と方針5（本文の文字サイズ基準）で、いずれも着手前に合意を取る。
