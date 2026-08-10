@@ -420,7 +420,7 @@ test("places budget controls and category meaning in one workspace", async () =>
   );
   assert.match(
     html,
-    /<aside class="contextPanel" id="category-context" aria-label="選択分野の変更の意味">/,
+    /<aside class="contextPanel"[^>]*aria-label="選択分野の変更の意味"/,
   );
 });
 
@@ -586,7 +586,7 @@ test("shows the selected category and its complete comparison in the context pan
   );
   const html = await response.text();
   const panel = html.match(
-    /<aside class="contextPanel" id="category-context" aria-label="選択分野の変更の意味">.*?<\/aside>/,
+    /<aside class="contextPanel"[^>]*>.*?<\/aside>/,
   )?.[0];
 
   assert.ok(panel);
@@ -618,7 +618,7 @@ test("explains the selected category and offers multiple ways to change it", asy
   );
   const html = await response.text();
   const panel = html.match(
-    /<aside class="contextPanel" id="category-context" aria-label="選択分野の変更の意味">.*?<\/aside>/,
+    /<aside class="contextPanel"[^>]*>.*?<\/aside>/,
   )?.[0];
 
   assert.ok(panel);
@@ -655,7 +655,7 @@ test("carries the selected category and amount to its detail page", async () => 
   );
   const homeHtml = await homeResponse.text();
   const panel = homeHtml.match(
-    /<aside class="contextPanel" id="category-context" aria-label="選択分野の変更の意味">.*?<\/aside>/,
+    /<aside class="contextPanel"[^>]*>.*?<\/aside>/,
   )?.[0];
 
   assert.ok(panel);

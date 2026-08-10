@@ -111,7 +111,7 @@ export default function Home() {
             })}
           </section>
 
-          <aside className="contextPanel" id="category-context" aria-label="選択分野の変更の意味">
+          <aside className="contextPanel" id="category-context" aria-label="選択分野の変更の意味" tabIndex={0}>
             <p className="panelKicker">いま見ている分野</p><h2>{active.name}</h2>
             <div className="amountCompare"><span>成立予算<b>{money(active.baselineAmount100mYen)}</b></span><span>あなたの案<b>{money(values[active.id])}</b></span><span>変更額<b>{activeChange.amountLabel}</b></span><span>変更率<b>{activeChange.rateLabel}</b></span></div>
             <section className="contextSection categoryMeaning">
