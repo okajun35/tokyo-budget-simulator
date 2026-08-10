@@ -19,17 +19,9 @@ import {
 import type { BudgetCategoryId } from "@/features/simulate-budget/budget-category";
 import { describeBudgetChange } from "@/features/simulate-budget/budget-change";
 import { createInitialBudgetSimulationState } from "@/features/simulate-budget/budget-simulation-state";
-import { BUDGET_SOURCES } from "@/features/trace-budget-sources/budget-sources";
 import { FISCAL_CONTEXTS } from "@/features/understand-fiscal-context/fiscal-contexts";
 
 const money = (v: number) => `${Math.round(v).toLocaleString("ja-JP")}億円`;
-const budgetBackgroundSources = {
-  request: BUDGET_SOURCES.find(source => source.id === "request")!,
-  bureauAssessment: BUDGET_SOURCES.find(source => source.id === "bureau")!,
-  governorAssessment: BUDGET_SOURCES.find(source => source.id === "governor")!,
-  proposal: BUDGET_SOURCES.find(source => source.id === "proposal")!,
-  enactedBudget: BUDGET_SOURCES.find(source => source.id === "enacted")!,
-};
 export default function Home() {
   const [values, setValues] = useState<BudgetAllocations>(() =>
     createInitialBudgetSimulationState(BUDGET_CATEGORIES).allocations,
@@ -135,17 +127,6 @@ export default function Home() {
               <div className="contextSectionHead"><h3>配分を変える方法</h3><span>{active.changeOptions.length}つの検討例</span></div>
               <p className="contextCaution">実際の変更方法を示す検討例であり、実行可能な確定案ではありません。</p>
               <ol className="changeOptionList">{active.changeOptions.map((option, index) => <li key={option.id} data-change-option={option.id}><span>{index + 1}</span><div><b>{option.title}</b><p>{option.description}</p></div></li>)}</ol>
-            </section>
-            <section className="contextSection">
-              <div className="contextSectionHead"><h3>東京都で現在の金額になった背景</h3><span>資料段階を分離</span></div>
-              <div className="warning">目的別予算と局別要求は集計範囲が異なります。直接の差額比較ではありません。</div>
-              <div className="budgetBackgroundTimeline">
-                <details className="timelineCard" data-budget-background-stage="request"><summary><span className="stageTag request">各局要求</span><b>{active.request?.bureau ?? "代表局との対応は未収録"}</b></summary><div className="timelineCardBody">{active.request ? <><div className="requestNums"><span>R8要求<b>{money(active.request.requestedAmount100mYen)}</b></span><span>R7当初<b>{money(active.request.previousAmount100mYen)}</b></span></div><p>{active.request.reason}</p></> : <p>代表局の要求総額を対応付けられていないため、推測値は表示しません。</p>}<a href={budgetBackgroundSources.request.sourceUrl} target="_blank" rel="noreferrer">要求資料（外部リンク）↗</a></div></details>
-                <details className="timelineCard" data-budget-background-stage="bureau_assessment"><summary><span className="stageTag bureau">財務局査定</span><b>要求内容を財務局が精査</b></summary><div className="timelineCardBody"><p>{active.bureauAssessment ?? "この分野の代表事項は未収録です。事項別一覧に掲載されないことを『査定なし』とは扱いません。"}</p><a href={budgetBackgroundSources.bureauAssessment.sourceUrl} target="_blank" rel="noreferrer">財務局査定資料（外部リンク）↗</a></div></details>
-                <details className="timelineCard" data-budget-background-stage="governor_assessment"><summary><span className="stageTag governor">知事査定</span><b>知事判断による変更事項</b></summary><div className="timelineCardBody"><p>{active.governorAssessment ?? "知事査定で変更された事項だけが資料に掲載されます。掲載なしを『判断なし』とは扱いません。"}</p><a href={budgetBackgroundSources.governorAssessment.sourceUrl} target="_blank" rel="noreferrer">知事査定資料（外部リンク）↗</a></div></details>
-                <details className="timelineCard" data-budget-background-stage="proposal"><summary><span className="stageTag proposal">予算案</span><b>都議会へ提出した案</b></summary><div className="timelineCardBody"><p>知事査定などを反映して都議会へ提出した段階で、まだ成立予算ではありません。このパネルでは成立額と混ぜて表示しません。</p><a href={budgetBackgroundSources.proposal.sourceUrl} target="_blank" rel="noreferrer">予算案資料（外部リンク）↗</a></div></details>
-                <details className="timelineCard" data-budget-background-stage="enacted_budget"><summary><span className="stageTag enacted_budget">成立予算</span><b>{money(active.baselineAmount100mYen)}</b></summary><div className="timelineCardBody"><p>都議会の議決後に成立した当初予算です。本シミュレーターの初期値として使用しています。</p><a href={budgetBackgroundSources.enactedBudget.sourceUrl} target="_blank" rel="noreferrer">成立後の予算概要（外部リンク）↗</a></div></details>
-              </div>
             </section>
             <section className="contextSection participationContext">
               <div className="contextSectionHead"><h3>意見を伝える先</h3><span>公式案内へ移動</span></div>

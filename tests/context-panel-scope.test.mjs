@@ -51,3 +51,21 @@ test("keeps public cases on the category detail page", async () => {
   assert.match(html, /イングランドの成人社会福祉支出/);
   assert.match(html, /東京都で同じ結果が起きるとの予測ではありません/);
 });
+
+test("keeps the document stage background out of the top panel", async () => {
+  const panel = await topPanel("panel-without-background");
+
+  assert.doesNotMatch(panel, /data-budget-background-stage=/);
+  assert.doesNotMatch(panel, /東京都で現在の金額になった背景/);
+});
+
+test("keeps the document stage background on the category detail page", async () => {
+  const html = await fetchHtml("/budget/welfare?amount=18730", "detail-with-background");
+
+  assert.match(html, /東京都で現在の金額になった背景/);
+  assert.match(html, /各局要求/);
+  assert.match(html, /財務局査定/);
+  assert.match(html, /知事査定/);
+  assert.match(html, /都議会へ提出した段階/);
+  assert.match(html, /18,730億円/);
+});
