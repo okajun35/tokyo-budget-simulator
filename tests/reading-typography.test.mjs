@@ -36,26 +36,33 @@ const fetchTopPageHtml = async () => {
 };
 
 /**
- * 説明文が「す。」のような数文字だけを最終行へ落としたり、
- * 「数字」のような語を行の途中で割ると、文が途切れて見える。
- * 文ごとに行を分けて、どちらも起こらないようにする。
+ * 実測では、13pxの説明文は1文字あたり約13.05pxを占める。
+ * `.lead` の上限720pxは約55文字にあたり、これを超えると折り返して
+ * 「す。」のような数文字だけが最終行に残る。
  */
-test("starts a new line at every sentence of the top-page lead", async () => {
-  const lead = (await fetchTopPageHtml()).match(/<p class="lead">.*?<\/p>/)?.[0];
+const LEAD_MAX_CHARS = 55;
+
+test("keeps the top-page lead within one line of its own column", async () => {
+  const lead = (await fetchTopPageHtml()).match(/<p class="lead">(.*?)<\/p>/)?.[1];
 
   assert.ok(lead, "トップの説明文が見つからない");
-
-  const sentences = [...lead.matchAll(/<span>([^<]*)<\/span>/g)].map(match => match[1]);
-
-  assert.equal(sentences.length, 2);
-  for (const sentence of sentences) {
-    assert.match(sentence, /。$/, sentence);
-  }
+  assert.doesNotMatch(lead, /</, "説明文を要素で分割していない");
+  assert.ok(
+    lead.length <= LEAD_MAX_CHARS,
+    `説明文が${lead.length}字で、1行に収まる${LEAD_MAX_CHARS}字を超えている`,
+  );
 });
 
-test("keeps each sentence on its own line and balances a wrapped one", () => {
-  assert.match(declarationsFor(".lead>span"), /display:block/);
+/**
+ * 狭い窓では54文字でも折り返す。そのとき語の途中で割れないように、
+ * 文節単位の改行と行のバランスを指定する。文節指定はChromium系のみが
+ * 解釈し、未対応の環境では従来どおりの改行になる。
+ */
+test("wraps a narrow window at phrase boundaries instead of inside a word", () => {
   for (const selector of [".lead", ".intro"]) {
-    assert.match(declarationsFor(selector), /text-wrap:balance/, selector);
+    const declarations = declarationsFor(selector);
+
+    assert.match(declarations, /word-break:auto-phrase/, selector);
+    assert.match(declarations, /text-wrap:balance/, selector);
   }
 });
