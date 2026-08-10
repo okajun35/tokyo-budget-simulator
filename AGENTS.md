@@ -24,6 +24,32 @@ Understand the FY2026 baseline
 
 Keep the top-page explanation brief enough that a first-time user can reach the simulator directly. The budget-process explanation comes after the allocation experience and also has its own page. Do not add a mandatory start/introduction screen without first making it an explicit UX decision with the user.
 
+### The concept in one sentence
+
+> 東京都の予算を「見る」だけでなく、自分で動かして、その変更が現実には何を意味するのかまで理解する。
+
+The positioning is a fiscal-experience tool that starts from 「自分ならこうする」 and leads to 「でも現実にはなぜ簡単ではないのか」. It is deliberately more than a budget simulator.
+
+The experience has four stages. Every feature should be traceable to one of them, and a change that serves none of them needs justification.
+
+| Stage | What the person does |
+| --- | --- |
+| 見る | Learn how Tokyo actually allocates its budget across the nine fields. |
+| 動かす | Redistribute it themselves: raise education, cut debt service, raise welfare. |
+| 意味を知る | Learn what 「公債費を30%減らす」 or 「教育費を減らす」 would actually reduce, including public cases from Japan and abroad. |
+| 現実につなぐ | Learn how the budget is decided through bureau requests, Finance Bureau assessment, governor assessment, and the assembly, and where a resident can raise an opinion. |
+
+The operating experience is modelled on Liverpool's Budget Challenge. Four things are the Tokyo-specific difference and must not be dropped to simplify the product:
+
+1. Public cases of jurisdictions and countries that actually made reductions.
+2. Tokyo's own budget formation process.
+3. Routes to 都民の声, petitions, written requests, and responsible bureaus.
+4. Provenance back to official primary sources.
+
+`features/understand-prototype/prototype-purpose.ts` holds the user-facing copy for the concept, the four stages, and the non-goals. `/about` renders it. Keep that file and this section consistent; if the concept changes, change both.
+
+When assessing the product against the concept, measure coverage rather than presence. As of 2026-08-10 the weakest stage is 意味を知る, because public cases exist for three of nine fields; `/about` derives that count from the data so the page cannot overstate it.
+
 ## Simulator concept and invariants
 
 - The annual general-account total is fixed at 96,530 hundred-million yen (9兆6,530億円) for the current FY2026 experience.
