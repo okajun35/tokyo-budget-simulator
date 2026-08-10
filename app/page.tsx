@@ -85,23 +85,7 @@ export default function Home() {
     setValues(initialState.allocations);
     setSelected(initialState.selectedCategoryId);
   };
-  const showSimulatorSection = (sectionId: "simulator" | "budget-process") => {
-    requestAnimationFrame(() =>
-      document.getElementById(sectionId)?.scrollIntoView({ block: "start" }),
-    );
-  };
-
   return <main data-visual-theme="tokyo-blue">
-    <header className="topbar">
-      <a className="brand" href="#top" aria-label="東京予算ラボ トップ"><span className="brandMark">都</span><span>東京予算ラボ<small>令和8年度・一般会計</small></span></a>
-      <nav aria-label="主要メニュー">
-        <button className="active" onClick={() => showSimulatorSection("simulator")}>予算シミュレーター</button>
-        <a href="/budget-process">予算が決まるまで</a>
-        <a href={`/participation?category=${selected}`}>声を届ける</a>
-        <a href="/sources">出典・データ</a>
-      </nav>
-    </header>
-
       <section className="hero" id="top">
         <div>
           <p className="eyebrow">BUDGET SIMULATOR · FY2026</p>
@@ -217,6 +201,5 @@ export default function Home() {
         </article>)}</div>
         <p className="csvBadge">✓ 公式CSVを参照し、成立予算概要と照合。取得・正規化・検証手順をリポジトリに保持しています。</p>
       </section>
-    <footer><div className="brand"><span className="brandMark">都</span><span>東京予算ラボ<small>非公式プロトタイプ</small></span></div><p>東京都の公式サービスではありません。シミュレーターの金額は1億円単位の仮想配分です。</p><nav className="footerLinks" aria-label="サイト情報"><a href="/about">このサイトについて</a><a href="https://odhackathon.metro.tokyo.lg.jp/issues/c10/clusters/" target="_blank" rel="noreferrer">都知事杯ODH テーマ（外部リンク）↗</a></nav></footer>
   </main>;
 }

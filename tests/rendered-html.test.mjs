@@ -90,7 +90,7 @@ test("offers all four primary navigation destinations", async () => {
   );
   assert.match(
     navigation,
-    /<a(?=[^>]*href=["']\/participation\?category=welfare["'])[^>]*>声を届ける/,
+    /<a(?=[^>]*href=["']\/participation["'])[^>]*>声を届ける/,
   );
   assert.match(
     navigation,
