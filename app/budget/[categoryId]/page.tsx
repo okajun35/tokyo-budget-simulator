@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { BUDGET_TERM_GLOSSARY } from "@/domain/tokyo-budget/budget-term-glossary";
 import {
   BUDGET_DOCUMENT_STAGE_LABELS,
 } from "@/domain/tokyo-budget/budget-document-stage";
@@ -75,6 +76,8 @@ export default async function BudgetDetailPage({
     (category.caseIds as readonly string[]).includes(budgetCase.id),
   );
   const caseInterpretation = CASE_INTERPRETATIONS[category.id];
+  const categoryTermMeaning =
+    BUDGET_TERM_GLOSSARY[category.name as keyof typeof BUDGET_TERM_GLOSSARY]?.meaning;
   const categorySources = BUDGET_SOURCES.filter(source =>
     (category.sourceIds as readonly string[]).includes(source.id),
   );
@@ -93,7 +96,7 @@ export default async function BudgetDetailPage({
       <Link href="/#simulator">← 予算に戻る</Link>
       <p className="eyebrow">BUDGET DETAIL · FY2026</p>
       <h1>{category.name}</h1>
-      <p>シミュレーターで選んだ分野と金額を引き継ぎ、変更の意味と根拠を確認します。</p>
+      <p>{categoryTermMeaning && <>{category.name}は{categoryTermMeaning}です。</>}シミュレーターで選んだ分野と金額を引き継ぎ、変更の意味と根拠を確認します。</p>
     </header>
 
     <div className="budgetDetailContent">
@@ -188,6 +191,7 @@ export default async function BudgetDetailPage({
       <section className="budgetDetailSection" aria-labelledby="background-heading">
         <p className="sectionLabel">TOKYO BUDGET BACKGROUND</p>
         <h2 id="background-heading">東京都で現在の金額になった背景</h2>
+        <p className="detailLead">各局の要求から成立までに、査定（要求された事業や金額を確認・調整すること）を二段階で通ります。資料の段階ごとに分けて示します。</p>
         <p className="detailLead">目的別予算と局別要求は集計範囲が異なるため、直接の差額比較はしません。資料段階ごとに確認できる内容を分けます。</p>
         <div className="detailTimeline">
           <article><span className="stageTag request">各局要求</span><h3>{category.request?.bureau ?? "代表局との対応は未収録"}</h3>{category.request ? <><p>要求額 {money(category.request.requestedAmount100mYen)}／前年度当初 {money(category.request.previousAmount100mYen)}</p><p>{category.request.reason}</p></> : <p data-evidence-kind="unknown">この分野の代表局要求は確認できていません。</p>}<a href={budgetBackgroundSources.request.sourceUrl} target="_blank" rel="noreferrer">要求額と要求理由が分かる資料（外部リンク）↗</a></article>

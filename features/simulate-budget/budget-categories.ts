@@ -344,7 +344,7 @@ export const BUDGET_CATEGORIES = [
     name: "公債費",
     baselineAmount100mYen: 2_799,
     color: "#b17860",
-    shortDescription: "都債の元利償還など",
+    shortDescription: "都債の返済などに使うお金",
     definition:
       "過去に発行した都債の元金返済と利子支払いなど、借入れに伴う義務を履行するための経費です。",
     mainUses: ["都債の元金償還", "都債の利子支払い"],
@@ -383,7 +383,7 @@ export const BUDGET_CATEGORIES = [
     name: "税連動経費等",
     baselineAmount100mYen: 21_053,
     color: "#98963f",
-    shortDescription: "区市町村への交付金など",
+    shortDescription: "区市町村などへ配分するお金",
     definition:
       "税収等に連動して区市町村などへ配分する交付金や、制度上必要となる経費です。",
     detailedExplanation:

@@ -22,7 +22,7 @@ export default function SourcesPage() {
       <Link href="/">← トップへ戻る</Link>
       <p className="eyebrow">PROVENANCE · FY2026</p>
       <h1>出典・データ</h1>
-      <p>数字の「いつ・どの段階」を消さず、成立予算、予算案、要求、査定、評価、外部要望を別資料として追跡します。</p>
+      <p>数字の「いつ・どの段階」を消さず、成立予算、予算案、要求、査定（要求された事業や金額を確認・調整すること）、評価、外部要望を別資料として追跡します。公債費（都債の返済などに使うお金）のように、分野ごとの根拠も同じ形で辿れます。</p>
     </header>
 
     <section className="evidenceReadingGuide" aria-labelledby="evidence-guide-heading">

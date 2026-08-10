@@ -37,7 +37,7 @@ export const PROTOTYPE_EXPERIENCE_STAGES: readonly PrototypeExperienceStage[] = 
     id: "move",
     label: "動かす",
     summary:
-      "教育を増やす、公債費を減らす、福祉を増やすというように、年間総額を変えずに自分で配り直します。増やすには、どこかを減らすか、配分可能額として残す必要があります。",
+      "教育を増やす、公債費（都債の返済などに使うお金）を減らす、福祉を増やすというように、年間総額を変えずに自分で配り直します。増やすには、どこかを減らすか、配分可能額として残す必要があります。",
     routeHref: "/#simulator",
     routeLabel: "配分を動かしてみる",
   },
@@ -53,7 +53,7 @@ export const PROTOTYPE_EXPERIENCE_STAGES: readonly PrototypeExperienceStage[] = 
     id: "connect",
     label: "現実につなぐ",
     summary:
-      "各局要求、財務局査定、知事査定、都議会審議という流れで予算がどう決まるのかを知り、都民がどこで意見を出せるのかまで確かめます。",
+      "各局要求、財務局査定（要求された事業や金額を確認・調整すること）、知事査定、都議会審議という流れで予算がどう決まるのかを知り、都民がどこで意見を出せるのかまで確かめます。",
     routeHref: "/budget-process",
     routeLabel: "予算が決まるまでを見る",
   },

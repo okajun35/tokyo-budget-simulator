@@ -32,7 +32,7 @@ export default function BudgetProcessPage() {
       <Link href="/">← トップへ戻る</Link>
       <p className="eyebrow">TOKYO BUDGET PROCESS · FY2026</p>
       <h1>東京都の予算が<br />決まるまで</h1>
-      <p>予算は、要望、各局要求、二つの査定、都議会審議を経て成立します。成立後も執行、決算、評価を通じて次年度へつながります。</p>
+      <p>予算は、要望、各局要求、二つの査定（要求された事業や金額を確認・調整すること）、都議会審議を経て成立します。成立後も執行、決算、評価を通じて次年度へつながります。</p>
       <div className="processSeparationNotes" role="note">
         <b>資料の段階を混ぜずに読みます</b>
         <ul>
