@@ -26,6 +26,37 @@ export const BUDGET_CASE_CHANGE_TYPE_DESCRIPTIONS = {
 } as const satisfies Record<BudgetCaseChangeType, string>;
 
 /**
+ * タグは2つのまとまりを持つ。前者はサービス側で何が変わったか、
+ * 後者は支出が減った先に費用が動いたかを表す。
+ * 「支出が減った」＝「社会全体のコストが減った」ではないため、
+ * 後者が付いているかどうかを一目で分かるようにする。
+ * 色はタグごとではなくこのまとまりごとに決める。
+ */
+export type BudgetCaseChangeTypeGroup = "what_changed" | "where_the_cost_moved";
+
+export const BUDGET_CASE_CHANGE_TYPE_GROUPS = {
+  what_changed: {
+    label: "何が変わったか",
+    changeTypes: ["service_reduction", "efficiency_reorganization"],
+  },
+  where_the_cost_moved: {
+    label: "費用はどこへ動いたか",
+    changeTypes: ["burden_shift", "deferral"],
+  },
+} as const satisfies Record<
+  BudgetCaseChangeTypeGroup,
+  { label: string; changeTypes: readonly BudgetCaseChangeType[] }
+>;
+
+export const changeTypeGroupOf = (
+  changeType: BudgetCaseChangeType,
+): BudgetCaseChangeTypeGroup =>
+  (BUDGET_CASE_CHANGE_TYPE_GROUPS.where_the_cost_moved.changeTypes as readonly BudgetCaseChangeType[])
+    .includes(changeType)
+    ? "where_the_cost_moved"
+    : "what_changed";
+
+/**
  * 資料の確かさは内部で管理する。1が最も直接的で、4は関連事例。
  * 画面には出さない。「レベル2」と書かれても利用者には良し悪しが伝わらないため、
  * 代わりに `BUDGET_CASE_SOURCE_KIND_LABELS` で出典の種類を言葉で示す。

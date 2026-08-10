@@ -153,8 +153,10 @@ input[type="range"]::-webkit-slider-thumb { appearance:none; width:16px; height:
 .caseTagLegend>p { margin:12px 0 0; color:var(--muted); font-size:12px; line-height:1.8; }
 .caseChangeTypes { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 0; padding:0; list-style:none; }
 .caseChangeTypes li { padding:5px 10px; border-radius:999px; background:#e9f0fb; color:#23405d; font-size:12px; font-weight:800; }
-.caseChangeTypes li[data-case-change-type="burden_shift"] { background:#fff2df; color:#7a5320; }
-.caseChangeTypes li[data-case-change-type="deferral"] { background:#f2ecfb; color:#553a7d; }
+.caseChangeTypes li[data-case-change-group="where_the_cost_moved"] { background:#fff2df; color:#7a5320; }
+.caseTagGroup { margin-top:12px; }
+.caseTagGroupLabel { margin:0; color:#31547f; font-size:13px; font-weight:900; }
+.caseTagGroup[data-case-change-group="where_the_cost_moved"] dt { color:#7a5320; }
 .detailUseList { display:flex; flex-wrap:wrap; gap:7px; margin:0; padding:0; list-style:none; }
 .detailUseList li { padding:7px 10px; border-radius:999px; background:#edf3fb; color:#31547f; font-size:10px; font-weight:700; }
 .detailSubheading { margin-top:28px; }

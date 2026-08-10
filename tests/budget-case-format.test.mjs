@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import {
+  BUDGET_CASE_CHANGE_TYPE_GROUPS,
   BUDGET_CASE_CHANGE_TYPE_LABELS,
   BUDGET_CASE_SOURCE_KIND_LABELS,
 } from "../features/learn-from-budget-cases/budget-case.ts";
@@ -69,6 +71,47 @@ test("reads a case as what changed, what was confirmed, and what is still unknow
     html.indexOf(englandCase.whatChanged) < html.indexOf(englandCase.whatRemainsUnknown),
     "分からないことが先に来ている",
   );
+});
+
+test("groups the four tags by what changed and where the cost moved", async () => {
+  const html = await fetchHtml("/budget/welfare", "case-tag-groups");
+  const legend = html.match(/<details class="caseTagLegend">[\s\S]*?<\/details>/)?.[0];
+
+  assert.ok(legend, "事例の見方が見つからない");
+  for (const group of Object.values(BUDGET_CASE_CHANGE_TYPE_GROUPS)) {
+    assert.ok(legend.includes(group.label), group.label);
+    for (const changeType of group.changeTypes) {
+      assert.ok(
+        legend.indexOf(group.label) < legend.indexOf(BUDGET_CASE_CHANGE_TYPE_LABELS[changeType]),
+        `${BUDGET_CASE_CHANGE_TYPE_LABELS[changeType]} が ${group.label} より前にある`,
+      );
+    }
+  }
+});
+
+test("colours a tag by its group so a scan shows when the cost moved", async () => {
+  const html = await fetchHtml("/budget/welfare", "case-tag-group-attribute");
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+
+  assert.match(
+    html,
+    /<li data-case-change-type="burden_shift" data-case-change-group="where_the_cost_moved">/,
+  );
+  assert.match(
+    html,
+    /<li data-case-change-type="service_reduction" data-case-change-group="what_changed">/,
+  );
+  assert.doesNotMatch(
+    css,
+    /\[data-case-change-type="[a-z_]+"\][^{]*\{[^}]*background/,
+    "タグ単位で色を持っている",
+  );
+  const colouredGroups = new Set(
+    (css.match(/\[data-case-change-group="([a-z_]+)"\]/g) ?? [])
+      .map(selector => selector.match(/"([a-z_]+)"/)[1]),
+  );
+
+  assert.deepEqual([...colouredGroups], ["where_the_cost_moved"], "既定色から外れるまとまりは1つで足りる");
 });
 
 test("explains the four tags next to the cases without a separate page", async () => {

@@ -6,8 +6,10 @@ import {
 import { PARTICIPATION_ROUTES } from "@/features/find-participation-route/participation-routes";
 import {
   BUDGET_CASE_CHANGE_TYPE_DESCRIPTIONS,
+  BUDGET_CASE_CHANGE_TYPE_GROUPS,
   BUDGET_CASE_CHANGE_TYPE_LABELS,
   BUDGET_CASE_SOURCE_KIND_LABELS,
+  changeTypeGroupOf,
 } from "@/features/learn-from-budget-cases/budget-case";
 import { BUDGET_CASES } from "@/features/learn-from-budget-cases/budget-cases";
 import { CASE_INTERPRETATIONS } from "@/features/learn-from-budget-cases/case-interpretations";
@@ -160,15 +162,18 @@ export default async function BudgetDetailPage({
         <p className="detailCaution">同じ割合を変えても、東京都で同じ結果になるとは限りません。制度、財政状況、人口などの条件が異なります。</p>
         <details className="caseTagLegend">
           <summary>？ 事例の見方</summary>
-          <dl>{Object.entries(BUDGET_CASE_CHANGE_TYPE_LABELS).map(([changeType, label]) => <div key={changeType}>
-            <dt>{label}</dt>
-            <dd>{BUDGET_CASE_CHANGE_TYPE_DESCRIPTIONS[changeType as keyof typeof BUDGET_CASE_CHANGE_TYPE_DESCRIPTIONS]}</dd>
-          </div>)}</dl>
-          <p>1件の事例に複数付きます。「サービス縮小」と「負担移転」が並べば、支出が減った先に負担が移ったことを表します。</p>
+          {Object.entries(BUDGET_CASE_CHANGE_TYPE_GROUPS).map(([groupId, group]) => <div key={groupId} className="caseTagGroup" data-case-change-group={groupId}>
+            <p className="caseTagGroupLabel">{group.label}</p>
+            <dl>{group.changeTypes.map(changeType => <div key={changeType}>
+              <dt>{BUDGET_CASE_CHANGE_TYPE_LABELS[changeType]}</dt>
+              <dd>{BUDGET_CASE_CHANGE_TYPE_DESCRIPTIONS[changeType]}</dd>
+            </div>)}</dl>
+          </div>)}
+          <p>1件の事例に複数付きます。「費用はどこへ動いたか」のタグが付いていれば、支出が減っても費用が消えたわけではなく、住民や将来の年度へ動いたことを表します。</p>
         </details>
         {categoryCases.length > 0 ? <div className="detailCaseGrid">{categoryCases.map(budgetCase => <article key={budgetCase.id}>
           <div className="detailCaseHeading"><span>{budgetCase.country === "日本" ? "国内事例" : "海外事例"}</span><h3>{budgetCase.title}</h3></div>
-          <ul className="caseChangeTypes">{budgetCase.changeTypes.map(changeType => <li key={changeType} data-case-change-type={changeType}>{BUDGET_CASE_CHANGE_TYPE_LABELS[changeType]}</li>)}</ul>
+          <ul className="caseChangeTypes">{budgetCase.changeTypes.map(changeType => <li key={changeType} data-case-change-type={changeType} data-case-change-group={changeTypeGroupOf(changeType)}>{BUDGET_CASE_CHANGE_TYPE_LABELS[changeType]}</li>)}</ul>
           <dl><dt>実施地域</dt><dd>{budgetCase.jurisdiction}</dd><dt>実施時期</dt><dd>{budgetCase.period}</dd><dt>変更した理由</dt><dd>{budgetCase.budgetContext}</dd></dl>
           <h4>何を変えた？</h4>
           <p>{budgetCase.whatChanged}</p>
