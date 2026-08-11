@@ -28,11 +28,24 @@ test("records what each source is and where the app uses it", () => {
   }
 });
 
-test("records the official catalog license for the budget CSVs", () => {
+test("distinguishes the usage terms of each official source site", () => {
   const csvSource = BUDGET_SOURCES.find(source => source.id === "csv");
+  const evaluationSource = BUDGET_SOURCES.find(source => source.id === "evaluation");
+  const financeBureauSource = BUDGET_SOURCES.find(source => source.id === "enacted");
+  const assemblySource = BUDGET_SOURCES.find(source => source.id === "assembly-review");
 
+  for (const openDataSource of [csvSource, evaluationSource]) {
+    assert.equal(
+      openDataSource?.license,
+      "クリエイティブ・コモンズ 表示（CC BY 4.0）",
+    );
+  }
   assert.equal(
-    csvSource?.license,
-    "クリエイティブ・コモンズ 表示（CC BY 4.0）",
+    financeBureauSource?.license,
+    "東京都財務局サイトポリシー：著作権法上認められる範囲に限り利用可。引用時は「東京都財務局出典」と明記",
+  );
+  assert.equal(
+    assemblySource?.license,
+    "東京都議会サイト：著作権法上認められた利用を除き、無断複製・転用不可",
   );
 });

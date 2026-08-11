@@ -1,6 +1,10 @@
 import type { BudgetSource } from "./budget-source";
 
-const LICENSE_UNCONFIRMED = "確認中";
+const LICENSE_OPEN_DATA = "クリエイティブ・コモンズ 表示（CC BY 4.0）";
+const LICENSE_FINANCE_BUREAU =
+  "東京都財務局サイトポリシー：著作権法上認められる範囲に限り利用可。引用時は「東京都財務局出典」と明記";
+const LICENSE_ASSEMBLY =
+  "東京都議会サイト：著作権法上認められた利用を除き、無断複製・転用不可";
 
 export const BUDGET_SOURCES = [
   {
@@ -14,7 +18,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-06T21:50:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "local_government",
-    license: LICENSE_UNCONFIRMED,
+    license: LICENSE_FINANCE_BUREAU,
     targetPage: "令和8年度予算概要",
     targetTableOrItem: "一般会計の規模、目的別歳出、都税、基金および都債",
     appUsage: ["シミュレーターの基準額", "予算成立過程の成立予算", "財政条件の詳細"],
@@ -30,7 +34,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-06T21:48:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "open_data_catalog",
-    license: "クリエイティブ・コモンズ 表示（CC BY 4.0）",
+    license: LICENSE_OPEN_DATA,
     targetPage: "TOKYO予算見える化ボード データ一覧",
     targetTableOrItem: "一般歳出の目的別内訳を含む令和8年度CSV一覧",
     appUsage: ["9分野の成立予算額の照合"],
@@ -46,7 +50,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-06T21:51:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "local_government",
-    license: LICENSE_UNCONFIRMED,
+    license: LICENSE_FINANCE_BUREAU,
     targetPage: "令和8年度東京都予算案の概要",
     targetTableOrItem: "一般会計予算案および主要施策",
     appUsage: ["予算成立過程の予算案"],
@@ -62,7 +66,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-06T21:52:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "local_government",
-    license: LICENSE_UNCONFIRMED,
+    license: LICENSE_FINANCE_BUREAU,
     targetPage: "令和8年度予算要求",
     targetTableOrItem: "各局予算要求概要および要求額",
     appUsage: ["分野別の要求背景", "予算成立過程の各局要求"],
@@ -78,7 +82,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-06T21:53:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "local_government",
-    license: LICENSE_UNCONFIRMED,
+    license: LICENSE_FINANCE_BUREAU,
     targetPage: "令和8年度一般会計予算 財務局査定結果（事項別）",
     targetTableOrItem: "要求額から1億円以上増減した事項",
     appUsage: ["分野別の財務局査定例", "予算成立過程の財務局査定"],
@@ -94,7 +98,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-06T21:53:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "local_government",
-    license: LICENSE_UNCONFIRMED,
+    license: LICENSE_FINANCE_BUREAU,
     targetPage: "令和8年度一般会計予算 知事査定結果",
     targetTableOrItem: "知事査定で変更された事項",
     appUsage: ["分野別の知事査定例", "予算成立過程の知事査定"],
@@ -110,7 +114,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-06T21:51:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "local_government",
-    license: LICENSE_UNCONFIRMED,
+    license: LICENSE_FINANCE_BUREAU,
     targetPage: "令和8年度都議会各会派からの要望",
     targetTableOrItem: "会派別の予算要望資料",
     appUsage: ["予算成立過程の外部要望"],
@@ -126,7 +130,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-06T21:51:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "local_government",
-    license: LICENSE_UNCONFIRMED,
+    license: LICENSE_FINANCE_BUREAU,
     targetPage: "各種団体からの東京都予算に対するヒアリング",
     targetTableOrItem: "団体別ヒアリング資料",
     appUsage: ["予算成立過程の外部要望"],
@@ -143,7 +147,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-06T21:49:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "open_data_catalog",
-    license: LICENSE_UNCONFIRMED,
+    license: LICENSE_OPEN_DATA,
     targetPage: "政策・事業評価見える化ボード",
     targetTableOrItem: "政策評価・事業評価の公開データ",
     appUsage: ["予算成立過程の政策・事業評価"],
@@ -158,7 +162,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-09T15:00:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "local_legislature",
-    license: LICENSE_UNCONFIRMED,
+    license: LICENSE_ASSEMBLY,
     targetPage: "令和8年 予算特別委員会速記録",
     targetTableOrItem: "令和8年度予算の審査日程および速記録",
     appUsage: ["予算成立過程の都議会審議"],
@@ -173,7 +177,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-09T15:00:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "local_legislature",
-    license: LICENSE_UNCONFIRMED,
+    license: LICENSE_ASSEMBLY,
     targetPage: "令和8年第1回定例会 提出議案と議決結果",
     targetTableOrItem: "令和8年度東京都一般会計予算の議決結果",
     appUsage: ["予算成立過程の議決・成立"],
@@ -189,7 +193,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-09T15:00:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "local_government",
-    license: LICENSE_UNCONFIRMED,
+    license: LICENSE_FINANCE_BUREAU,
     targetPage: "令和8年度予算の執行について（依命通達）",
     targetTableOrItem: "令和8年度予算の執行方針",
     appUsage: ["予算成立過程の事業執行"],
@@ -204,7 +208,7 @@ export const BUDGET_SOURCES = [
     retrievedAt: "2026-08-09T15:00:00+09:00",
     factOrInterpretation: "fact",
     sourceType: "local_government",
-    license: LICENSE_UNCONFIRMED,
+    license: LICENSE_FINANCE_BUREAU,
     targetPage: "東京都財務局 決算",
     targetTableOrItem: "年度別決算資料の公開状況",
     appUsage: ["予算成立過程の決算と未確定表示"],

@@ -37,7 +37,7 @@ export default function SourcesPage() {
     <section className="sourcesPageSection" aria-labelledby="tokyo-sources-heading">
       <p className="eyebrow">TOKYO PRIMARY SOURCES</p>
       <h2 id="tokyo-sources-heading">東京都予算の資料</h2>
-      <p className="sourcesSectionLead">外部要望や予算案を、成立予算と混ぜずに表示します。ライセンスが確認中の資料は、再利用前にリンク先の条件確認が必要です。</p>
+      <p className="sourcesSectionLead">外部要望や予算案を、成立予算と混ぜずに表示します。オープンデータカタログのCSVはCC BY 4.0です。財務局や都議会のPDF・ページは別の利用条件があり、資料ごとに下記へ記録しています。</p>
       <div className="provenanceList">{BUDGET_SOURCES.map(source => <article key={source.id} data-budget-source={source.id}>
         <div className="provenanceHeading">
           <span className={`stageTag ${source.documentStage}`}>{BUDGET_DOCUMENT_STAGE_LABELS[source.documentStage]}</span>
