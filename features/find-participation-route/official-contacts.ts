@@ -14,6 +14,30 @@ export const OFFICIAL_CONTACTS = {
     "verifiedAt": "2026-08-11",
     "verificationStatus": "verified"
   },
+  "health-medical-resident-voice-form": {
+    "contactId": "health-medical-resident-voice-form",
+    "contactOrganizationId": "health-medical-bureau",
+    "contactOrganizationName": "東京都保健医療局",
+    "contactLabel": "東京の保健医療についてあなたの声をお寄せください",
+    "contactKind": "opinion_form",
+    "contactUrl": "https://logoform.jp/form/tmgform/297877",
+    "contactSourceUrl": "https://www.hokeniryo.metro.tokyo.lg.jp/contact",
+    "contactPurpose": "保健医療局の事業に関する要望・意見を直接送るフォーム。",
+    "verifiedAt": "2026-08-11",
+    "verificationStatus": "verified"
+  },
+  "health-medical-contact-directory": {
+    "contactId": "health-medical-contact-directory",
+    "contactOrganizationId": "health-medical-bureau",
+    "contactOrganizationName": "東京都保健医療局",
+    "contactLabel": "お問い合わせ",
+    "contactKind": "inquiry_directory",
+    "contactUrl": "https://www.hokeniryo.metro.tokyo.lg.jp/contact",
+    "contactSourceUrl": "https://www.hokeniryo.metro.tokyo.lg.jp/contact",
+    "contactPurpose": "保健医療局の分野・内容別の問い合わせ先と、都民の声窓口を確認できる。",
+    "verifiedAt": "2026-08-11",
+    "verificationStatus": "verified"
+  },
   "education-org-directory": {
     "contactId": "education-org-directory",
     "contactOrganizationId": "education-bureau",

@@ -98,8 +98,10 @@ type ParticipationTopic = {
 | welfare | 福祉と保健 | disability-welfare | 障害福祉 | welfare-bureau | 東京都福祉局 | primary | https://www.metro.tokyo.lg.jp/about/soshiki | 東京都の組織案内で福祉局の主な事業に障害者福祉を明記。 | 2026-08-11 | verified | tokyo-resident-voice-guide | fallback | 都民の声総合窓口（留意事項・各局案内） | general_contact | https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou | https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou | 福祉局の直接窓口本文を今回確認できなかったため、安全な共通フォールバックとして案内。 | 2026-08-11 | verified | 福祉局の候補窓口 https://www.fukushi.metro.tokyo.lg.jp/contact は今回503で本文未確認。 |
 | welfare | 福祉と保健 | child-family-welfare | 子育て・児童福祉 | welfare-bureau | 東京都福祉局 | primary | https://www.metro.tokyo.lg.jp/about/soshiki | 東京都の組織案内で福祉局が子供・家庭に関する福祉施策を担当すると確認。 | 2026-08-11 | verified | tokyo-resident-voice-guide | fallback | 都民の声総合窓口（留意事項・各局案内） | general_contact | https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou | https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou | 福祉局の直接窓口本文を今回確認できなかったため、安全な共通フォールバックとして案内。 | 2026-08-11 | verified | 福祉局の候補窓口 https://www.fukushi.metro.tokyo.lg.jp/contact は今回503で本文未確認。 |
 | welfare | 福祉と保健 | child-family-welfare | 子育て・児童福祉 | child-policy-coordination | 東京都子供政策連携室 | possible | https://www.metro.tokyo.lg.jp/about/soshiki | 東京都の組織案内で、都の子供政策の企画立案・総合調整と先進プロジェクト推進を担当すると確認。子育て・児童福祉全体の共同所管までは確認できないためpossibleとする。 | 2026-08-11 | verified | tokyo-resident-voice-guide | fallback | 都民の声総合窓口（留意事項・各局案内） | general_contact | https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou | https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou | 横断的な子供政策に関する場合の共通フォールバック。 | 2026-08-11 | verified | 個別の児童福祉制度は福祉局等が主となる場合がある。 |
-| welfare | 福祉と保健 | medical-delivery | 医療提供体制 | health-medical-bureau | 東京都保健医療局 | primary | https://www.metro.tokyo.lg.jp/about/soshiki | 東京都の組織案内で保健医療局が医療政策・医療提供体制等を担当すると確認。 | 2026-08-11 | verified | tokyo-resident-voice-guide | fallback | 都民の声総合窓口（留意事項・各局案内） | general_contact | https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou | https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou | 保健医療局の直接窓口本文を今回確認できなかったため、安全な共通フォールバックとして案内。 | 2026-08-11 | verified | 候補窓口 https://www.hokeniryo.metro.tokyo.lg.jp/contact は今回503で本文未確認。 |
-| welfare | 福祉と保健 | public-health | 保健・健康施策 | health-medical-bureau | 東京都保健医療局 | primary | https://www.metro.tokyo.lg.jp/about/soshiki | 東京都の組織案内で保健医療局が健康・保健施策を担当すると確認。 | 2026-08-11 | verified | tokyo-resident-voice-guide | fallback | 都民の声総合窓口（留意事項・各局案内） | general_contact | https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou | https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou | 保健医療局の直接窓口本文を今回確認できなかったため、安全な共通フォールバックとして案内。 | 2026-08-11 | verified | 候補窓口 https://www.hokeniryo.metro.tokyo.lg.jp/contact は今回503で本文未確認。 |
+| welfare | 福祉と保健 | medical-delivery | 医療提供体制 | health-medical-bureau | 東京都保健医療局 | primary | https://www.metro.tokyo.lg.jp/about/soshiki | 東京都の組織案内で保健医療局が医療政策・医療提供体制等を担当すると確認。 | 2026-08-11 | verified | health-medical-resident-voice-form | direct | 東京の保健医療についてあなたの声をお寄せください | opinion_form | https://logoform.jp/form/tmgform/297877 | https://www.hokeniryo.metro.tokyo.lg.jp/contact | 保健医療局の事業に関する要望・意見を直接送るフォーム。 | 2026-08-11 | verified |  |
+| welfare | 福祉と保健 | medical-delivery | 医療提供体制 | health-medical-bureau | 東京都保健医療局 | primary | https://www.metro.tokyo.lg.jp/about/soshiki | 東京都の組織案内で保健医療局が医療政策・医療提供体制等を担当すると確認。 | 2026-08-11 | verified | health-medical-contact-directory | alternate | お問い合わせ | inquiry_directory | https://www.hokeniryo.metro.tokyo.lg.jp/contact | https://www.hokeniryo.metro.tokyo.lg.jp/contact | 保健医療局の分野・内容別の問い合わせ先と、都民の声窓口を確認できる。 | 2026-08-11 | verified |  |
+| welfare | 福祉と保健 | public-health | 保健・健康施策 | health-medical-bureau | 東京都保健医療局 | primary | https://www.metro.tokyo.lg.jp/about/soshiki | 東京都の組織案内で保健医療局が健康・保健施策を担当すると確認。 | 2026-08-11 | verified | health-medical-resident-voice-form | direct | 東京の保健医療についてあなたの声をお寄せください | opinion_form | https://logoform.jp/form/tmgform/297877 | https://www.hokeniryo.metro.tokyo.lg.jp/contact | 保健医療局の事業に関する要望・意見を直接送るフォーム。 | 2026-08-11 | verified |  |
+| welfare | 福祉と保健 | public-health | 保健・健康施策 | health-medical-bureau | 東京都保健医療局 | primary | https://www.metro.tokyo.lg.jp/about/soshiki | 東京都の組織案内で保健医療局が健康・保健施策を担当すると確認。 | 2026-08-11 | verified | health-medical-contact-directory | alternate | お問い合わせ | inquiry_directory | https://www.hokeniryo.metro.tokyo.lg.jp/contact | https://www.hokeniryo.metro.tokyo.lg.jp/contact | 保健医療局の分野・内容別の問い合わせ先と、都民の声窓口を確認できる。 | 2026-08-11 | verified |  |
 | welfare | 福祉と保健 | welfare-other | その他 | — | — | unresolved | — | テーマ名だけでは安全な所管対応を確認できないため、特定局へ割り当てない。 | — | unresolved | tokyo-resident-voice-guide | fallback | 都民の声総合窓口（留意事項・各局案内） | general_contact | https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou | https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou | 担当局が分からない場合の共通フォールバック。担当局が分かる場合は各局の窓口利用を案内している。 | 2026-08-11 | verified | 話題を具体化すると担当局を絞れる場合があります。 |
 | education | 教育と文化 | metropolitan-schools | 都立学校・教育行政・教職員 | education-bureau | 東京都教育委員会（教育庁） | primary | https://www.soshiki-address.metro.tokyo.lg.jp/031_kyoiku/kyoiku-address.htm | 教育庁組織アドレスで都立学校運営、教職員、学校教育関係事務を確認。 | 2026-08-11 | verified | education-org-directory | direct | 教育庁組織アドレス | inquiry_directory | https://www.soshiki-address.metro.tokyo.lg.jp/031_kyoiku/kyoiku-address.htm | https://www.soshiki-address.metro.tokyo.lg.jp/031_kyoiku/kyoiku-address.htm | 教育庁の組織・担当部署・電話番号を確認できる一覧。 | 2026-08-11 | verified |  |
 | education | 教育と文化 | school-meals-curriculum-ict | 給食・教育内容・ICT | education-bureau | 東京都教育委員会（教育庁） | primary | https://www.soshiki-address.metro.tokyo.lg.jp/031_kyoiku/kyoiku-address.htm | 教育庁組織アドレスで学校給食・健康教育、情報教育等の担当を確認。 | 2026-08-11 | verified | education-org-directory | direct | 教育庁組織アドレス | inquiry_directory | https://www.soshiki-address.metro.tokyo.lg.jp/031_kyoiku/kyoiku-address.htm | https://www.soshiki-address.metro.tokyo.lg.jp/031_kyoiku/kyoiku-address.htm | 教育庁の組織・担当部署・電話番号を確認できる一覧。 | 2026-08-11 | verified | 区市町村立学校の個別事項は各区市町村教育委員会が所管する場合がある。 |
@@ -178,6 +180,8 @@ type ParticipationTopic = {
 | mpd-opinion | metropolitan-police | 警視庁 |
 | tfd-opinion-form | tokyo-fire-department | 東京消防庁 |
 | tokyo-disaster-directory | tokyo-metropolitan-government | 東京都（防災ホームページ） |
+| health-medical-resident-voice-form | health-medical-bureau | 東京都保健医療局 |
+| health-medical-contact-directory | health-medical-bureau | 東京都保健医療局 |
 | policy-org-directory | policy-planning-bureau | 東京都政策企画局 |
 | general-affairs-org-directory | general-affairs-bureau | 東京都総務局 |
 | election-business-directory | election-commission | 東京都選挙管理委員会事務局 |
@@ -199,7 +203,7 @@ type ParticipationTopic = {
 
 | 分野 | テーマ総数（その他含む） | 具体テーマ数 | 具体テーマのうち専用/担当別のverified窓口あり | その他 | 安全なフォールバック |
 |---|---|---|---|---|---|
-| 福祉と保健 | 6 | 5 | 0 | あり | 全テーマに安全な経路あり |
+| 福祉と保健 | 6 | 5 | 2 | あり | 全テーマに安全な経路あり |
 | 教育と文化 | 7 | 6 | 6 | あり | 全テーマに安全な経路あり |
 | 労働と経済 | 6 | 5 | 5 | あり | 全テーマに安全な経路あり |
 | 生活環境 | 6 | 5 | 5 | あり | 全テーマに安全な経路あり |
@@ -258,7 +262,7 @@ type ParticipationTopic = {
 
 | 事項 | 監査結果・実装時の扱い |
 |---|---|
-| 福祉局・保健医療局等の直接窓口 | 候補URLは存在するが今回の取得では503で本文未確認。所管は確定、直接窓口は確定データにせず都民の声総合窓口へフォールバック。 |
+| 福祉局等の直接窓口 | 候補URLは存在するが今回の取得では503で本文未確認。所管は確定、直接窓口は確定データにせず都民の声総合窓口へフォールバック。保健医療局はブラウザー相当の取得と利用者による画面確認で本文を確認できたため、確定データへ移行済み。 |
 | 区市町村立学校の個別事項 | 都教育庁が政策・指導等で関係する領域はあるが、個別学校事項は所在地の区市町村教育委員会が所管する場合がある。ユーザー所在地なしに一つの窓口へ固定しない。 |
 | 創業・事業支援 | 産業労働局の創業支援をprimary、スタートアップ戦略推進本部はスタートアップ施策に限るpossibleとして分離。 |
 | 水環境 | 水質・地下水等は環境局。水道供給・下水道事業は水道局・下水道局。UI上で具体化が必要。 |
@@ -281,7 +285,8 @@ type ParticipationTopic = {
 | https://www.gikai.metro.tokyo.lg.jp/member.html | 議員の紹介｜東京都議会 | 東京都議会 | https://www.gikai.metro.tokyo.lg.jp/member.html | verified | 2026-08-11 | 都議会議員を確認する一覧。 |  |  |
 | https://www.gikai.metro.tokyo.lg.jp/outline/factional.html | 会派構成・会派略称一覧｜東京都議会 | 東京都議会 | https://www.gikai.metro.tokyo.lg.jp/outline/factional.html | verified | 2026-08-11 | 会派構成・連絡先を確認する一覧。 |  |  |
 | https://www.gikai.metro.tokyo.lg.jp/petition/guide.html | 請願・陳情ガイド｜東京都議会 | 東京都議会 | https://www.gikai.metro.tokyo.lg.jp/petition/guide.html | verified | 2026-08-11 | 請願・陳情の提出方法・要件等を確認する制度案内。 |  |  |
-| https://www.hokeniryo.metro.tokyo.lg.jp/contact | 未確認（保健医療局 contact 候補） | 東京都保健医療局 | https://www.hokeniryo.metro.tokyo.lg.jp/contact | partial | — | 保健医療局の直接窓口候補。 |  | 2026-08-11の監査では503等により本文を確認できず。リンク切れとは断定しない。verifiedAtは付与しない。 |
+| https://www.hokeniryo.metro.tokyo.lg.jp/contact | お問い合わせ｜東京都保健医療局 | 東京都保健医療局 | https://www.hokeniryo.metro.tokyo.lg.jp/contact | verified | 2026-08-11 | 保健医療局の分野・内容別問い合わせ先と都民の声窓口を案内するページ。 | 保健医療局事業への要望・意見、電話・メールフォーム・文書等。 | 一般的な自動取得では503となる場合があるが、ブラウザー相当のUser-AgentではHTTP 200と本文を確認し、利用者のブラウザーでも表示を確認。 |
+| https://logoform.jp/form/tmgform/297877 | 「東京の保健医療についてあなたの声をお寄せください」入力フォーム | 東京都保健医療局 | https://logoform.jp/form/tmgform/297877 | verified | 2026-08-11 | 保健医療局公式のお問い合わせページから案内される都民の声入力フォーム。 | 保健医療局の事業に関する要望・意見。 | 外部フォーム基盤LoGoフォームを使用。公式ページ上のリンク先とHTTP 200を確認。 |
 | https://www.juutakuseisaku.metro.tokyo.lg.jp/inquiry/iken | 未確認（住宅政策本部 ご意見・ご要望候補） | 東京都住宅政策本部 | https://www.juutakuseisaku.metro.tokyo.lg.jp/inquiry/iken | partial | — | 住宅政策本部の意見・要望ページ候補。 |  | 2026-08-11の監査では503等により本文を確認できず。リンク切れとは断定しない。verifiedAtは付与しない。 |
 | https://www.kankyo.metro.tokyo.lg.jp/about/organization/ | 組織と業務案内｜東京都環境局 | 東京都環境局 | https://www.kankyo.metro.tokyo.lg.jp/about/organization/ | verified | 2026-08-11 | 環境局の所管事務と提言・要望等のテーマ別導線。 |  |  |
 | https://www.kankyo.metro.tokyo.lg.jp/inquiry | 未確認（環境局 inquiry 候補） | 東京都環境局 | https://www.kankyo.metro.tokyo.lg.jp/inquiry | partial | — | 環境局の問い合わせページ候補。 |  | 2026-08-11の監査では503等により本文を確認できず。リンク切れとは断定しない。verifiedAtは付与しない。 |
@@ -343,6 +348,7 @@ type ParticipationTopic = {
 | 東京都議会の一般お問い合わせのみ | 直接の「ご意見・ご要望」フォームを追加 | 一般問い合わせページが専用フォームを案内していることを確認。 |
 | 子供政策連携室をshared候補 | possible | 子供政策の企画立案・総合調整は確認できるが、子育て・児童福祉全体の共同所管までは確認できない。 |
 | 所管組織と窓口を同じレコードで扱う | 所管関係・窓口運営組織・contactRoleを分離 | 都民の声フォールバックを所管局の直接窓口と誤表示しないため。 |
+| 保健医療局の問い合わせページをpartial扱い | 問い合わせ一覧と直接意見フォームをverifiedとして採用 | ブラウザー相当の取得でHTTP 200と本文を確認し、利用者のブラウザーでも通常表示を確認できたため。 |
 
 
 ## 12. TypeScriptデータへ変換する際の注意事項

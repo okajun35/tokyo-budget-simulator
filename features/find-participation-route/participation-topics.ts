@@ -101,11 +101,14 @@ export const PARTICIPATION_TOPICS = [
     ],
     "contacts": [
       {
-        "contactId": "tokyo-resident-voice-guide",
-        "role": "fallback"
+        "contactId": "health-medical-resident-voice-form",
+        "role": "direct"
+      },
+      {
+        "contactId": "health-medical-contact-directory",
+        "role": "alternate"
       }
-    ],
-    "jurisdictionNote": "候補窓口 https://www.hokeniryo.metro.tokyo.lg.jp/contact は今回503で本文未確認。"
+    ]
   },
   {
     "categoryId": "welfare",
@@ -125,11 +128,14 @@ export const PARTICIPATION_TOPICS = [
     ],
     "contacts": [
       {
-        "contactId": "tokyo-resident-voice-guide",
-        "role": "fallback"
+        "contactId": "health-medical-resident-voice-form",
+        "role": "direct"
+      },
+      {
+        "contactId": "health-medical-contact-directory",
+        "role": "alternate"
       }
-    ],
-    "jurisdictionNote": "候補窓口 https://www.hokeniryo.metro.tokyo.lg.jp/contact は今回503で本文未確認。"
+    ]
   },
   {
     "categoryId": "welfare",

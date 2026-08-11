@@ -29,8 +29,8 @@ test("covers all nine fields with the 49 audited participation topics", () => {
   }
 });
 
-test("keeps the 20 verified contact destinations separate from bureau relations", () => {
-  assert.equal(Object.keys(OFFICIAL_CONTACTS).length, 20);
+test("keeps the 22 verified contact destinations separate from bureau relations", () => {
+  assert.equal(Object.keys(OFFICIAL_CONTACTS).length, 22);
   for (const contact of Object.values(OFFICIAL_CONTACTS)) {
     assert.equal(contact.verificationStatus, "verified");
     assert.equal(contact.verifiedAt, "2026-08-11");
@@ -43,6 +43,41 @@ test("keeps the 20 verified contact destinations separate from bureau relations"
   assert.equal(
     OFFICIAL_CONTACTS[welfare.contacts[0].contactId].contactOrganizationName,
     "東京都（都民の声総合窓口）",
+  );
+});
+
+test("routes health and medical topics to the verified bureau voice form and contact directory", () => {
+  const expectedContacts = [
+    { contactId: "health-medical-resident-voice-form", role: "direct" },
+    { contactId: "health-medical-contact-directory", role: "alternate" },
+  ];
+
+  for (const topicId of ["medical-delivery", "public-health"]) {
+    const topic = PARTICIPATION_TOPICS.find(item => item.topicId === topicId);
+    assert.ok(topic);
+    assert.deepEqual(topic.contacts, expectedContacts);
+    assert.doesNotMatch(topic.jurisdictionNote ?? "", /503|本文未確認/);
+  }
+
+  assert.deepEqual(OFFICIAL_CONTACTS["health-medical-resident-voice-form"], {
+    contactId: "health-medical-resident-voice-form",
+    contactLabel: "東京の保健医療についてあなたの声をお寄せください",
+    contactOrganizationId: "health-medical-bureau",
+    contactOrganizationName: "東京都保健医療局",
+    contactUrl: "https://logoform.jp/form/tmgform/297877",
+    contactKind: "opinion_form",
+    contactPurpose: "保健医療局の事業に関する要望・意見を直接送るフォーム。",
+    contactSourceUrl: "https://www.hokeniryo.metro.tokyo.lg.jp/contact",
+    verifiedAt: "2026-08-11",
+    verificationStatus: "verified",
+  });
+  assert.equal(
+    OFFICIAL_CONTACTS["health-medical-contact-directory"].contactKind,
+    "inquiry_directory",
+  );
+  assert.equal(
+    OFFICIAL_CONTACTS["health-medical-contact-directory"].contactUrl,
+    "https://www.hokeniryo.metro.tokyo.lg.jp/contact",
   );
 });
 
