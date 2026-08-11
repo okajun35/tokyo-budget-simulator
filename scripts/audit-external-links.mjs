@@ -15,6 +15,8 @@ const paths = [
   "/about",
   "/fiscal-context",
   ...BUDGET_CATEGORIES.map(category => `/budget/${category.id}`),
+  ...BUDGET_CATEGORIES.map(category => `/budget/${category.id}/cases?amount=${Math.round(category.baselineAmount100mYen * 0.9)}`),
+  ...BUDGET_CATEGORIES.map(category => `/budget/${category.id}/materials`),
   ...BUDGET_CATEGORIES.map(category => `/participation?category=${category.id}`),
 ];
 const environment = {

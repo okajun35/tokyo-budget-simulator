@@ -2,40 +2,22 @@ import Link from "next/link";
 
 import { BUDGET_TERM_GLOSSARY } from "@/domain/tokyo-budget/budget-term-glossary";
 import {
-  BUDGET_DOCUMENT_STAGE_LABELS,
-} from "@/domain/tokyo-budget/budget-document-stage";
-import { PARTICIPATION_ROUTES } from "@/features/find-participation-route/participation-routes";
-import {
-  BUDGET_CASE_CHANGE_TYPE_DESCRIPTIONS,
-  BUDGET_CASE_CHANGE_TYPE_GROUPS,
-  BUDGET_CASE_CHANGE_TYPE_LABELS,
-  BUDGET_CASE_SOURCE_KIND_LABELS,
-  changeTypeGroupOf,
-} from "@/features/learn-from-budget-cases/budget-case";
-import { BUDGET_CASES } from "@/features/learn-from-budget-cases/budget-cases";
-import {
-  CASE_INTERPRETATIONS,
-  INCREASE_CASE_INTERPRETATIONS,
-} from "@/features/learn-from-budget-cases/case-interpretations";
-import {
-  BUDGET_CATEGORIES,
-  GENERAL_ACCOUNT_BASELINE_100M_YEN,
-} from "@/features/simulate-budget/budget-categories";
-import {
   createBudgetParticipationHref,
   createBudgetProcessHref,
   createBudgetSimulatorHref,
-  parseBudgetPlan,
 } from "@/features/simulate-budget/budget-plan-query";
 import {
-  createBudgetDetailComparison,
-  resolveBudgetDetailAmount,
-} from "@/features/understand-budget-change/budget-detail";
-import { getBudgetChangeGuidance } from "@/features/understand-budget-change/budget-change-guidance";
+  createBudgetCasesHref,
+  createBudgetMaterialsHref,
+} from "@/features/understand-budget-change/budget-detail-navigation";
+import { BudgetDetailFallbackNotice } from "@/features/understand-budget-change/budget-detail-context";
 import {
-  findDetailedBudgetCategory,
-} from "@/features/understand-budget-change/detailed-budget-categories";
-import { BUDGET_SOURCES } from "@/features/trace-budget-sources/budget-sources";
+  money,
+  resolveBudgetDetailPageState,
+  signedMoney,
+  signedPercent,
+} from "@/features/understand-budget-change/budget-detail-page-state";
+import { findDetailedBudgetCategory } from "@/features/understand-budget-change/detailed-budget-categories";
 
 type BudgetDetailPageProps = {
   params: Promise<{ categoryId: string }>;
@@ -46,81 +28,27 @@ type BudgetDetailPageProps = {
   }>;
 };
 
-const money = (value: number) =>
-  `${Math.round(value).toLocaleString("ja-JP")}億円`;
-const detailedMoney = (value: number) =>
-  `${value.toLocaleString("ja-JP", { maximumFractionDigits: 2 })}億円`;
-const signedMoney = (value: number) =>
-  value === 0
-    ? "±0億円"
-    : `${value > 0 ? "+" : ""}${money(value)}`;
-const signedPercent = (value: number) =>
-  value === 0
-    ? "±0.0%"
-    : `${value > 0 ? "+" : ""}${value.toFixed(1)}%`;
-
-const budgetBackgroundSources = {
-  request: BUDGET_SOURCES.find(source => source.id === "request")!,
-  bureauAssessment: BUDGET_SOURCES.find(source => source.id === "bureau")!,
-  governorAssessment: BUDGET_SOURCES.find(source => source.id === "governor")!,
-  proposal: BUDGET_SOURCES.find(source => source.id === "proposal")!,
-  enactedBudget: BUDGET_SOURCES.find(source => source.id === "enacted")!,
-};
-
-const budgetMaterialRelationshipLabels = {
-  direct: "分野に直接対応する資料",
-  related_bureau: "関連する局の予算要求",
-  representative_item: "代表的な財務局査定",
-} as const;
-
 export default async function BudgetDetailPage({
   params,
   searchParams,
 }: BudgetDetailPageProps) {
   const { categoryId } = await params;
   const { amount, plan } = await searchParams;
-  const category = BUDGET_CATEGORIES.find(item => item.id === categoryId);
+  const state = resolveBudgetDetailPageState(categoryId, amount, plan);
 
-  if (!category) {
+  if (!state) {
     return <main className="budgetDetailPage"><section className="budgetDetailMissing"><h1>分野が見つかりません</h1><p>URLの分野IDを確認してください。</p><Link href="/#simulator">← 予算一覧へ戻る</Link></section></main>;
   }
 
-  const planAllocations = parseBudgetPlan(typeof plan === "string" ? plan : undefined);
-  const resolvedAmount = resolveBudgetDetailAmount(
-    planAllocations ? String(planAllocations[category.id]) : amount,
-    category.baselineAmount100mYen,
-  );
-  const comparison = createBudgetDetailComparison(
-    category.baselineAmount100mYen,
-    resolvedAmount.amount100mYen,
-    GENERAL_ACCOUNT_BASELINE_100M_YEN,
-  );
-  const allCategoryCases = BUDGET_CASES.filter(budgetCase =>
-    (category.caseIds as readonly string[]).includes(budgetCase.id),
-  );
-  const categoryCases = comparison.direction === "increase"
-    ? allCategoryCases.filter(budgetCase => budgetCase.direction === "increase")
-    : comparison.direction === "decrease"
-      ? allCategoryCases.filter(budgetCase => budgetCase.direction !== "increase")
-      : [];
-  const caseInterpretation = comparison.direction === "increase"
-    ? INCREASE_CASE_INTERPRETATIONS[category.id]
-    : comparison.direction === "decrease"
-      ? CASE_INTERPRETATIONS[category.id]
-      : undefined;
-  const changeGuidance = getBudgetChangeGuidance(
+  const {
     category,
-    comparison.direction,
-    Math.abs(comparison.changeAmount100mYen),
-  );
+    planAllocations,
+    resolvedAmount,
+    comparison,
+    changeGuidance,
+  } = state;
   const categoryTermMeaning =
     BUDGET_TERM_GLOSSARY[category.name as keyof typeof BUDGET_TERM_GLOSSARY]?.meaning;
-  const categorySources = BUDGET_SOURCES.filter(source =>
-    (category.sourceIds as readonly string[]).includes(source.id),
-  );
-  const categoryParticipationRoutes = PARTICIPATION_ROUTES.filter(route =>
-    (category.participationRouteIds as readonly string[]).includes(route.id),
-  );
   const detailedCategory = findDetailedBudgetCategory(category.id);
   const simulatorHref = planAllocations
     ? createBudgetSimulatorHref(planAllocations, category.id)
@@ -131,6 +59,16 @@ export default async function BudgetDetailPage({
   const budgetProcessHref = planAllocations
     ? createBudgetProcessHref(planAllocations, category.id)
     : "/budget-process";
+  const casesHref = createBudgetCasesHref(
+    category.id,
+    resolvedAmount.amount100mYen,
+    planAllocations,
+  );
+  const materialsHref = createBudgetMaterialsHref(
+    category.id,
+    resolvedAmount.amount100mYen,
+    planAllocations,
+  );
   const changeVerb = comparison.direction === "increase"
     ? "増やしました"
     : comparison.direction === "decrease"
@@ -142,15 +80,11 @@ export default async function BudgetDetailPage({
       <Link href={simulatorHref}>← 予算に戻る</Link>
       <p className="eyebrow">BUDGET DETAIL · FY2026</p>
       <h1>{category.name}</h1>
-      <p>{categoryTermMeaning && <>{category.name}は{categoryTermMeaning}です。</>}シミュレーターで選んだ分野と金額を引き継ぎ、変更の意味と根拠を確認します。</p>
+      <p>{categoryTermMeaning && <>{category.name}は{categoryTermMeaning}です。</>}選んだ変更が何を意味し、どんな制約があるかを考えます。</p>
     </header>
 
     <div className="budgetDetailContent">
-      {resolvedAmount.usedFallback && <aside className="budgetDetailFallback" role="status">
-        {amount === undefined
-          ? "設定額が指定されていないため、成立予算額を表示しています。"
-          : "指定された金額を利用できないため、成立予算額を表示しています。"}
-      </aside>}
+      <BudgetDetailFallbackNotice amount={amount} usedFallback={resolvedAmount.usedFallback} />
 
       <section className="budgetDetailOverview" aria-label={`${category.name}の予算比較`}>
         <div className="budgetDetailMetrics">
@@ -170,11 +104,13 @@ export default async function BudgetDetailPage({
         <h3>主な用途</h3>
         <ul className="detailUseList">{category.mainUses.map(use => <li key={use}>{use}</li>)}</ul>
         {detailedCategory && <>
-          <h3 className="detailSubheading">用語を整理する</h3>
-          <dl className="detailConceptList">{detailedCategory.keyConcepts.map(concept => <div key={concept.term}>
-            <dt>{concept.term}</dt>
-            <dd>{concept.explanation}</dd>
-          </div>)}</dl>
+          <details className="detailConceptDisclosure">
+            <summary>用語を整理する</summary>
+            <dl className="detailConceptList">{detailedCategory.keyConcepts.map(concept => <div key={concept.term}>
+              <dt>{concept.term}</dt>
+              <dd>{concept.explanation}</dd>
+            </div>)}</dl>
+          </details>
           <aside className="detailImportantNote"><b>このシミュレーションを読むうえで重要なこと</b><p>{detailedCategory.importantNote}</p></aside>
         </>}
       </section>
@@ -195,153 +131,47 @@ export default async function BudgetDetailPage({
         </article>)}</div>
       </section>
 
-      <section className="budgetDetailSection" aria-labelledby="evidence-heading">
-        <p className="sectionLabel">EVIDENCE BOUNDARY</p>
-        <h2 id="evidence-heading">どこまで確かに言える？</h2>
-        <div className="evidenceGrid">
-          <article data-evidence-kind="fact"><span>事実</span><b>予算計算上、確認できること</b><p>成立予算、あなたの案、変更額、変更率、構成比は画面上の数値から計算できます。</p></article>
-          <article data-evidence-kind="case_fact"><span>事例の事実</span><b>他地域で確認されたこと</b><p>下記の公的資料に記録された変更だけを、東京都とは分けて表示します。</p></article>
-          <article data-evidence-kind="interpretation"><span>アプリの解釈</span><b>考えられる変更方法</b><p>複数の検討例を示しますが、東京都が採用する案や実行可能性を断定しません。</p></article>
-          <article data-evidence-kind="unknown"><span>判断不能</span><b>公開情報だけでは分からないこと</b><p>どの事業を変更するか、何人に影響するか、成果が何％変わるかは計算しません。</p></article>
-        </div>
-      </section>
+      <aside className="detailEvidenceBoundary" role="note">
+        <b>この画面で確かに言える範囲</b>
+        <p>金額と構成比は計算できますが、どの事業を変えるか、何人に影響するか、成果が何％変わるかは公開情報だけでは判断できません。</p>
+      </aside>
 
-      <section className="budgetDetailSection" aria-labelledby="cases-heading">
-        <p className="sectionLabel">PUBLIC CASES</p>
-        <h2 id="cases-heading">{changeGuidance.caseHeading}</h2>
-        <p className="detailLead">{changeGuidance.caseLead}</p>
-        {caseInterpretation && <p className="caseInterpretation">{caseInterpretation}</p>}
-        <p className="detailCaution">同じ割合を変えても、東京都で同じ結果になるとは限りません。制度、財政状況、人口などの条件が異なります。</p>
-        <details className="caseTagLegend">
-          <summary>？ 事例の見方</summary>
-          {Object.entries(BUDGET_CASE_CHANGE_TYPE_GROUPS).map(([groupId, group]) => <div key={groupId} className="caseTagGroup" data-case-change-group={groupId}>
-            <p className="caseTagGroupLabel">{group.label}</p>
-            <dl>{group.changeTypes.map(changeType => <div key={changeType}>
-              <dt>{BUDGET_CASE_CHANGE_TYPE_LABELS[changeType]}</dt>
-              <dd>{BUDGET_CASE_CHANGE_TYPE_DESCRIPTIONS[changeType]}</dd>
-            </div>)}</dl>
-          </div>)}
-          <p>1件の事例に複数付きます。追加予算が何へ変わったか、または削減した費用や負担がどこへ動いたかを区別して読みます。</p>
-        </details>
-        {categoryCases.length > 0 ? <div className="detailCaseGrid">{categoryCases.map(budgetCase => <article key={budgetCase.id} data-case-direction={budgetCase.direction}>
-          <div className="detailCaseHeading"><span>{budgetCase.country === "日本" ? "国内" : "海外"}・{budgetCase.direction === "increase" ? "増額事例" : budgetCase.direction === "decrease" ? "減額事例" : "再編事例"}</span><h3>{budgetCase.title}</h3></div>
-          <ul className="caseChangeTypes">{budgetCase.changeTypes.map(changeType => <li key={changeType} data-case-change-type={changeType} data-case-change-group={changeTypeGroupOf(changeType)}>{BUDGET_CASE_CHANGE_TYPE_LABELS[changeType]}</li>)}</ul>
-          <dl><dt>実施地域</dt><dd>{budgetCase.jurisdiction}</dd><dt>実施時期</dt><dd>{budgetCase.period}</dd><dt>変更した理由</dt><dd>{budgetCase.budgetContext}</dd></dl>
-          <h4>何を変えた？</h4>
-          <p>{budgetCase.whatChanged}</p>
-          <h4>何が確認された？</h4>
-          <ul>{budgetCase.confirmedChanges.map(change => <li key={change}>{change}</li>)}</ul>
-          <h4>まだ分からないこと</h4>
-          <p className="detailCaution">{budgetCase.whatRemainsUnknown}</p>
-          <a href={budgetCase.sourceUrl} target="_blank" rel="noreferrer">{budgetCase.sourceTitle}（{BUDGET_CASE_SOURCE_KIND_LABELS[budgetCase.sourceKind]}・{budgetCase.sourceDate}・外部リンク）↗</a>
-        </article>)}</div> : <div className="detailUnavailable" data-evidence-kind="unknown"><b>事例は未収録です</b><p>{changeGuidance.unavailableCaseMessage}</p></div>}
-        <aside className="directionQuestion" data-direction-question={comparison.direction}>
-          <b>最後に考えること</b>
-          <p>{changeGuidance.finalQuestion}</p>
-        </aside>
-      </section>
+      <aside className="directionQuestion" data-direction-question={comparison.direction}>
+        <b>最後に考えること</b>
+        <p>{changeGuidance.finalQuestion}</p>
+      </aside>
 
-      <section className="budgetDetailSection" aria-labelledby="background-heading">
-        <p className="sectionLabel">TOKYO BUDGET BACKGROUND</p>
-        <h2 id="background-heading">この予算が決まるまでの資料を見る</h2>
-        <p className="detailLead">査定（{BUDGET_TERM_GLOSSARY.査定.meaning}）を含む、資料の段階を分けて表示します。</p>
-        <p className="detailLead">東京都が公開している予算要求・査定・予算案などから、この分野に関連する資料を紹介します。</p>
-
-        <aside className="budgetMaterialPolicy">
-          <b>公開資料で確認できる範囲を掲載しています</b>
-          <p>東京都の目的別予算と、局別・款別の予算要求・査定資料では分類方法が異なります。公式資料から対応関係を確認できない場合、東京予算ラボ独自の推測合算は行っていません。</p>
-        </aside>
-
-        <div className="budgetClassificationGuide">
-          <h3>なぜ要求額と成立予算をそのまま比較できないの？</h3>
-          <p>東京都予算には複数の分類方法があります。</p>
-          <dl className="budgetClassificationAxes">
-            <div><dt>何のために使う？</dt><dd>目的別</dd></div>
-            <div><dt>どの局が使う？</dt><dd>局別</dd></div>
-            <div><dt>どんな性質の支出？</dt><dd>性質別</dd></div>
-            <div><dt>会計上どこに属する？</dt><dd>款・項・目</dd></div>
-          </dl>
-          <p>東京予算ラボのシミュレーターは主に「目的別」を使っています。一方、予算要求・査定資料は「局別」や「款・項・目」など別の分類で公開されています。</p>
-          <p>そのため、一対一に対応しない項目については独自に合算せず、公式資料から安全に確認できる範囲だけを掲載しています。</p>
-        </div>
-
-        <div className="detailTimeline">
-          <article
-            data-budget-material-status={category.request ? "available" : "unavailable"}
-            data-budget-material-relationship={category.request?.relationship}
-          >
-            <span className="stageTag request">各局要求</span>
-            <h3>{category.request
-              ? budgetMaterialRelationshipLabels[category.request.relationship]
-              : "関連する局の予算要求"}</h3>
-            {category.request ? <>
-              <h4>{category.request.bureau}</h4>
-              <dl className="budgetMaterialAmounts">
-                <div><dt>要求額</dt><dd>{detailedMoney(category.request.requestedAmount100mYen)}</dd></div>
-                <div><dt>{category.request.previousAmountLabel ?? "前年度当初"}</dt><dd>{detailedMoney(category.request.previousAmount100mYen)}</dd></div>
-              </dl>
-              <p>{category.request.reason}</p>
-              <p className="budgetMaterialNote">{category.request.note}</p>
-            </> : <p data-evidence-kind="unknown">{category.requestUnavailableReason}</p>}
-            <a href={budgetBackgroundSources.request.sourceUrl} target="_blank" rel="noreferrer">要求額と要求理由が分かる資料（外部リンク）↗</a>
+      <section className="budgetDetailSection budgetDetailNext" aria-labelledby="next-heading">
+        <p className="sectionLabel">CHOOSE WHAT TO EXPLORE</p>
+        <h2 id="next-heading">この変更を、もう少し考える</h2>
+        <p className="detailLead">必要な情報を選んで進めます。すべてを順番に読む必要はありません。</p>
+        <div className="budgetDetailNextGrid">
+          <article>
+            <span>01</span>
+            <h3>実際の事例を見る</h3>
+            <p>他地域で何を変え、どんな制約や負担が確認されたかを公的資料から読みます。</p>
+            <Link href={casesHref}>事例を見る →</Link>
           </article>
-          <article
-            data-budget-material-status={category.bureauAssessment ? "available" : "unavailable"}
-            data-budget-material-relationship={category.bureauAssessment?.relationship}
-          >
-            <span className="stageTag bureau_assessment">財務局査定</span>
-            <h3>{budgetMaterialRelationshipLabels.representative_item}</h3>
-            {category.bureauAssessment ? <>
-              <ul className="assessmentItemList">{category.bureauAssessment.items.map(item => <li key={item.name}>
-                <h4>{item.name}</h4>
-                <p><span>要求額</span><b>{detailedMoney(item.requestedAmount100mYen)}</b><i>→</i><span>査定後</span><b>{detailedMoney(item.assessedAmount100mYen)}</b></p>
-                {item.reason && <small>{item.reason}</small>}
-              </li>)}</ul>
-              <p className="budgetMaterialNote">{category.bureauAssessment.note}</p>
-            </> : <>
-              <p data-evidence-kind="unknown">{category.bureauAssessmentUnavailableReason}</p>
-              <p data-evidence-kind="unknown">事項別査定資料から、この分野に安全に対応付けられる代表例を現在確認できていません。掲載がないことは「査定が行われなかった」という意味ではありません。</p>
-            </>}
-            <a href={budgetBackgroundSources.bureauAssessment.sourceUrl} target="_blank" rel="noreferrer">要求から増減した代表事項が分かる資料（外部リンク）↗</a>
+          <article>
+            <span>02</span>
+            <h3>東京都の予算編成資料を見る</h3>
+            <p>要求・査定（要求された事業や金額を確認・調整すること）・予算案を、目的別と局別などの分類軸を混同せず確認します。</p>
+            <Link href={materialsHref}>編成資料を見る →</Link>
           </article>
-          <article><span className="stageTag governor_assessment">知事査定</span><h3>知事判断による変更事項</h3><p>{category.governorAssessment ?? "知事査定の代表事項を対応付けられていません。掲載なしを『判断なし』とは扱いません。"}</p><a href={budgetBackgroundSources.governorAssessment.sourceUrl} target="_blank" rel="noreferrer">知事査定で変更された事項が分かる資料（外部リンク）↗</a></article>
-          <article><span className="stageTag proposal">予算案</span><h3>都議会へ提出した段階</h3><p>知事査定などを反映した案であり、この時点では成立予算ではありません。</p><a href={budgetBackgroundSources.proposal.sourceUrl} target="_blank" rel="noreferrer">提出時の予算案と主要施策が分かる資料（外部リンク）↗</a></article>
-          <article><span className="stageTag enacted_budget">成立予算</span><h3>{money(category.baselineAmount100mYen)}</h3><p>都議会の議決後に成立した当初予算で、本シミュレーターの基準額です。</p><a href={budgetBackgroundSources.enactedBudget.sourceUrl} target="_blank" rel="noreferrer">成立後の一般会計規模と目的別歳出が分かる資料（外部リンク）↗</a></article>
+          <article>
+            <span>03</span>
+            <h3>具体的な話題と窓口を選ぶ</h3>
+            <p>この分野を具体的な話題へ分け、主な所管と確認済みの公式ルートを探します。</p>
+            <p className="budgetDetailNextNote">シミュレーションの増減は、あなたの要望として自動的に確定されません。</p>
+            <Link href={participationHref}>話題と窓口を選ぶ →</Link>
+          </article>
         </div>
       </section>
 
-      <section className="budgetDetailSection" aria-labelledby="sources-heading">
-        <p className="sectionLabel">OFFICIAL SOURCES</p>
-        <h2 id="sources-heading">詳しい公式資料</h2>
-        <div className="detailSourceList">
-          {categorySources.map(source => <article key={source.id}>
-            <span className={`stageTag ${source.documentStage}`}>{BUDGET_DOCUMENT_STAGE_LABELS[source.documentStage]}</span>
-            <h3>{source.sourceTitle}</h3>
-            <p><b>この資料で分かること：</b>{source.targetTableOrItem}</p>
-            <p>資料日 {source.sourceDate}／取得日 {source.retrievedAt}</p>
-            <a href={source.sourceUrl} target="_blank" rel="noreferrer">公式資料を開く（外部リンク）↗</a>
-          </article>)}
-          {detailedCategory?.referenceSources.map(source => <article key={source.id}>
-            <span className="detailReferenceTag">用語・財政資料</span>
-            <h3>{source.title}</h3>
-            <p><b>この資料で分かること：</b>{source.whatCanBeLearned}</p>
-            <p>資料日 {source.sourceDate}／取得日 {source.retrievedAt}</p>
-            <a href={source.url} target="_blank" rel="noreferrer">公式資料を開く（外部リンク）↗</a>
-          </article>)}
-        </div>
-      </section>
-
-      <section className="budgetDetailSection" aria-labelledby="participation-heading">
-        <p className="sectionLabel">CIVIC PARTICIPATION</p>
-        <h2 id="participation-heading">意見を伝える先</h2>
-        <p className="detailLead">以下は主な所管であり、予算分類との一対一対応ではありません。提出しても予算への反映は保証されません。</p>
-        <div className="detailBureauLinks">{category.leadBureaus.map(bureau => <a key={bureau.name} href={bureau.url} target="_blank" rel="noreferrer">{bureau.name}（外部リンク）↗</a>)}</div>
-        <div className="detailParticipationGrid">{categoryParticipationRoutes.map(route => <article key={route.id}>
-          <h3>{route.title}</h3><p><b>提出先：</b>{route.recipient}</p><p><b>できること：</b>{route.canDo}</p><p><b>保証されないこと：</b>{route.cannotGuarantee}</p><a href={route.officialGuideUrl} target="_blank" rel="noreferrer">公式案内を開く（外部リンク）↗</a>
-        </article>)}</div>
-      </section>
-
-      <nav className="budgetDetailBack" aria-label="関連ページへ移動"><Link href={simulatorHref}>← 予算に戻る</Link><Link href={participationHref}>この分野の意見先を見る</Link><Link href={budgetProcessHref}>予算の決まり方を確認する →</Link></nav>
+      <nav className="budgetDetailBack" aria-label="関連ページへ移動">
+        <Link href={simulatorHref}>← 予算に戻る</Link>
+        <Link href={budgetProcessHref}>東京都の予算が決まる流れを見る →</Link>
+      </nav>
     </div>
   </main>;
 }

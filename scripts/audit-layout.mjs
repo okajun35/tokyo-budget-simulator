@@ -42,7 +42,9 @@ const viewports = [
 ];
 const statefulProcessPath = "/budget-process?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education";
 const statefulParticipationPreparePath = "/participation/prepare?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education&topic=school-meals-curriculum-ict";
-const paths = ["/", "/budget/debt?amount=1959", "/budget-process", statefulProcessPath, "/participation?category=debt", statefulParticipationPreparePath, "/sources", "/about", "/fiscal-context"];
+const statefulCasePath = "/budget/education/cases?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education&amount=16762";
+const statefulMaterialsPath = "/budget/education/materials?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education&amount=16762";
+const paths = ["/", "/budget/welfare?amount=15000", "/budget/debt?amount=1959", statefulCasePath, statefulMaterialsPath, "/budget-process", statefulProcessPath, "/participation?category=debt", statefulParticipationPreparePath, "/sources", "/about", "/fiscal-context"];
 const results = [];
 
 // 開発サーバは初回の変換に時間がかかる。固定の待ち時間では読み込み前の
@@ -76,6 +78,8 @@ for (const viewport of viewports) {
         path: location.pathname + location.search,
         clientWidth: document.documentElement.clientWidth,
         scrollWidth: document.documentElement.scrollWidth,
+        scrollHeight: document.documentElement.scrollHeight,
+        viewportHeight: window.innerHeight,
         loadDurationMs: Math.round(performance.getEntriesByType('navigation')[0]?.duration ?? 0),
         headings: Array.from(document.querySelectorAll('h1,h2,h3,h4,h5,h6')).map(heading => ({ level: Number(heading.tagName[1]), text: heading.textContent.trim() })),
         mobileDetailDisplay: document.querySelector('[data-mobile-detail-link]') ? getComputedStyle(document.querySelector('[data-mobile-detail-link]')).display : null,

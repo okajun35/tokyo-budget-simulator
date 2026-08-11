@@ -13,6 +13,11 @@ import {
   createBudgetProcessHref,
   createBudgetSimulatorHref,
 } from "../features/simulate-budget/budget-plan-query.ts";
+import {
+  createBudgetCasesHref,
+  createBudgetMaterialsHref,
+  createBudgetMeaningHref,
+} from "../features/understand-budget-change/budget-detail-navigation.ts";
 
 const fetchHtml = async (path, label) => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -50,6 +55,23 @@ test("returns from a detail page with the complete plan", async () => {
   assert.ok(html.includes(createBudgetSimulatorHref(plan, "education")));
   assert.ok(html.includes(createBudgetProcessHref(plan, "education")));
   assert.ok(html.includes(createBudgetParticipationHref(plan, "education")));
+  assert.ok(html.includes(createBudgetCasesHref("education", 16_762, plan)));
+  assert.ok(html.includes(createBudgetMaterialsHref("education", 16_762, plan)));
+});
+
+test("keeps the complete plan across the case and material pages", async () => {
+  const casesHref = createBudgetCasesHref("education", 16_762, plan);
+  const materialsHref = createBudgetMaterialsHref("education", 16_762, plan);
+  const caseHtml = await fetchHtml(casesHref, "cases-complete-plan");
+  const materialsHtml = await fetchHtml(materialsHref, "materials-complete-plan");
+
+  for (const html of [caseHtml, materialsHtml]) {
+    assert.match(html, /選んだ分野[\s\S]*?教育と文化/);
+    assert.match(html, /あなたの案[\s\S]*?16,762億円/);
+    assert.ok(html.includes(createBudgetMeaningHref("education", 16_762, plan)));
+    assert.ok(html.includes(createBudgetParticipationHref(plan, "education")));
+    assert.ok(html.includes(createBudgetSimulatorHref(plan, "education")));
+  }
 });
 
 test("shows the inherited category on the budget process and preserves it onward", async () => {
@@ -108,5 +130,7 @@ test("does not invent a plan for legacy detail links", async () => {
   );
 
   assert.match(html, /href="\/#simulator"[^>]*>← 予算に戻る/);
-  assert.match(html, /href="\/budget-process"[^>]*>予算の決まり方を確認する/);
+  assert.match(html, /href="\/budget-process"[^>]*>東京都の予算が決まる流れを見る/);
+  assert.ok(html.includes(createBudgetCasesHref("education", 16_762)));
+  assert.ok(html.includes(createBudgetMaterialsHref("education", 16_762)));
 });

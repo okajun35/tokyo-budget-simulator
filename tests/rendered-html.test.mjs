@@ -4,6 +4,16 @@ import test from "node:test";
 const developmentPreviewMeta =
   /<meta(?=[^>]*\bname=["']codex-preview["'])(?=[^>]*\bcontent=["']development["'])[^>]*>/i;
 
+const fetchHtmlForWorker = async (worker, path) => {
+  const response = await worker.fetch(
+    new Request(`http://localhost${path}`, { headers: { accept: "text/html" } }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+  assert.equal(response.status, 200);
+  return (await response.text()).replaceAll("<!-- -->", "");
+};
+
 test("renders development preview metadata", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
@@ -813,14 +823,26 @@ test("renders the complete minimum detail for the remaining six categories", asy
       },
     );
     const html = (await response.text()).replaceAll("<!-- -->", "");
-    const sourceSection = html.match(
+    const casesResponse = await worker.fetch(
+      new Request(`http://localhost/budget/${categoryId}/cases`, { headers: { accept: "text/html" } }),
+      { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+      { waitUntil() {}, passThroughOnException() {} },
+    );
+    const materialsResponse = await worker.fetch(
+      new Request(`http://localhost/budget/${categoryId}/materials`, { headers: { accept: "text/html" } }),
+      { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+      { waitUntil() {}, passThroughOnException() {} },
+    );
+    const casesHtml = (await casesResponse.text()).replaceAll("<!-- -->", "");
+    const materialsHtml = (await materialsResponse.text()).replaceAll("<!-- -->", "");
+    const sourceSection = materialsHtml.match(
       /aria-labelledby="sources-heading".*?<\/section>/,
     )?.[0];
 
     assert.equal(response.status, 200);
     assert.match(html, new RegExp(expectedText));
-    assert.match(html, /公開情報だけでは分からないこと/);
-    assert.match(html, /東京都で同じ結果になるとは限りません/);
+    assert.match(html, /公開情報だけでは判断できません/);
+    assert.match(casesHtml, /東京都で同じ結果になるとは限りません/);
     assert.ok(sourceSection);
     assert.equal(sourceSection.match(/公式資料を開く/g)?.length, 2);
   }
@@ -853,6 +875,22 @@ test("falls back safely when the detail amount is invalid or outside its range",
   }
 });
 
+test("explains fallback amounts on the separate cases and materials pages", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `supplement-fallback-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+
+  for (const path of [
+    "/budget/debt/cases?amount=invalid",
+    "/budget/debt/materials?amount=3640",
+  ]) {
+    const html = await fetchHtmlForWorker(worker, path);
+
+    assert.match(html, /あなたの案.*?2,799億円/);
+    assert.match(html, /指定された金額を利用できないため、成立予算額を表示しています/);
+  }
+});
+
 test("explains a budget change through the complete shared detail template", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `detail-template-${process.pid}-${Date.now()}`);
@@ -874,6 +912,8 @@ test("explains a budget change through the complete shared detail template", asy
   );
   const html = await response.text();
   const normalizedHtml = html.replaceAll("<!-- -->", "");
+  const casesHtml = await fetchHtmlForWorker(worker, "/budget/debt/cases?amount=1959");
+  const materialsHtml = await fetchHtmlForWorker(worker, "/budget/debt/materials?amount=1959");
 
   assert.match(normalizedHtml, /成立予算.*?2,799億円/);
   assert.match(normalizedHtml, /あなたの案.*?1,959億円/);
@@ -883,20 +923,92 @@ test("explains a budget change through the complete shared detail template", asy
   assert.match(normalizedHtml, /そもそも何のお金/);
   assert.match(normalizedHtml, /主な用途/);
   assert.match(normalizedHtml, /この840億円を減らすには、何を変える/);
-  assert.match(normalizedHtml, /data-evidence-kind="fact"/);
-  assert.match(normalizedHtml, /data-evidence-kind="case_fact"/);
-  assert.match(normalizedHtml, /data-evidence-kind="interpretation"/);
-  assert.match(normalizedHtml, /data-evidence-kind="unknown"/);
-  assert.match(normalizedHtml, /他の自治体では、予算を減らして何を変えた/);
-  assert.match(normalizedHtml, /この予算が決まるまでの資料を見る/);
-  assert.match(normalizedHtml, /分野に直接対応する資料/);
-  assert.match(normalizedHtml, /公債費（款）.*?要求額.*?2,801\.14億円.*?前年度.*?2,871\.77億円/s);
-  assert.match(normalizedHtml, /代表的な財務局査定/);
-  assert.match(normalizedHtml, /分野全体の査定額ではなく、関連する代表的な事項/);
-  assert.match(normalizedHtml, /詳しい公式資料/);
-  assert.match(normalizedHtml, /意見を伝える先/);
-  assert.match(normalizedHtml, /主な所管であり、予算分類との一対一対応ではありません/);
+  assert.match(normalizedHtml, /この画面で確かに言える範囲/);
+  assert.match(normalizedHtml, /実際の事例を見る/);
+  assert.match(normalizedHtml, /東京都の予算編成資料を見る/);
+  assert.match(normalizedHtml, /具体的な話題と窓口を選ぶ/);
+  assert.match(casesHtml, /他の自治体では、予算を減らして何を変えた/);
+  assert.match(materialsHtml, /この予算が決まるまでの資料を見る/);
+  assert.match(materialsHtml, /分野に直接対応する資料/);
+  assert.match(materialsHtml, /公債費（款）.*?要求額.*?2,801\.14億円.*?前年度.*?2,871\.77億円/s);
+  assert.match(materialsHtml, /代表的な財務局査定/);
+  assert.match(materialsHtml, /分野全体の査定額ではなく、関連する代表的な事項/);
+  assert.match(materialsHtml, /詳しい公式資料/);
+  assert.doesNotMatch(normalizedHtml, /意見を伝える先/);
   assert.match(normalizedHtml, /href="\/#simulator"[^>]*>.*?予算に戻る/);
+});
+
+test("keeps the main budget detail focused on meaning and constraints", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `focused-detail-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const response = await worker.fetch(
+    new Request("http://localhost/budget/welfare?amount=15000", {
+      headers: { accept: "text/html" },
+    }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+  const html = (await response.text()).replaceAll("<!-- -->", "");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /そもそも何のお金/);
+  assert.match(html, /この3,730億円を減らすには、何を変える/);
+  assert.match(html, /減らすときに考えること/);
+  assert.match(html, /最後に考えること/);
+  assert.match(html, /この変更を、もう少し考える/);
+  assert.match(html, /実際の事例を見る/);
+  assert.match(html, /東京都の予算編成資料を見る/);
+  assert.match(html, /具体的な話題と窓口を選ぶ/);
+  assert.doesNotMatch(html, /飯能市の在宅・障害・高齢者福祉事業/);
+  assert.doesNotMatch(html, /この予算が決まるまでの資料を見る/);
+  assert.doesNotMatch(html, /意見を伝える先/);
+});
+
+test("renders public cases on a separate category page", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `case-page-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const response = await worker.fetch(
+    new Request("http://localhost/budget/welfare/cases?amount=15000", {
+      headers: { accept: "text/html" },
+    }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+  const html = (await response.text()).replaceAll("<!-- -->", "");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /data-budget-cases="welfare"/);
+  assert.match(html, /福祉と保健の事例/);
+  assert.match(html, /他の自治体では、予算を減らして何を変えた/);
+  assert.match(html, /飯能市の在宅・障害・高齢者福祉事業/);
+  assert.match(html, /イングランドの成人社会福祉支出/);
+  assert.match(html, /東京都で同じ結果になるとは限りません/);
+  assert.doesNotMatch(html, /なぜ要求額と成立予算をそのまま比較できないの/);
+});
+
+test("renders Tokyo formation materials on a separate category page", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `materials-page-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const response = await worker.fetch(
+    new Request("http://localhost/budget/education/materials?amount=15922", {
+      headers: { accept: "text/html" },
+    }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+  const html = (await response.text()).replaceAll("<!-- -->", "");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /data-budget-materials="education"/);
+  assert.match(html, /教育と文化の予算編成資料/);
+  assert.match(html, /なぜ要求額と成立予算をそのまま比較できないの/);
+  assert.match(html, /関連する局の予算要求/);
+  assert.match(html, /学校給食運営管理.*?357\.19億円.*?546\.87億円/s);
+  assert.match(html, /公開資料で確認できる範囲を掲載しています/);
+  assert.doesNotMatch(html, /飯能市立図書館のサービス見直し/);
 });
 
 test("renders the completed content for debt, welfare, and education", async () => {
@@ -955,7 +1067,17 @@ test("renders the completed content for debt, welfare, and education", async () 
         passThroughOnException() {},
       },
     );
-    const html = (await response.text()).replaceAll("<!-- -->", "");
+    const detailHtml = (await response.text()).replaceAll("<!-- -->", "");
+    const url = new URL(`http://localhost${detailCase.path}`);
+    const casesHtml = await fetchHtmlForWorker(
+      worker,
+      `${url.pathname}/cases${url.search}`,
+    );
+    const materialsHtml = await fetchHtmlForWorker(
+      worker,
+      `${url.pathname}/materials${url.search}`,
+    );
+    const html = `${detailHtml}${casesHtml}${materialsHtml}`;
 
     assert.equal(response.status, 200);
     for (const pattern of detailCase.patterns) {

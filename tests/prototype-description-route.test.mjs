@@ -47,7 +47,7 @@ test("still reaches the sources page from the shared menu", async () => {
 });
 
 test("offers the prototype description from the shared menu on every page", async () => {
-  for (const path of ["/", "/budget/debt?amount=1959", "/budget-process", "/participation", "/participation/prepare?category=education&topic=culture", "/sources", "/about", "/fiscal-context"]) {
+  for (const path of ["/", "/budget/debt?amount=1959", "/budget/debt/cases?amount=1959", "/budget/debt/materials?amount=1959", "/budget-process", "/participation", "/participation/prepare?category=education&topic=culture", "/sources", "/about", "/fiscal-context"]) {
     const navigation = (await fetchHtml(path, "about-in-menu")).match(/<nav aria-label="主要メニュー">.*?<\/nav>/)?.[0];
 
     assert.ok(navigation, `${path} は主要メニューを表示していない`);

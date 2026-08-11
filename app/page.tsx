@@ -136,7 +136,7 @@ export default function Home() {
               <ul className="mainUseTags">{active.mainUses.map(use => <li key={use}>{use}</li>)}</ul>
             </section>
             <p className="contextCaution">実際の変え方は一つに決まりません。</p>
-            <a className="detailLink" href={createBudgetDetailHref(active.id, values)}>詳しく見る <span>変更方法と論点、事例、出典まで →</span></a>
+            <a className="detailLink" href={createBudgetDetailHref(active.id, values)}>詳しく見る <span>変更方法と制約を考える →</span></a>
             <p className="participationContext">
               <a className="participationDetailLink" href={createBudgetParticipationHref(values, active.id)}>この分野の参加制度と所管局を見る →</a>
               <small>提出による予算への反映は保証されません。</small>

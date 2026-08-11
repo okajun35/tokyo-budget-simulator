@@ -4,6 +4,8 @@ import test from "node:test";
 const sitePaths = [
   "/",
   "/budget/debt?amount=1959",
+  "/budget/debt/cases?amount=1959",
+  "/budget/debt/materials?amount=1959",
   "/budget-process",
   "/participation",
   "/participation/prepare?category=education&topic=culture",

@@ -32,7 +32,7 @@ test("explains what the cases show for the field before the caution", async () =
     const category = BUDGET_CATEGORIES.find(item => item.id === categoryId);
     const decreasedAmount = Math.round(category.baselineAmount100mYen * 0.9);
     const html = await fetchHtml(
-      `/budget/${categoryId}?amount=${decreasedAmount}`,
+      `/budget/${categoryId}/cases?amount=${decreasedAmount}`,
       `case-lead-${categoryId}`,
     );
     const interpretation = CASE_INTERPRETATIONS[categoryId];
@@ -50,7 +50,7 @@ test("shows increase interpretations only when the selected amount increased", a
     const category = BUDGET_CATEGORIES.find(item => item.id === categoryId);
     const increasedAmount = Math.round(category.baselineAmount100mYen * 1.05);
     const html = await fetchHtml(
-      `/budget/${categoryId}?amount=${increasedAmount}`,
+      `/budget/${categoryId}/cases?amount=${increasedAmount}`,
       `increase-case-lead-${categoryId}`,
     );
 

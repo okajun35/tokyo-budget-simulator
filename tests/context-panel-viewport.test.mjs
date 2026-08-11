@@ -74,7 +74,7 @@ test("still states on the top page that a change has more than one method", asyn
   const panel = await topPanel("panel-change-caution");
 
   assert.match(panel, /一つに決まりません/);
-  assert.match(panel, /変更方法と論点/);
+  assert.match(panel, /変更方法と制約/);
 });
 
 test("keeps the field meaning and both routes visible without scrolling the panel", async () => {

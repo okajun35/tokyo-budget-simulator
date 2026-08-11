@@ -42,8 +42,8 @@ test("keeps public cases out of the top panel", async () => {
   assert.doesNotMatch(panel, /国内外の事例/);
 });
 
-test("keeps public cases on the category detail page", async () => {
-  const html = await fetchHtml("/budget/welfare?amount=15000", "detail-with-cases");
+test("keeps public cases on the category case page", async () => {
+  const html = await fetchHtml("/budget/welfare/cases?amount=15000", "detail-with-cases");
 
   assert.match(html, /他の自治体では、予算を減らして何を変えた/);
   assert.match(html, /飯能市の在宅・障害・高齢者福祉事業/);
@@ -59,15 +59,12 @@ test("keeps the evidence boundary out of the top panel", async () => {
   assert.doesNotMatch(panel, /公開情報だけでは判断できないこと/);
 });
 
-test("keeps the evidence boundary on the category detail page", async () => {
+test("keeps a compact evidence boundary on the category detail page", async () => {
   const html = await fetchHtml("/budget/welfare?amount=18730", "detail-with-evidence-boundary");
 
-  assert.match(html, /どこまで確かに言える/);
-  assert.match(html, /data-evidence-kind="fact"/);
-  assert.match(html, /data-evidence-kind="case_fact"/);
-  assert.match(html, /data-evidence-kind="interpretation"/);
-  assert.match(html, /data-evidence-kind="unknown"/);
-  assert.match(html, /公開情報だけでは分からないこと/);
+  assert.match(html, /この画面で確かに言える範囲/);
+  assert.match(html, /公開情報だけでは判断できません/);
+  assert.doesNotMatch(html, /data-evidence-kind="case_fact"/);
 });
 
 test("keeps the participation routes out of the top panel", async () => {
@@ -89,13 +86,14 @@ test("still reaches the participation page for the selected category from the to
   assert.match(panel, /反映は保証されません/);
 });
 
-test("keeps the participation routes on the category detail page", async () => {
+test("hands participation routing off from the category detail page", async () => {
   const html = await fetchHtml("/budget/welfare?amount=18730", "detail-with-participation");
 
-  assert.match(html, /意見を伝える先/);
-  assert.match(html, /福祉局/);
-  assert.match(html, /都民の声/);
-  assert.match(html, /請願/);
+  assert.match(html, /具体的な話題と窓口を選ぶ/);
+  assert.match(html, /href="\/participation\?category=welfare"/);
+  assert.doesNotMatch(html, /意見を伝える先/);
+  assert.doesNotMatch(html, /都民の声/);
+  assert.doesNotMatch(html, /請願/);
 });
 
 test("keeps the document stage background out of the top panel", async () => {
@@ -107,7 +105,7 @@ test("keeps the document stage background out of the top panel", async () => {
 });
 
 test("explains the classification boundary before showing budget materials", async () => {
-  const html = await fetchHtml("/budget/welfare?amount=18730", "detail-with-background");
+  const html = await fetchHtml("/budget/welfare/materials?amount=18730", "detail-with-background");
 
   assert.doesNotMatch(html, /東京都で現在の金額になった背景/);
   assert.match(html, /この予算が決まるまでの資料を見る/);
@@ -127,7 +125,7 @@ test("explains the classification boundary before showing budget materials", asy
 
 test("labels related requests and representative assessments by their actual scope", async () => {
   const html = await fetchHtml(
-    "/budget/education?amount=15922",
+    "/budget/education/materials?amount=15922",
     "detail-with-related-materials",
   );
 
@@ -145,7 +143,7 @@ test("labels related requests and representative assessments by their actual sco
 
 test("labels directly corresponding material without turning it into a category total", async () => {
   const html = await fetchHtml(
-    "/budget/debt?amount=2799",
+    "/budget/debt/materials?amount=2799",
     "detail-with-direct-material",
   );
 
@@ -157,15 +155,15 @@ test("labels directly corresponding material without turning it into a category 
 
 test("explains unavailable request and assessment mappings without calling them absent", async () => {
   const industry = await fetchHtml(
-    "/budget/industry?amount=7822",
+    "/budget/industry/materials?amount=7822",
     "detail-with-request-unavailable",
   );
   const admin = await fetchHtml(
-    "/budget/admin?amount=4993",
+    "/budget/admin/materials?amount=4993",
     "detail-with-materials-unavailable",
   );
   const linked = await fetchHtml(
-    "/budget/linked?amount=21053",
+    "/budget/linked/materials?amount=21053",
     "detail-with-linked-materials-unavailable",
   );
 
@@ -180,8 +178,8 @@ test("explains unavailable request and assessment mappings without calling them 
   }
 });
 
-test("keeps every budget stage on the category detail page", async () => {
-  const html = await fetchHtml("/budget/welfare?amount=18730", "detail-with-stages");
+test("keeps every budget stage on the category materials page", async () => {
+  const html = await fetchHtml("/budget/welfare/materials?amount=18730", "detail-with-stages");
 
   assert.match(html, /各局要求/);
   assert.match(html, /財務局査定/);
@@ -195,6 +193,10 @@ test("renders increase guidance and increase cases for an increased education bu
     "/budget/education?amount=16762",
     "education-increase-guidance",
   );
+  const cases = await fetchHtml(
+    "/budget/education/cases?amount=16762",
+    "education-increase-cases",
+  );
 
   assert.match(html, /data-change-direction="increase"/);
   assert.match(html, /この840億円を増やすと、何を変えられる/);
@@ -202,9 +204,9 @@ test("renders increase guidance and increase cases for an increased education bu
   assert.match(html, /財源の機会費用/);
   assert.match(html, /実施能力/);
   assert.match(html, /恒常経費化/);
-  assert.match(html, /他の自治体では、予算を増やして何を変えた/);
-  assert.match(html, /GIGAスクール構想による端末整備/);
-  assert.doesNotMatch(html, /飯能市立図書館のサービス見直し/);
+  assert.match(cases, /他の自治体では、予算を増やして何を変えた/);
+  assert.match(cases, /GIGAスクール構想による端末整備/);
+  assert.doesNotMatch(cases, /飯能市立図書館のサービス見直し/);
   assert.match(html, /この840億円を増やすなら、何に使いますか/);
 });
 
@@ -213,15 +215,19 @@ test("renders decrease guidance and decrease cases for a decreased education bud
     "/budget/education?amount=11145",
     "education-decrease-guidance",
   );
+  const cases = await fetchHtml(
+    "/budget/education/cases?amount=11145",
+    "education-decrease-cases",
+  );
 
   assert.match(html, /data-change-direction="decrease"/);
   assert.match(html, /この4,777億円を減らすには、何を変える/);
   assert.match(html, /学校・施設の統合や更新延期/);
   assert.match(html, /サービス低下/);
   assert.match(html, /負担移転/);
-  assert.match(html, /他の自治体では、予算を減らして何を変えた/);
-  assert.match(html, /飯能市立図書館のサービス見直し/);
-  assert.doesNotMatch(html, /GIGAスクール構想による端末整備/);
+  assert.match(cases, /他の自治体では、予算を減らして何を変えた/);
+  assert.match(cases, /飯能市立図書館のサービス見直し/);
+  assert.doesNotMatch(cases, /GIGAスクール構想による端末整備/);
   assert.match(html, /この4,777億円を減らすなら、何を変えますか/);
 });
 
@@ -241,7 +247,7 @@ test("renders unchanged pressures without pretending a reduction was selected", 
 
 test("does not fill unsupported increase cases for every category", async () => {
   const html = await fetchHtml(
-    "/budget/industry?amount=8000",
+    "/budget/industry/cases?amount=8000",
     "industry-increase-case-unavailable",
   );
 

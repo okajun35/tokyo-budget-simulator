@@ -90,7 +90,9 @@ The same rule applies to process stages. `BUDGET_PROCESS_SUMMARY_STEPS` carries 
 ## Information architecture and reading order
 
 - `/` — short purpose statement, FY2026 overview, fixed-total simulator, selected-field context, budget-process summary, and fiscal-condition cards.
-- `/budget/[categoryId]` — inherited user amount, meaning, uses, change options, domestic/international cases, Tokyo budget background, sources, responsible bureaus, and participation routes for one of the nine fields.
+- `/budget/[categoryId]` — inherited user amount, meaning, uses, direction-specific change options, constraints, and three next-step choices for one of the nine fields.
+- `/budget/[categoryId]/cases` — direction-matched public cases and their evidential limits for the inherited category and amount.
+- `/budget/[categoryId]/materials` — Tokyo request, assessment, proposal, and enacted-budget materials related to the inherited category, with classification-axis caveats and official sources.
 - `/budget-process` — requests, Finance Bureau assessment, governor assessment, proposal, assembly review, enactment, execution, settlement, and evaluation as separate stages.
 - `/participation` — select a concrete topic for the inherited category, identify the responsible organizations, and compare verified official contacts with common participation routes.
 - `/participation/prepare` — privately organize the person's concern, requested action, and reason for the selected topic before copying it or opening an official contact. Free text remains in client memory only.

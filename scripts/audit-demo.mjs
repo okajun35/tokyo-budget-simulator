@@ -106,12 +106,14 @@ check("17.5 年間総予算を固定", afterEducationIncrease.metrics[0] === "96
 await navigate("/budget/debt?amount=1959");
 const debtDetail = await evaluate(`({
   meaning: document.querySelector('#meaning-heading + .detailLead').textContent,
-  optionCount: document.querySelectorAll('.detailOptionGrid article').length,
-  caseTitles: Array.from(document.querySelectorAll('.detailCaseGrid h3')).map(item => item.textContent)
+  optionCount: document.querySelectorAll('.detailOptionGrid article').length
 })`);
 check("17.6 公債費の意味", debtDetail.meaning.includes("元金返済") && debtDetail.meaning.includes("利子"), debtDetail.meaning);
 check("17.7 複数の変更方法", debtDetail.optionCount >= 3, debtDetail.optionCount);
-check("17.8 国内外の公的事例", debtDetail.caseTitles.some(title => title.includes("夕張市")) && debtDetail.caseTitles.some(title => title.includes("プエルトリコ")), debtDetail.caseTitles);
+
+await navigate("/budget/debt/cases?amount=1959");
+const caseTitles = await evaluate(`Array.from(document.querySelectorAll('.detailCaseGrid h3')).map(item => item.textContent)`);
+check("17.8 国内外の公的事例", caseTitles.some(title => title.includes("夕張市")) && caseTitles.some(title => title.includes("プエルトリコ")), caseTitles);
 
 await navigate("/budget-process");
 const processStages = await evaluate(`Array.from(document.querySelectorAll('.budgetProcessCard h2')).map(item => item.textContent)`);
