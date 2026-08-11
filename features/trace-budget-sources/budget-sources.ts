@@ -69,7 +69,7 @@ export const BUDGET_SOURCES = [
     license: LICENSE_FINANCE_BUREAU,
     targetPage: "令和8年度予算要求",
     targetTableOrItem: "各局予算要求概要および要求額",
-    appUsage: ["分野別の要求背景", "予算成立過程の各局要求"],
+    appUsage: ["分野に関連する予算要求資料", "予算成立過程の各局要求"],
   },
   {
     id: "bureau",

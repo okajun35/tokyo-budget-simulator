@@ -839,7 +839,11 @@ test("explains a budget change through the complete shared detail template", asy
   assert.match(normalizedHtml, /data-evidence-kind="interpretation"/);
   assert.match(normalizedHtml, /data-evidence-kind="unknown"/);
   assert.match(normalizedHtml, /国内外の事例/);
-  assert.match(normalizedHtml, /東京都で現在の金額になった背景/);
+  assert.match(normalizedHtml, /この予算が決まるまでの資料を見る/);
+  assert.match(normalizedHtml, /分野に直接対応する資料/);
+  assert.match(normalizedHtml, /公債費（款）.*?要求額.*?2,801\.14億円.*?前年度.*?2,871\.77億円/s);
+  assert.match(normalizedHtml, /代表的な財務局査定/);
+  assert.match(normalizedHtml, /分野全体の査定額ではなく、関連する代表的な事項/);
   assert.match(normalizedHtml, /詳しい公式資料/);
   assert.match(normalizedHtml, /意見を伝える先/);
   assert.match(normalizedHtml, /主な所管であり、予算分類との一対一対応ではありません/);

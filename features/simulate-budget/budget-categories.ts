@@ -9,6 +9,14 @@ const COMMON_PARTICIPATION_ROUTE_IDS = [
   "petition",
   "written-request",
 ] as const;
+const REQUEST_CROSSWALK_UNAVAILABLE =
+  "この分野の目的別分類と局別予算要求を安全に対応付けられる公式な対応表を確認できていません。";
+const REPRESENTATIVE_ASSESSMENT_NOTE =
+  "※分野全体の査定額ではなく、関連する代表的な事項です。";
+const MULTI_DOMAIN_ADMIN_REASON =
+  "政策企画、総務、デジタル、議会、選挙、徴税など複数領域にまたがるため、安全に対応付けられる代表資料を現在確認できていません。";
+const MULTI_SYSTEM_LINKED_REASON =
+  "各種交付金、区市町村関係経費、繰出金など複数制度・会計項目を含むため、局別・款別資料を単純に対応付けていません。";
 const BUREAUS = {
   welfare: { name: "福祉局", url: "https://www.fukushi.metro.tokyo.lg.jp/" },
   health: { name: "保健医療局", url: "https://www.hokeniryo.metro.tokyo.lg.jp/" },
@@ -75,14 +83,35 @@ export const BUDGET_CATEGORIES = [
     leadBureaus: [BUREAUS.welfare, BUREAUS.health],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
     request: {
+      relationship: "related_bureau",
+      sourceId: "request",
       bureau: "福祉局＋保健医療局",
       requestedAmount100mYen: 18_352.6,
       previousAmount100mYen: 17_564.8,
       reason:
-        "福祉局は事業費増、保健医療局は医療提供体制等を中心に要求。目的別予算とは集計範囲が一致しません。",
+        "福祉局は事業費増、保健医療局は医療提供体制等を中心に要求しました。",
+      note:
+        "※「福祉と保健」の目的別予算全体の要求額ではありません。目的別予算と局別予算要求では集計軸が異なります。",
     },
-    bureauAssessment:
-      "例：シルバーパスは要求286.04億円→査定274.10億円（経費精査等）。後期高齢者医療は1,735.43億円→1,707.17億円（要求額の調整）。",
+    bureauAssessment: {
+      relationship: "representative_item",
+      sourceId: "bureau",
+      items: [
+        {
+          name: "シルバーパス",
+          requestedAmount100mYen: 286.04,
+          assessedAmount100mYen: 274.1,
+          reason: "経費精査等",
+        },
+        {
+          name: "後期高齢者医療",
+          requestedAmount100mYen: 1_735.43,
+          assessedAmount100mYen: 1_707.17,
+          reason: "要求額の調整",
+        },
+      ],
+      note: REPRESENTATIVE_ASSESSMENT_NOTE,
+    },
     governorAssessment:
       "例：民生・児童委員活動等は13.91億円→42.31億円、女性のがん検診受診応援事業は新規16.17億円。",
   },
@@ -132,14 +161,32 @@ export const BUDGET_CATEGORIES = [
     leadBureaus: [BUREAUS.education, BUREAUS.culture, BUREAUS.sports],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
     request: {
+      relationship: "related_bureau",
+      sourceId: "request",
       bureau: "教育庁（代表）",
       requestedAmount100mYen: 11_145.8,
       previousAmount100mYen: 10_478,
-      reason:
-        "給与関係費と事業費の増を要求。文化・私学等は別局を含むため目的別総額とは一致しません。",
+      reason: "給与関係費と事業費の増を要求しました。",
+      note:
+        "※「教育と文化」の目的別予算全体の要求額ではありません。目的別予算と局別予算要求では集計軸が異なります。",
     },
-    bureauAssessment:
-      "例：学校給食運営管理は357.19億円→546.87億円、子供の学力に対する懸念の解消は141.87億円→137.40億円。",
+    bureauAssessment: {
+      relationship: "representative_item",
+      sourceId: "bureau",
+      items: [
+        {
+          name: "学校給食運営管理",
+          requestedAmount100mYen: 357.19,
+          assessedAmount100mYen: 546.87,
+        },
+        {
+          name: "学力への懸念解消",
+          requestedAmount100mYen: 141.87,
+          assessedAmount100mYen: 137.4,
+        },
+      ],
+      note: REPRESENTATIVE_ASSESSMENT_NOTE,
+    },
     governorAssessment:
       "例：公立学校給食費負担軽減は477.08億円→477.66億円、給付型奨学金は13.30億円→22.09億円。",
   },
@@ -180,8 +227,24 @@ export const BUDGET_CATEGORIES = [
     caseIds: ["case-hanno-tourism-facilities", "case-england-colleges"],
     leadBureaus: [BUREAUS.industry],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
-    bureauAssessment:
-      "例：金融支援は3,415.76億円→3,394.00億円、創業支援は150.08億円→145.73億円。",
+    requestUnavailableReason: REQUEST_CROSSWALK_UNAVAILABLE,
+    bureauAssessment: {
+      relationship: "representative_item",
+      sourceId: "bureau",
+      items: [
+        {
+          name: "金融支援",
+          requestedAmount100mYen: 3_415.76,
+          assessedAmount100mYen: 3_394,
+        },
+        {
+          name: "創業支援",
+          requestedAmount100mYen: 150.08,
+          assessedAmount100mYen: 145.73,
+        },
+      ],
+      note: REPRESENTATIVE_ASSESSMENT_NOTE,
+    },
     governorAssessment: "知事査定の事業別資料で変更事項を確認できます。",
   },
   {
@@ -222,14 +285,34 @@ export const BUDGET_CATEGORIES = [
     leadBureaus: [BUREAUS.environment],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
     request: {
+      relationship: "related_bureau",
+      sourceId: "request",
       bureau: "環境局（代表）",
       requestedAmount100mYen: 2_635,
       previousAmount100mYen: 2_177,
       reason:
-        "脱炭素、資源循環、生物多様性、都市環境を柱に前年度比21.1%増を要求。目的別総額とは集計範囲が一致しません。",
+        "脱炭素、資源循環、生物多様性、都市環境を柱に前年度比21.1%増を要求しました。",
+      note:
+        "※「生活環境」の目的別予算全体の要求額ではありません。目的別予算と局別予算要求では集計軸が異なります。",
     },
-    bureauAssessment:
-      "再生可能エネルギーの推進は411.40億円→317.40億円（経費精査等）。環境エネルギー政策は1,391.84億円→1,684.88億円。",
+    bureauAssessment: {
+      relationship: "representative_item",
+      sourceId: "bureau",
+      items: [
+        {
+          name: "再生可能エネルギー推進",
+          requestedAmount100mYen: 411.4,
+          assessedAmount100mYen: 317.4,
+          reason: "経費精査等",
+        },
+        {
+          name: "環境エネルギー政策",
+          requestedAmount100mYen: 1_391.84,
+          assessedAmount100mYen: 1_684.88,
+        },
+      ],
+      note: REPRESENTATIVE_ASSESSMENT_NOTE,
+    },
     governorAssessment:
       "浮体式洋上風力発電導入推進事業は11.11億円→27.42億円（要求額の調整）。",
   },
@@ -270,8 +353,24 @@ export const BUDGET_CATEGORIES = [
     caseIds: ["case-yubari-consolidated-facility", "case-england-local-roads"],
     leadBureaus: [BUREAUS.urbanDevelopment, BUREAUS.housing, BUREAUS.construction],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
-    bureauAssessment:
-      "例：道路整備は267.31億円→265.33億円、公園整備は367.02億円→344.33億円。",
+    requestUnavailableReason: REQUEST_CROSSWALK_UNAVAILABLE,
+    bureauAssessment: {
+      relationship: "representative_item",
+      sourceId: "bureau",
+      items: [
+        {
+          name: "道路整備",
+          requestedAmount100mYen: 267.31,
+          assessedAmount100mYen: 265.33,
+        },
+        {
+          name: "公園整備",
+          requestedAmount100mYen: 367.02,
+          assessedAmount100mYen: 344.33,
+        },
+      ],
+      note: REPRESENTATIVE_ASSESSMENT_NOTE,
+    },
     governorAssessment: "空き家等みどり転用支援事業は0.90億円→4.00億円。",
   },
   {
@@ -303,14 +402,35 @@ export const BUDGET_CATEGORIES = [
       },
     ],
     request: {
-      bureau: "警視庁＋東京消防庁（警察費・消防費）",
+      relationship: "related_bureau",
+      sourceId: "request",
+      bureau: "警察費＋消防費",
       requestedAmount100mYen: 10_368.9,
       previousAmount100mYen: 10_125.74,
       reason:
         "警察費と消防費を合わせた要求です。財務局査定後は10,571.75億円となり、成立額との差は知事査定以降の変更によるものです。",
+      note:
+        "※「警察と消防」の目的別予算全体と完全に同じ集計軸であることは確認できていません。",
     },
-    bureauAssessment:
-      "警察本部費は要求5,388.75億円→査定5,536.16億円（事項の追加等による増額）。消防管理費のうち管理費は2,189.48億円→2,269.19億円（事項の追加等による増額）。",
+    bureauAssessment: {
+      relationship: "representative_item",
+      sourceId: "bureau",
+      items: [
+        {
+          name: "警察本部費",
+          requestedAmount100mYen: 5_388.75,
+          assessedAmount100mYen: 5_536.16,
+          reason: "事項の追加等による増額",
+        },
+        {
+          name: "消防管理費",
+          requestedAmount100mYen: 2_189.48,
+          assessedAmount100mYen: 2_269.19,
+          reason: "事項の追加等による増額",
+        },
+      ],
+      note: REPRESENTATIVE_ASSESSMENT_NOTE,
+    },
     sourceIds: COMMON_SOURCE_IDS,
     caseIds: ["case-japan-fire-service-consolidation", "case-england-fire-and-rescue"],
     leadBureaus: [BUREAUS.police, BUREAUS.fire],
@@ -348,6 +468,8 @@ export const BUDGET_CATEGORIES = [
     caseIds: ["case-hanno-emergency-fiscal-plan", "case-england-hmrc-customer-service"],
     leadBureaus: [BUREAUS.policy, BUREAUS.generalAffairs, BUREAUS.digital],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
+    requestUnavailableReason: MULTI_DOMAIN_ADMIN_REASON,
+    bureauAssessmentUnavailableReason: MULTI_DOMAIN_ADMIN_REASON,
   },
   {
     id: "debt",
@@ -383,14 +505,29 @@ export const BUDGET_CATEGORIES = [
       },
     ],
     request: {
+      relationship: "direct",
+      sourceId: "request",
       bureau: "公債費（款）",
       requestedAmount100mYen: 2_801.14,
       previousAmount100mYen: 2_871.77,
+      previousAmountLabel: "前年度",
       reason:
         "過去に発行した都債の元利償還に必要な額を見積もった要求です。令和7年度予算額より57.16億円少ない要求で、財務局査定後は2,814.61億円となりました。成立額との差は知事査定以降の変更によるものです。",
+      note: "公債費款は、この分野に直接対応する資料です。",
     },
-    bureauAssessment:
-      "公債費会計繰出金は要求2,800.39億円→査定2,813.86億円（事項の追加等による増額）。",
+    bureauAssessment: {
+      relationship: "representative_item",
+      sourceId: "bureau",
+      items: [
+        {
+          name: "公債費会計繰出金",
+          requestedAmount100mYen: 2_800.39,
+          assessedAmount100mYen: 2_813.86,
+          reason: "事項の追加等による増額",
+        },
+      ],
+      note: REPRESENTATIVE_ASSESSMENT_NOTE,
+    },
     sourceIds: COMMON_SOURCE_IDS,
     caseIds: [
       "case-yubari-financial-reconstruction",
@@ -437,5 +574,7 @@ export const BUDGET_CATEGORIES = [
     caseIds: ["case-england-local-authorities"],
     leadBureaus: [BUREAUS.finance, BUREAUS.tax, BUREAUS.generalAffairs],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
+    requestUnavailableReason: MULTI_SYSTEM_LINKED_REASON,
+    bureauAssessmentUnavailableReason: MULTI_SYSTEM_LINKED_REASON,
   },
 ] as const satisfies readonly BudgetCategory[];

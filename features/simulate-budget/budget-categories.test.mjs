@@ -61,6 +61,92 @@ test("provides the shared detail references required by every category", () => {
   }
 });
 
+test("records how request and assessment materials relate to each purpose category", () => {
+  const categories = Object.fromEntries(
+    BUDGET_CATEGORIES.map(category => [category.id, category]),
+  );
+
+  assert.deepEqual(
+    Object.values(categories)
+      .filter(category => category.request)
+      .map(category => category.id),
+    ["welfare", "education", "environment", "safety", "debt"],
+  );
+  assert.equal(categories.debt.request.relationship, "direct");
+  assert.deepEqual(
+    Object.fromEntries(
+      Object.values(categories)
+        .filter(category => category.request)
+        .map(category => [category.id, {
+          bureau: category.request.bureau,
+          requested: category.request.requestedAmount100mYen,
+          previous: category.request.previousAmount100mYen,
+        }]),
+    ),
+    {
+      welfare: { bureau: "福祉局＋保健医療局", requested: 18_352.6, previous: 17_564.8 },
+      education: { bureau: "教育庁（代表）", requested: 11_145.8, previous: 10_478 },
+      environment: { bureau: "環境局（代表）", requested: 2_635, previous: 2_177 },
+      safety: { bureau: "警察費＋消防費", requested: 10_368.9, previous: 10_125.74 },
+      debt: { bureau: "公債費（款）", requested: 2_801.14, previous: 2_871.77 },
+    },
+  );
+  for (const categoryId of ["welfare", "education", "environment", "safety"]) {
+    assert.equal(categories[categoryId].request.relationship, "related_bureau");
+    assert.equal(categories[categoryId].request.sourceId, "request");
+    assert.ok(categories[categoryId].request.note.length > 0);
+  }
+  for (const categoryId of ["industry", "city", "admin", "linked"]) {
+    assert.ok(categories[categoryId].requestUnavailableReason.length > 0);
+  }
+
+  assert.deepEqual(
+    Object.values(categories)
+      .filter(category => category.bureauAssessment)
+      .map(category => category.id),
+    ["welfare", "education", "industry", "environment", "city", "safety", "debt"],
+  );
+  for (const category of Object.values(categories).filter(
+    item => item.bureauAssessment,
+  )) {
+    assert.equal(category.bureauAssessment.relationship, "representative_item");
+    assert.equal(category.bureauAssessment.sourceId, "bureau");
+    assert.ok(category.bureauAssessment.items.length > 0);
+    assert.ok(
+      category.bureauAssessment.items.every(
+        item =>
+          item.name.length > 0 &&
+          Number.isFinite(item.requestedAmount100mYen) &&
+          Number.isFinite(item.assessedAmount100mYen),
+      ),
+    );
+    assert.match(category.bureauAssessment.note, /分野全体の査定額ではなく/);
+  }
+  for (const categoryId of ["admin", "linked"]) {
+    assert.ok(categories[categoryId].bureauAssessmentUnavailableReason.length > 0);
+  }
+  assert.deepEqual(
+    Object.fromEntries(
+      Object.values(categories)
+        .filter(category => category.bureauAssessment)
+        .map(category => [category.id, category.bureauAssessment.items.map(item => [
+          item.name,
+          item.requestedAmount100mYen,
+          item.assessedAmount100mYen,
+        ])]),
+    ),
+    {
+      welfare: [["シルバーパス", 286.04, 274.1], ["後期高齢者医療", 1_735.43, 1_707.17]],
+      education: [["学校給食運営管理", 357.19, 546.87], ["学力への懸念解消", 141.87, 137.4]],
+      industry: [["金融支援", 3_415.76, 3_394], ["創業支援", 150.08, 145.73]],
+      environment: [["再生可能エネルギー推進", 411.4, 317.4], ["環境エネルギー政策", 1_391.84, 1_684.88]],
+      city: [["道路整備", 267.31, 265.33], ["公園整備", 367.02, 344.33]],
+      safety: [["警察本部費", 5_388.75, 5_536.16], ["消防管理費", 2_189.48, 2_269.19]],
+      debt: [["公債費会計繰出金", 2_800.39, 2_813.86]],
+    },
+  );
+});
+
 test("provides the concrete change methods required by the three detailed categories", () => {
   const expectedWordsByCategory = {
     debt: ["返済", "基金", "新規", "借換え", "条件"],

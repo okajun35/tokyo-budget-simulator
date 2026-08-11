@@ -102,13 +102,87 @@ test("keeps the document stage background out of the top panel", async () => {
   const panel = await topPanel("panel-without-background");
 
   assert.doesNotMatch(panel, /data-budget-background-stage=/);
+  assert.doesNotMatch(panel, /この予算が決まるまでの資料を見る/);
   assert.doesNotMatch(panel, /東京都で現在の金額になった背景/);
 });
 
-test("keeps the document stage background on the category detail page", async () => {
+test("explains the classification boundary before showing budget materials", async () => {
   const html = await fetchHtml("/budget/welfare?amount=18730", "detail-with-background");
 
-  assert.match(html, /東京都で現在の金額になった背景/);
+  assert.doesNotMatch(html, /東京都で現在の金額になった背景/);
+  assert.match(html, /この予算が決まるまでの資料を見る/);
+  assert.match(
+    html,
+    /東京都が公開している予算要求・査定・予算案などから、この分野に関連する資料を紹介します/,
+  );
+  assert.match(html, /なぜ要求額と成立予算をそのまま比較できないの/);
+  assert.match(html, /何のために使う.*?目的別/s);
+  assert.match(html, /どの局が使う.*?局別/s);
+  assert.match(html, /どんな性質の支出.*?性質別/s);
+  assert.match(html, /会計上どこに属する.*?款・項・目/s);
+  assert.match(html, /公開資料で確認できる範囲を掲載しています/);
+  assert.match(html, /独自の推測合算は行っていません/);
+  assert.doesNotMatch(html, /要求背景\s*5\/9|財務局査定\s*7\/9|データ充足率/);
+});
+
+test("labels related requests and representative assessments by their actual scope", async () => {
+  const html = await fetchHtml(
+    "/budget/education?amount=15922",
+    "detail-with-related-materials",
+  );
+
+  assert.match(html, /data-budget-material-relationship="related_bureau"/);
+  assert.match(html, /関連する局の予算要求/);
+  assert.match(html, /教育庁（代表）/);
+  assert.match(html, /要求額.*?11,145\.8億円.*?前年度当初.*?10,478億円/s);
+  assert.match(html, /「教育と文化」の目的別予算全体の要求額ではありません/);
+  assert.match(html, /data-budget-material-relationship="representative_item"/);
+  assert.match(html, /代表的な財務局査定/);
+  assert.match(html, /学校給食運営管理.*?357\.19億円.*?546\.87億円/s);
+  assert.match(html, /学力への懸念解消.*?141\.87億円.*?137\.4億円/s);
+  assert.match(html, /分野全体の査定額ではなく、関連する代表的な事項です/);
+});
+
+test("labels directly corresponding material without turning it into a category total", async () => {
+  const html = await fetchHtml(
+    "/budget/debt?amount=2799",
+    "detail-with-direct-material",
+  );
+
+  assert.match(html, /data-budget-material-relationship="direct"/);
+  assert.match(html, /分野に直接対応する資料/);
+  assert.match(html, /公債費（款）/);
+  assert.match(html, /公債費会計繰出金.*?2,800\.39億円.*?2,813\.86億円/s);
+});
+
+test("explains unavailable request and assessment mappings without calling them absent", async () => {
+  const industry = await fetchHtml(
+    "/budget/industry?amount=7822",
+    "detail-with-request-unavailable",
+  );
+  const admin = await fetchHtml(
+    "/budget/admin?amount=4993",
+    "detail-with-materials-unavailable",
+  );
+  const linked = await fetchHtml(
+    "/budget/linked?amount=21053",
+    "detail-with-linked-materials-unavailable",
+  );
+
+  assert.match(industry, /目的別分類と局別予算要求を安全に対応付けられる公式な対応表を確認できていません/);
+  assert.match(industry, /金融支援.*?3,415\.76億円.*?3,394億円/s);
+  assert.match(admin, /政策企画、総務、デジタル、議会、選挙、徴税など複数領域にまたがる/);
+  assert.match(admin, /掲載がないことは「査定が行われなかった」という意味ではありません/);
+  assert.match(linked, /各種交付金、区市町村関係経費、繰出金など複数制度・会計項目を含む/);
+  for (const html of [industry, admin, linked]) {
+    assert.doesNotMatch(html, />要求なし</);
+    assert.doesNotMatch(html, />査定なし</);
+  }
+});
+
+test("keeps every budget stage on the category detail page", async () => {
+  const html = await fetchHtml("/budget/welfare?amount=18730", "detail-with-stages");
+
   assert.match(html, /各局要求/);
   assert.match(html, /財務局査定/);
   assert.match(html, /知事査定/);
