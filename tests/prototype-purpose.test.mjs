@@ -67,7 +67,7 @@ test("states the positioning once instead of repeating a weaker version", async 
 
   assert.ok(html.includes(PROTOTYPE_PURPOSE_STATEMENT));
   assert.doesNotMatch(html, /調べる・動かす・参加先を知るための入口/);
-  assert.match(html, /意見や個人情報を保存も送信もしません/);
+  assert.match(html, /東京都の公式な意見受付ではありません/);
 });
 
 test("states what the prototype does not try to do", async () => {

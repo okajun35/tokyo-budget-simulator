@@ -389,7 +389,7 @@ test("renders opinion drafting on a focused page with the selected topic", async
   assert.match(html, /東京都に何をしてほしいですか？/);
   assert.match(html, /なぜそう思いますか？/);
   assert.match(html, /氏名・住所などの個人情報は入力しないでください/);
-  assert.match(html, /入力内容はこのページ内だけで保持し、保存・送信しません/);
+  assert.match(html, /入力内容はこのページ内だけで保持し、保存しません/);
   assert.doesNotMatch(html, /ほかの方法/);
 });
 

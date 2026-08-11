@@ -68,6 +68,10 @@ export default function Home() {
   return <main data-visual-theme="tokyo-blue">
       <section className="hero" id="top">
         <div>
+          <aside className="unofficialNotice" role="note">
+            <strong>東京都の公式サービスではありません</strong>
+            <span>公開資料をもとにした非公式プロトタイプです。</span>
+          </aside>
           <p className="eyebrow">BUDGET SIMULATOR · FY2026</p>
           <h1>東京都の予算を動かし、<em>変更の意味を知る。</em></h1>
           <p className="lead">令和8年度の成立後当初予算を基準にした仮想シミュレーションです。数字を変えながら予算が決まる流れを学べます。</p>

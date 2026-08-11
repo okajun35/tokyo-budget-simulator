@@ -26,6 +26,10 @@ test("reaches the prototype description from the top of the first screen", async
   assert.ok(hero, "冒頭のセクションが見つからない");
   assert.match(
     hero,
+    /東京都の公式サービスではありません.*公開資料をもとにした非公式プロトタイプです/s,
+  );
+  assert.match(
+    hero,
     /<a(?=[^>]*href="\/about")[^>]*>このサイトについて/,
   );
 });

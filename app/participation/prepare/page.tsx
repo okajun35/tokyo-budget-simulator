@@ -61,7 +61,7 @@ export default async function ParticipationPreparePage({
       <Link href={participationHref}>← テーマと窓口を選び直す</Link>
       <p className="eyebrow">PREPARE YOUR MESSAGE</p>
       <h1>あなたの考えを整理する</h1>
-      <p>選んだ話題について、問題・東京都にしてほしいこと・理由を整理します。東京予算ラボから東京都への送信は行いません。</p>
+      <p>選んだ話題について、問題・東京都にしてほしいこと・理由を整理します。</p>
     </header>
 
     {selectedCategory && selectedTopic ? <div className="participationPageContent">

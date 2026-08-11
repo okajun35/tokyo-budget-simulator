@@ -109,7 +109,7 @@ export function ParticipationDraftWorkspace({
       </div>
       <aside className="participationPrivacyNote" role="note">
         <strong>氏名・住所などの個人情報は入力しないでください</strong>
-        <p>入力内容はこのページ内だけで保持し、保存・送信しません。ページを離れると消えます。</p>
+        <p>入力内容はこのページ内だけで保持し、保存しません。ページを離れると消えます。</p>
       </aside>
       <div className="participationDraftFields">
         <label>
