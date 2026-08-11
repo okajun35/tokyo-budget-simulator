@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { CategoryBudgetMaterials } from "@/features/learn-budget-process/category-budget-materials";
 import {
+  createBudgetProcessHref,
   createBudgetParticipationHref,
   createBudgetSimulatorHref,
 } from "@/features/simulate-budget/budget-plan-query";
@@ -10,7 +11,12 @@ import {
   BudgetDetailFallbackNotice,
 } from "@/features/understand-budget-change/budget-detail-context";
 import {
+  BudgetLearningJourney,
+  BudgetLearningJourneyNext,
+} from "@/features/understand-budget-change/budget-learning-journey";
+import {
   createBudgetCasesHref,
+  createBudgetMaterialsHref,
   createBudgetMeaningHref,
 } from "@/features/understand-budget-change/budget-detail-navigation";
 import { resolveBudgetDetailPageState } from "@/features/understand-budget-change/budget-detail-page-state";
@@ -38,12 +44,16 @@ export default async function BudgetMaterialsPage({
   const { category, comparison, planAllocations, resolvedAmount } = state;
   const meaningHref = createBudgetMeaningHref(category.id, resolvedAmount.amount100mYen, planAllocations);
   const casesHref = createBudgetCasesHref(category.id, resolvedAmount.amount100mYen, planAllocations);
+  const materialsHref = createBudgetMaterialsHref(category.id, resolvedAmount.amount100mYen, planAllocations);
   const simulatorHref = planAllocations
     ? createBudgetSimulatorHref(planAllocations, category.id)
     : "/#simulator";
   const participationHref = planAllocations
     ? createBudgetParticipationHref(planAllocations, category.id)
     : `/participation?category=${category.id}`;
+  const budgetProcessHref = planAllocations
+    ? createBudgetProcessHref(planAllocations, category.id)
+    : "/budget-process";
 
   return <main
     className="budgetDetailPage budgetSupplementPage"
@@ -59,13 +69,25 @@ export default async function BudgetMaterialsPage({
     <div className="budgetDetailContent">
       <BudgetDetailFallbackNotice amount={amount} usedFallback={resolvedAmount.usedFallback} />
       <BudgetDetailContext category={category} comparison={comparison} />
+      <BudgetLearningJourney
+        current="materials"
+        meaningHref={meaningHref}
+        casesHref={casesHref}
+        materialsHref={materialsHref}
+        participationHref={participationHref}
+        simulatorHref={simulatorHref}
+        budgetProcessHref={budgetProcessHref}
+      />
       <CategoryBudgetMaterials category={category} />
-      <nav className="budgetDetailBack" aria-label="関連ページへ移動">
-        <Link href={meaningHref}>変更の意味と制約へ戻る</Link>
-        <Link href={casesHref}>実際の事例を見る</Link>
-        <Link href={participationHref}>具体的な話題と窓口を選ぶ</Link>
-        <Link href={simulatorHref}>予算シミュレーターへ戻る</Link>
-      </nav>
+      <BudgetLearningJourneyNext
+        current="materials"
+        meaningHref={meaningHref}
+        casesHref={casesHref}
+        materialsHref={materialsHref}
+        participationHref={participationHref}
+        simulatorHref={simulatorHref}
+        budgetProcessHref={budgetProcessHref}
+      />
     </div>
   </main>;
 }

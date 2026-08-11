@@ -985,6 +985,11 @@ test("renders public cases on a separate category page", async () => {
   assert.match(html, /飯能市の在宅・障害・高齢者福祉事業/);
   assert.match(html, /イングランドの成人社会福祉支出/);
   assert.match(html, /東京都で同じ結果になるとは限りません/);
+  assert.match(html, /data-budget-journey-current="cases"/);
+  assert.match(html, /aria-current="step"[^>]*>.*?事例/s);
+  assert.match(html, /data-budget-next-from="cases"/);
+  assert.match(html, /次に見るなら、東京都の編成資料/);
+  assert.match(html, /予算編成資料へ進む/);
   assert.doesNotMatch(html, /なぜ要求額と成立予算をそのまま比較できないの/);
 });
 
@@ -1008,6 +1013,12 @@ test("renders Tokyo formation materials on a separate category page", async () =
   assert.match(html, /関連する局の予算要求/);
   assert.match(html, /学校給食運営管理.*?357\.19億円.*?546\.87億円/s);
   assert.match(html, /公開資料で確認できる範囲を掲載しています/);
+  assert.match(html, /data-budget-journey-current="materials"/);
+  assert.match(html, /aria-current="step"[^>]*>.*?編成資料/s);
+  assert.match(html, /data-budget-next-from="materials"/);
+  assert.match(html, /次は、関心のある話題を具体化する/);
+  assert.match(html, /話題と窓口へ進む/);
+  assert.match(html, /東京都の予算全体の流れを見る/);
   assert.doesNotMatch(html, /飯能市立図書館のサービス見直し/);
 });
 

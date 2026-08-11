@@ -102,6 +102,8 @@ The same rule applies to process stages. `BUDGET_PROCESS_SUMMARY_STEPS` carries 
 
 The normal learning order is allocation first, meaning and trade-offs second, budget process third, and participation routes last. Links may let informed users skip ahead, but page changes should preserve this narrative.
 
+The category case and material pages show a compact four-step guide: meaning and constraints, public cases, Tokyo formation materials, then topics and official routes. Treat it as a suggested path, not a mandatory wizard. At the end of each page, show one primary next action and separate return or skip links as secondary alternatives.
+
 ## Evidence and wording rules
 
 - Keep enacted budget, proposal, bureau requests, Finance Bureau assessment, and governor assessment as distinct document stages. Never describe a proposal or requested amount as the enacted baseline.

@@ -10,6 +10,11 @@ import {
   BudgetDetailFallbackNotice,
 } from "@/features/understand-budget-change/budget-detail-context";
 import {
+  BudgetLearningJourney,
+  BudgetLearningJourneyNext,
+} from "@/features/understand-budget-change/budget-learning-journey";
+import {
+  createBudgetCasesHref,
   createBudgetMaterialsHref,
   createBudgetMeaningHref,
 } from "@/features/understand-budget-change/budget-detail-navigation";
@@ -37,6 +42,7 @@ export default async function BudgetCasesPage({
 
   const { category, comparison, changeGuidance, planAllocations, resolvedAmount } = state;
   const meaningHref = createBudgetMeaningHref(category.id, resolvedAmount.amount100mYen, planAllocations);
+  const casesHref = createBudgetCasesHref(category.id, resolvedAmount.amount100mYen, planAllocations);
   const materialsHref = createBudgetMaterialsHref(category.id, resolvedAmount.amount100mYen, planAllocations);
   const simulatorHref = planAllocations
     ? createBudgetSimulatorHref(planAllocations, category.id)
@@ -59,17 +65,27 @@ export default async function BudgetCasesPage({
     <div className="budgetDetailContent">
       <BudgetDetailFallbackNotice amount={amount} usedFallback={resolvedAmount.usedFallback} />
       <BudgetDetailContext category={category} comparison={comparison} />
+      <BudgetLearningJourney
+        current="cases"
+        meaningHref={meaningHref}
+        casesHref={casesHref}
+        materialsHref={materialsHref}
+        participationHref={participationHref}
+        simulatorHref={simulatorHref}
+      />
       <CategoryCaseStudies
         category={category}
         direction={comparison.direction}
         guidance={changeGuidance}
       />
-      <nav className="budgetDetailBack" aria-label="関連ページへ移動">
-        <Link href={meaningHref}>変更の意味と制約へ戻る</Link>
-        <Link href={materialsHref}>東京都の予算編成資料を見る</Link>
-        <Link href={participationHref}>具体的な話題と窓口を選ぶ</Link>
-        <Link href={simulatorHref}>予算シミュレーターへ戻る</Link>
-      </nav>
+      <BudgetLearningJourneyNext
+        current="cases"
+        meaningHref={meaningHref}
+        casesHref={casesHref}
+        materialsHref={materialsHref}
+        participationHref={participationHref}
+        simulatorHref={simulatorHref}
+      />
     </div>
   </main>;
 }

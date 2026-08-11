@@ -29,6 +29,9 @@ const declaredPixels = (selector, property) => {
 const returnRoutes = [
   ".budgetDetailHeader>a",
   ".budgetDetailBack a",
+  ".budgetLearningPath a",
+  ".budgetSupplementNext>a",
+  ".budgetSupplementAlternatives a",
   ".budgetProcessNext a",
   ".participationPageBack a",
   ".sourcesPageBack a",

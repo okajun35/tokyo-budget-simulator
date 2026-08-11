@@ -72,6 +72,7 @@ test("keeps the complete plan across the case and material pages", async () => {
     assert.ok(html.includes(createBudgetParticipationHref(plan, "education")));
     assert.ok(html.includes(createBudgetSimulatorHref(plan, "education")));
   }
+  assert.ok(materialsHtml.includes(createBudgetProcessHref(plan, "education")));
 });
 
 test("shows the inherited category on the budget process and preserves it onward", async () => {
