@@ -61,9 +61,44 @@ test("shows the same published FY2027 policy context independently of the select
     assert.ok(card, path);
     assert.match(card, /令和9年度に向けて公表されている政策・予算編成方針/);
     assert.match(card, /2027年度アクションプラン/);
+    assert.match(card, /公表資料にある例/);
+    assert.match(card, /全都立高校でのオンライン英会話/);
+    assert.ok(
+      card.indexOf("全都立高校でのオンライン英会話") < card.indexOf("<details"),
+      "FY2027 examples should remain visible while source links are collapsed",
+    );
+    assert.match(card, /<summary>公式資料を見る<\/summary>/);
     assert.match(card, /ユーザーの選択に対する評価ではありません/);
     assert.match(card, /目的別予算の増減/);
     assert.match(card, /予算額の確定を示すものではありません/);
+  }
+});
+
+test("shows compact FY2026 context on the main detail page for all nine categories", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `current-context-all-categories-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const categories = [
+    ["welfare", "不妊治療への支援"],
+    ["education", "公立学校普通教室の空調更新支援"],
+    ["industry", "中小企業の経営力強化"],
+    ["environment", "省エネの推進"],
+    ["city", "鉄道の連続立体交差"],
+    ["safety", "日常の安全確保"],
+    ["admin", "東京アプリ"],
+    ["debt", "過去に発行した都債の元利償還"],
+    ["linked", "税収や制度上の算定"],
+  ];
+
+  for (const [categoryId, expectedContext] of categories) {
+    const html = await fetchHtmlForWorker(worker, `/budget/${categoryId}`);
+    const currentContextIndex = html.indexOf(`data-budget-current-initiatives="${categoryId}"`);
+    const userChoiceIndex = html.indexOf('id="options-heading"');
+
+    assert.ok(currentContextIndex >= 0, categoryId);
+    assert.ok(currentContextIndex < userChoiceIndex, categoryId);
+    assert.match(html, new RegExp(expectedContext));
+    assert.match(html, /<summary>令和8年度の公式資料を見る<\/summary>/);
   }
 });
 

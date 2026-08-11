@@ -2,6 +2,7 @@ import type { BudgetPolicyContext } from "./budget-policy-context.ts";
 
 type BudgetPolicyContextViewProps = {
   context: BudgetPolicyContext;
+  compact?: boolean;
 };
 
 const sourceKindLabel = {
@@ -25,22 +26,29 @@ function SourceLinks({
 
 export function BudgetCurrentInitiatives({
   context,
+  compact = false,
 }: BudgetPolicyContextViewProps) {
   const current = context.fy2026;
+  const visibleInitiatives = compact
+    ? current.initiatives.slice(0, 4)
+    : current.initiatives;
 
   return <section
-    className="budgetDetailSection budgetCurrentInitiatives"
+    className={`budgetDetailSection budgetCurrentInitiatives${compact ? " budgetCurrentInitiativesCompact" : ""}`}
     aria-labelledby="current-initiatives-heading"
     data-budget-current-initiatives={context.categoryId}
   >
     <p className="sectionLabel">FY2026 CURRENT CONTEXT</p>
     <h2 id="current-initiatives-heading">{current.heading}</h2>
     <p className="detailLead">{current.summary}</p>
-    {current.initiatives.length > 0 && <ul className="budgetCurrentInitiativeList">
-      {current.initiatives.map(item => <li key={item.title}>{item.title}</li>)}
+    {visibleInitiatives.length > 0 && <ul className="budgetCurrentInitiativeList">
+      {visibleInitiatives.map(item => <li key={item.title}>{item.title}</li>)}
     </ul>}
     <p className="budgetPolicyDisclaimer">{current.disclaimer}</p>
-    <SourceLinks sources={current.sources} />
+    {compact ? <details className="budgetCurrentInitiativesDetails">
+      <summary>令和8年度の公式資料を見る</summary>
+      <SourceLinks sources={current.sources} />
+    </details> : <SourceLinks sources={current.sources} />}
   </section>;
 }
 
@@ -58,13 +66,13 @@ export function BudgetPublishedPolicyDirection({
     <p className="sectionLabel">PUBLISHED POLICY CONTEXT · 2027</p>
     <h2 id="published-direction-heading">{direction.heading}</h2>
     <p className="budgetPublishedDirectionLead">{direction.summary}</p>
+    {direction.examples.length > 0 && <div className="budgetPublishedDirectionExamples">
+      <h3>公表資料にある例</h3>
+      <ul>{direction.examples.map(example => <li key={example}>{example}</li>)}</ul>
+    </div>}
     <p className="budgetPolicyDisclaimer">{direction.disclaimer}</p>
     <details className="budgetPublishedDirectionDetails">
-      <summary>計画の例と公式資料を見る</summary>
-      {direction.examples.length > 0 && <div className="budgetPublishedDirectionExamples">
-        <h3>公表資料にある例</h3>
-        <ul>{direction.examples.map(example => <li key={example}>{example}</li>)}</ul>
-      </div>}
+      <summary>公式資料を見る</summary>
       <SourceLinks sources={direction.sources} />
     </details>
   </section>;

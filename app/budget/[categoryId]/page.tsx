@@ -18,7 +18,10 @@ import {
   signedPercent,
 } from "@/features/understand-budget-change/budget-detail-page-state";
 import { findBudgetPolicyContext } from "@/features/understand-budget-change/budget-policy-context";
-import { BudgetPublishedPolicyDirection } from "@/features/understand-budget-change/budget-policy-context-view";
+import {
+  BudgetCurrentInitiatives,
+  BudgetPublishedPolicyDirection,
+} from "@/features/understand-budget-change/budget-policy-context-view";
 import { findDetailedBudgetCategory } from "@/features/understand-budget-change/detailed-budget-categories";
 
 type BudgetDetailPageProps = {
@@ -117,6 +120,8 @@ export default async function BudgetDetailPage({
           <aside className="detailImportantNote"><b>このシミュレーションを読むうえで重要なこと</b><p>{detailedCategory.importantNote}</p></aside>
         </>}
       </section>
+
+      {policyContext && <BudgetCurrentInitiatives context={policyContext} compact />}
 
       <section className="budgetDetailSection" aria-labelledby="options-heading">
         <p className="sectionLabel">OPTIONS &amp; TRADE-OFFS</p>
