@@ -1,5 +1,6 @@
 import {
   buildAdvocacyRefinementMessages,
+  extractAdvocacyRefinementText,
   inspectAdvocacyRefinementOutput,
 } from "../features/find-participation-route/advocacy-refinement.ts";
 import { PARTICIPATION_REFINEMENT_EVALUATION_CASES } from "./participation-refinement-evaluation-cases.mjs";
@@ -111,11 +112,12 @@ async function runInference(messages, selectedModel) {
     const details = payload.errors?.map(error => error.message).join(" / ") || response.statusText;
     throw new Error(`Cloudflare Workers AI ${response.status}: ${details}`);
   }
-  if (typeof payload.result?.response !== "string" || !payload.result.response.trim()) {
+  const output = extractAdvocacyRefinementText(payload.result);
+  if (!output) {
     throw new Error("Cloudflare Workers AIから本文を取得できませんでした。");
   }
   return {
-    output: payload.result.response.trim(),
+    output,
     usage: payload.result.usage,
   };
 }

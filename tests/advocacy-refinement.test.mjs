@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   buildAdvocacyRefinementMessages,
+  extractAdvocacyRefinementText,
   inspectAdvocacyRefinementOutput,
 } from "../features/find-participation-route/advocacy-refinement.ts";
 
@@ -58,4 +59,23 @@ test("flags output that leaks prompt wrappers or uses unsupported certainty", ()
   assert.equal(inspection.leakedPromptMarkup, true);
   assert.deepEqual(inspection.overclaimExpressions, ["必ず"]);
   assert.equal(inspection.passed, false);
+});
+
+test("extracts both Workers AI response and chat-completion text formats", () => {
+  assert.equal(
+    extractAdvocacyRefinementText({ response: "通常形式の本文" }),
+    "通常形式の本文",
+  );
+  assert.equal(
+    extractAdvocacyRefinementText({
+      choices: [{ message: { content: "Chat Completions形式の本文" } }],
+    }),
+    "Chat Completions形式の本文",
+  );
+  assert.equal(
+    extractAdvocacyRefinementText({
+      choices: [{ message: { reasoning_content: "内部推論だけ" } }],
+    }),
+    undefined,
+  );
 });

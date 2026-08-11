@@ -47,6 +47,29 @@ export function buildAdvocacyRefinementMessages(
   ];
 }
 
+export function extractAdvocacyRefinementText(result: unknown): string | undefined {
+  if (!result || typeof result !== "object") return undefined;
+
+  const workersAiResponse = "response" in result ? result.response : undefined;
+  if (typeof workersAiResponse === "string" && workersAiResponse.trim()) {
+    return workersAiResponse.trim();
+  }
+
+  const choices = "choices" in result ? result.choices : undefined;
+  if (!Array.isArray(choices)) return undefined;
+  const firstChoice = choices[0];
+  if (!firstChoice || typeof firstChoice !== "object" || !("message" in firstChoice)) {
+    return undefined;
+  }
+  const message = firstChoice.message;
+  if (!message || typeof message !== "object" || !("content" in message)) {
+    return undefined;
+  }
+  return typeof message.content === "string" && message.content.trim()
+    ? message.content.trim()
+    : undefined;
+}
+
 const normalizeDigits = (value: string) => value
   .replace(/[０-９]/g, character => String(character.charCodeAt(0) - 0xFEE0))
   .replaceAll("，", ",")

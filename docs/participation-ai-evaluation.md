@@ -36,6 +36,26 @@ npm run eval:participation-ai
 unset CLOUDFLARE_AUTH_TOKEN
 ```
 
+一時的な `.env.local` を使う場合は、次の2変数を記載する。このリポジトリでは
+`.env*` はGitの対象外である。
+
+```dotenv
+CLOUDFLARE_ACCOUNT_ID=Account ID
+CLOUDFLARE_AUTH_TOKEN=Workers AI API token
+```
+
+同名の環境変数を以前に `export` している場合、Nodeでは既存値が
+`.env.local` より優先される。ファイルの値だけで比較するには、評価プロセスから
+既存値を除外する。
+
+```bash
+env -u CLOUDFLARE_ACCOUNT_ID -u CLOUDFLARE_AUTH_TOKEN \
+  node --env-file=.env.local \
+  scripts/evaluate-participation-refinement.mjs \
+  --compare \
+  --case education-meals
+```
+
 出力のばらつきを見る場合は、1件を最大5回まで反復できる。
 
 ```bash
