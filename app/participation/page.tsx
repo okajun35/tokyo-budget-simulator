@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CommonParticipationRoutes } from "@/features/find-participation-route/common-participation-routes";
 import { OFFICIAL_CONTACTS } from "@/features/find-participation-route/official-contacts";
 import { resolveParticipationBudgetContext } from "@/features/find-participation-route/participation-budget-context";
+import { createParticipationPrepareHref } from "@/features/find-participation-route/participation-navigation";
 import { PARTICIPATION_TOPICS } from "@/features/find-participation-route/participation-topics";
 import { ParticipationWorkspace } from "@/features/find-participation-route/participation-workspace";
 import { BUDGET_CATEGORIES } from "@/features/simulate-budget/budget-categories";
@@ -16,15 +17,17 @@ type ParticipationPageProps = {
   searchParams: Promise<{
     category?: string | string[];
     plan?: string | string[];
+    topic?: string | string[];
   }>;
 };
 
 export default async function ParticipationPage({
   searchParams,
 }: ParticipationPageProps) {
-  const { category, plan } = await searchParams;
+  const { category, plan, topic } = await searchParams;
   const categoryValue = typeof category === "string" ? category : undefined;
   const planValue = typeof plan === "string" ? plan : undefined;
+  const topicValue = typeof topic === "string" ? topic : undefined;
   const selectedCategory = BUDGET_CATEGORIES.find(item => item.id === categoryValue);
   const planAllocations = parseBudgetPlan(planValue);
   const simulatorHref = planAllocations && selectedCategory
@@ -37,6 +40,18 @@ export default async function ParticipationPage({
     : selectedCategory
       ? `/budget-process?category=${selectedCategory.id}`
       : "/budget-process";
+  const categoryTopics = selectedCategory
+    ? PARTICIPATION_TOPICS.filter(item => item.categoryId === selectedCategory.id)
+    : [];
+  const initialTopicId = categoryTopics.some(item => item.topicId === topicValue)
+    ? topicValue
+    : undefined;
+  const prepareHrefs = selectedCategory
+    ? Object.fromEntries(categoryTopics.map(item => [
+        item.topicId,
+        createParticipationPrepareHref(selectedCategory.id, item.topicId, planAllocations),
+      ]))
+    : {};
 
   return <main
     className="participationPage"
@@ -46,7 +61,7 @@ export default async function ParticipationPage({
       <Link href={simulatorHref}>← 予算シミュレーターへ戻る</Link>
       <p className="eyebrow">CIVIC PARTICIPATION · TOKYO</p>
       <h1>声を届ける</h1>
-      <p>自分が動かした予算について、関心を具体化し、行政上の主な所管と公式ルートを確認して、伝えたいことを整理します。</p>
+      <p>自分が動かした予算について関心を具体化し、行政上の主な所管と公式ルートを確認します。考えの整理は次の専用ページで行えます。</p>
     </header>
 
     {selectedCategory ? <div className="participationPageContent">
@@ -57,9 +72,12 @@ export default async function ParticipationPage({
           color: selectedCategory.color,
         }}
         budgetContext={resolveParticipationBudgetContext(selectedCategory.id, planValue)}
-        topics={PARTICIPATION_TOPICS.filter(topic => topic.categoryId === selectedCategory.id)}
+        topics={categoryTopics}
         contacts={OFFICIAL_CONTACTS}
+        initialTopicId={initialTopicId}
+        prepareHrefs={prepareHrefs}
       />
+      <CommonParticipationRoutes />
     </div> : <div className="participationPageContent">
       <aside className="selectedParticipationCategory empty">
         <span>分野指定なし</span>

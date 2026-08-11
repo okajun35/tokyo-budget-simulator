@@ -92,7 +92,8 @@ The same rule applies to process stages. `BUDGET_PROCESS_SUMMARY_STEPS` carries 
 - `/` — short purpose statement, FY2026 overview, fixed-total simulator, selected-field context, budget-process summary, and fiscal-condition cards.
 - `/budget/[categoryId]` — inherited user amount, meaning, uses, change options, domestic/international cases, Tokyo budget background, sources, responsible bureaus, and participation routes for one of the nine fields.
 - `/budget-process` — requests, Finance Bureau assessment, governor assessment, proposal, assembly review, enactment, execution, settlement, and evaluation as separate stages.
-- `/participation` — category-aware official routes such as 都民の声, public comments, petitions, and written requests, including what each route can and cannot do.
+- `/participation` — select a concrete topic for the inherited category, identify the responsible organizations, and compare verified official contacts with common participation routes.
+- `/participation/prepare` — privately organize the person's concern, requested action, and reason for the selected topic before copying it or opening an official contact. Free text remains in client memory only.
 - `/sources` — provenance, document stage, retrieval date, source type, license status, and app usage.
 - `/about` — prototype status and interpretive limits.
 - `/fiscal-context` — what funds, Tokyo bonds, and metropolitan taxes are; what changes imply; and why they are outside the current simulator controls.

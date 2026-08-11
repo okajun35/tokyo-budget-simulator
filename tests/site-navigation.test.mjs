@@ -6,6 +6,7 @@ const sitePaths = [
   "/budget/debt?amount=1959",
   "/budget-process",
   "/participation",
+  "/participation/prepare?category=education&topic=culture",
   "/sources",
   "/about",
   "/fiscal-context",

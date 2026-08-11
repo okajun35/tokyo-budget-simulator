@@ -267,17 +267,60 @@ test("renders the topic-first participation workspace without inventing a simula
     "文化・文化事業",
     "スポーツ",
     "その他",
-    "何が気になっていますか？",
-    "東京都に何をしてほしいですか？",
-    "なぜそう思いますか？",
   ]) {
     assert.match(html, new RegExp(label));
   }
   assert.match(html, /テーマを選ぶと、主な所管と確認済みの公式ルートを表示します/);
-  assert.match(html, /氏名・住所などの個人情報は入力しないでください/);
-  assert.match(html, /入力内容はこのページ内だけで保持し、保存・送信しません/);
+  assert.doesNotMatch(html, /何が気になっていますか？/);
+  assert.doesNotMatch(html, /入力内容を確認する/);
   assert.match(html, /東京都議会への意見・要望/);
   assert.match(html, /現在募集されている計画等を見る/);
+});
+
+test("renders opinion drafting on a focused page with the selected topic", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `participation-prepare-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const response = await worker.fetch(
+    new Request("http://localhost/participation/prepare?category=education&topic=school-meals-curriculum-ict", {
+      headers: { accept: "text/html" },
+    }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+  const html = (await response.text()).replaceAll("<!-- -->", "");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /data-participation-prepare="education"/);
+  assert.match(html, /あなたの考えを整理する/);
+  assert.match(html, /給食・教育内容・ICT/);
+  assert.match(html, /東京都教育委員会（教育庁）/);
+  assert.match(html, /シミュレーターでの変更額を確認できません/);
+  assert.match(html, /何が気になっていますか？/);
+  assert.match(html, /東京都に何をしてほしいですか？/);
+  assert.match(html, /なぜそう思いますか？/);
+  assert.match(html, /氏名・住所などの個人情報は入力しないでください/);
+  assert.match(html, /入力内容はこのページ内だけで保持し、保存・送信しません/);
+  assert.doesNotMatch(html, /ほかの方法/);
+});
+
+test("does not guess a topic or bureau for an invalid drafting URL", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `participation-prepare-invalid-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const response = await worker.fetch(
+    new Request("http://localhost/participation/prepare?category=education&topic=unknown", {
+      headers: { accept: "text/html" },
+    }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+  const html = (await response.text()).replaceAll("<!-- -->", "");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /テーマを確認できません/);
+  assert.match(html, /不明なテーマを特定の所管へ割り当てることはしません/);
+  assert.doesNotMatch(html, /何が気になっていますか？/);
 });
 
 test("renders the complete FY2026 budget process on an independent page", async () => {

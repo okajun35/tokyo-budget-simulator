@@ -10,6 +10,7 @@ const paths = [
   "/",
   "/budget-process",
   "/participation",
+  "/participation/prepare?category=education&topic=school-meals-curriculum-ict",
   "/sources",
   "/about",
   "/fiscal-context",

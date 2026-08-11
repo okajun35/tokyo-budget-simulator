@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const workspacePath = new URL(
-  "../features/find-participation-route/participation-workspace.tsx",
+  "../features/find-participation-route/participation-draft-workspace.tsx",
   import.meta.url,
 );
 

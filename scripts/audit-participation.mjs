@@ -63,12 +63,12 @@ for (const viewport of [
     topics: document.querySelectorAll('[data-participation-topic]').length,
     change: document.querySelector('.participationChange')?.innerText,
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-    disabled: document.querySelector('.participationReviewButton')?.disabled
+    draftFields: document.querySelectorAll('.participationDraftFields').length
   })`));
   check(`${viewport.name}: 7テーマ`, initial.topics === 7, initial.topics);
   check(`${viewport.name}: +840億円を引継ぎ`, initial.change.includes("+840億円"));
   check(`${viewport.name}: 横あふれなし`, initial.overflow === 0, initial.overflow);
-  check(`${viewport.name}: 未入力では確認不可`, initial.disabled === true);
+  check(`${viewport.name}: 選択ページに自由記述なし`, initial.draftFields === 0);
 
   await evaluate(`document.querySelector('[data-participation-topic="school-meals-curriculum-ict"] input').click()`);
   await pause(250);
@@ -76,12 +76,32 @@ for (const viewport of [
     text: document.querySelector('.participationRoutingResult')?.innerText,
     direct: document.querySelectorAll('[data-contact-role="direct"]').length,
     alternate: document.querySelectorAll('[data-contact-role="alternate"]').length,
-    concernDisabled: document.querySelector('.participationDraftFields textarea')?.disabled
+    prepareHref: document.querySelector('.participationPrepareCta a')?.getAttribute('href')
   })`));
   check(`${viewport.name}: 教育庁と区市町村の分岐`,
     routing.text.includes("東京都教育委員会（教育庁）") && routing.text.includes("各区市町村教育委員会"));
   check(`${viewport.name}: 直接・代替窓口を区別`, routing.direct === 1 && routing.alternate === 1);
-  check(`${viewport.name}: テーマ選択後に入力可`, routing.concernDisabled === false);
+  check(`${viewport.name}: 専用ページへplan/category/topicを引継ぎ`,
+    routing.prepareHref.includes("/participation/prepare?") &&
+    routing.prepareHref.includes("plan=") &&
+    routing.prepareHref.includes("category=education") &&
+    routing.prepareHref.includes("topic=school-meals-curriculum-ict"));
+
+  await command("Page.navigate", { url: `${siteUrl}${routing.prepareHref}` });
+  await pause(900);
+  const prepare = JSON.parse(await evaluate(`JSON.stringify({
+    page: document.querySelector('[data-participation-prepare]')?.getAttribute('data-participation-prepare'),
+    context: document.querySelector('.participationDraftContext')?.innerText,
+    textareas: document.querySelectorAll('.participationDraftFields textarea').length,
+    disabled: document.querySelector('.participationReviewButton')?.disabled,
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    firstInputTop: Math.round(document.querySelector('.participationDraftFields textarea')?.getBoundingClientRect().top ?? 9999)
+  })`));
+  check(`${viewport.name}: 独立入力ページを表示`, prepare.page === "education" && prepare.textareas === 2);
+  check(`${viewport.name}: 選択内容を短く再掲`, prepare.context.includes("給食・教育内容・ICT") && prepare.context.includes("+840億円"));
+  check(`${viewport.name}: 入力前は確認不可`, prepare.disabled === true);
+  check(`${viewport.name}: 入力ページも横あふれなし`, prepare.overflow === 0, prepare.overflow);
+  check(`${viewport.name}: 最初の入力欄が初期画面内`, prepare.firstInputTop < viewport.height, prepare.firstInputTop);
 
   await evaluate(`(() => {
     const areas = document.querySelectorAll('.participationDraftFields textarea');

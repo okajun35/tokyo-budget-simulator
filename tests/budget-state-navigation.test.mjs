@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import {
+  createParticipationPrepareHref,
+  createParticipationSelectionHref,
+} from "../features/find-participation-route/participation-navigation.ts";
 import { createInitialBudgetAllocations } from "../features/simulate-budget/budget-allocation.ts";
 import { BUDGET_CATEGORIES } from "../features/simulate-budget/budget-categories.ts";
 import {
@@ -73,6 +77,28 @@ test("keeps the plan when moving from participation back to the process or simul
   assert.match(html, /行政へ要求する意思表示ではありません/);
   assert.ok(html.includes(createBudgetSimulatorHref(plan, "education")));
   assert.ok(html.includes(createBudgetProcessHref(plan, "education")));
+});
+
+test("keeps plan, category, and topic when opening and leaving the drafting page", async () => {
+  const selectionHref = createParticipationSelectionHref(
+    "education",
+    "school-meals-curriculum-ict",
+    plan,
+  );
+  const prepareHref = createParticipationPrepareHref(
+    "education",
+    "school-meals-curriculum-ict",
+    plan,
+  );
+  const selectionHtml = await fetchHtml(selectionHref, "participation-selected-topic");
+  const prepareHtml = await fetchHtml(prepareHref, "participation-prepare-complete-plan");
+
+  assert.match(selectionHtml, /給食・教育内容・ICT[\s\S]*?このテーマについて考えを整理する/);
+  assert.ok(selectionHtml.includes(prepareHref));
+  assert.match(prepareHtml, /選んだ内容[\s\S]*?教育と文化[\s\S]*?\+840億円/);
+  assert.ok(prepareHtml.includes(selectionHref));
+  assert.ok(prepareHtml.includes(createBudgetSimulatorHref(plan, "education")));
+  assert.ok(prepareHtml.includes(createBudgetProcessHref(plan, "education")));
 });
 
 test("does not invent a plan for legacy detail links", async () => {

@@ -117,10 +117,10 @@ await navigate("/budget-process");
 const processStages = await evaluate(`Array.from(document.querySelectorAll('.budgetProcessCard h2')).map(item => item.textContent)`);
 check("17.9 予算成立の流れ", ["各局要求", "財務局査定", "知事査定", "本会議で議決し、予算成立"].every(label => processStages.includes(label)), processStages);
 
-await navigate("/participation?category=debt");
+await navigate("/participation?category=debt&topic=bonds-debt-service");
 const officialRoutes = await evaluate(`({
-  financeBureau: Boolean(document.querySelector('a[href="https://www.zaimu.metro.tokyo.lg.jp/"]')),
-  residentVoice: Boolean(document.querySelector('a[href="https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/"]')),
+  financeBureau: document.body.textContent.includes('東京都財務局') && Boolean(document.querySelector('a[href="https://www.soshiki-address.metro.tokyo.lg.jp/006_zaimu/zaimu-address.htm"]')),
+  residentVoice: Boolean(document.querySelector('a[href="https://www.metro.tokyo.lg.jp/tosei/iken-sodan/tominnokoe/ryuijikou"]')),
   petition: Boolean(document.querySelector('a[href="https://www.gikai.metro.tokyo.lg.jp/petition/guide.html"]')),
   petitionText: document.body.textContent.includes('請願'),
   writtenRequestText: document.body.textContent.includes('陳情')
