@@ -1,6 +1,7 @@
 import {
   buildAdvocacyRefinementMessages,
   extractAdvocacyRefinementText,
+  findAdvocacyRefinementInputRisks,
   inspectAdvocacyRefinementOutput,
 } from "../features/find-participation-route/advocacy-refinement.ts";
 import { PARTICIPATION_REFINEMENT_EVALUATION_CASES } from "./participation-refinement-evaluation-cases.mjs";
@@ -101,7 +102,7 @@ async function runInference(messages, selectedModel) {
       body: JSON.stringify({
         messages,
         max_tokens: 600,
-        temperature: 0.2,
+        temperature: 0,
         seed: 20260811,
       }),
       signal: AbortSignal.timeout(60_000),
@@ -140,6 +141,8 @@ function formatInspection(inspection) {
     `- ${pass(inspection.addedUrls.length === 0)} 入力にないURL: ${inspection.addedUrls.join("、") || "なし"}`,
     `- ${pass(!inspection.leakedPromptMarkup)} プロンプト記号の露出: ${inspection.leakedPromptMarkup ? "あり" : "なし"}`,
     `- ${pass(inspection.overclaimExpressions.length === 0)} 強い断定表現: ${inspection.overclaimExpressions.join("、") || "なし"}`,
+    `- ${pass(inspection.formatViolations.length === 0)} 禁止した書式: ${inspection.formatViolations.join("、") || "なし"}`,
+    `- ${pass(inspection.actionContradictions.length === 0)} 本人の選択との矛盾: ${inspection.actionContradictions.join("、") || "なし"}`,
   ].join("\n");
 }
 
@@ -155,7 +158,13 @@ ${selectedModels.map(selectedModel => `  - ${selectedModel}`).join("\n")}
 let failedRequests = 0;
 for (const evaluationCase of selectedCases) {
   const messages = buildAdvocacyRefinementMessages(evaluationCase.input);
+  const inputRisks = findAdvocacyRefinementInputRisks(evaluationCase.input);
   console.log(`\n## ${evaluationCase.id}\n\n目的: ${evaluationCase.purpose}\n\n### 入力\n\n${formatInput(evaluationCase.input)}`);
+
+  if (inputRisks.length > 0) {
+    console.log(`\n### 入力安全チェック\n\n- SKIP モデル向け命令を検出したため、AIへ送信しません。\n- 検出: ${inputRisks.join("、")}\n- 本体では構造化内容のコピーへ戻します。`);
+    continue;
+  }
 
   if (dryRun) {
     console.log(`\n### 送信予定のプロンプト\n\n${messages.map(message => `[${message.role}]\n${message.content}`).join("\n\n")}`);

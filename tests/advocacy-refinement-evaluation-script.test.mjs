@@ -70,3 +70,20 @@ test("comparison dry-run uses the same case with all three candidate models", as
   assert.match(stdout, /@cf\/openai\/gpt-oss-120b/);
   assert.match(stdout, /評価モデル: 3件/);
 });
+
+test("does not prepare an AI request for an explicit embedded model instruction", async () => {
+  const { stdout } = await execFileAsync(
+    process.execPath,
+    [scriptPath.pathname, "--dry-run", "--case", "prompt-injection"],
+    {
+      env: {
+        ...process.env,
+        CLOUDFLARE_ACCOUNT_ID: "",
+        CLOUDFLARE_AUTH_TOKEN: "",
+      },
+    },
+  );
+
+  assert.match(stdout, /SKIP モデル向け命令を検出/);
+  assert.doesNotMatch(stdout, /送信予定のプロンプト/);
+});
