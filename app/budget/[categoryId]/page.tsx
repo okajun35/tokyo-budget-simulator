@@ -17,6 +17,8 @@ import {
   signedMoney,
   signedPercent,
 } from "@/features/understand-budget-change/budget-detail-page-state";
+import { findBudgetPolicyContext } from "@/features/understand-budget-change/budget-policy-context";
+import { BudgetPublishedPolicyDirection } from "@/features/understand-budget-change/budget-policy-context-view";
 import { findDetailedBudgetCategory } from "@/features/understand-budget-change/detailed-budget-categories";
 
 type BudgetDetailPageProps = {
@@ -50,6 +52,7 @@ export default async function BudgetDetailPage({
   const categoryTermMeaning =
     BUDGET_TERM_GLOSSARY[category.name as keyof typeof BUDGET_TERM_GLOSSARY]?.meaning;
   const detailedCategory = findDetailedBudgetCategory(category.id);
+  const policyContext = findBudgetPolicyContext(category.id);
   const simulatorHref = planAllocations
     ? createBudgetSimulatorHref(planAllocations, category.id)
     : "/#simulator";
@@ -88,7 +91,7 @@ export default async function BudgetDetailPage({
 
       <section className="budgetDetailOverview" aria-label={`${category.name}の予算比較`}>
         <div className="budgetDetailMetrics">
-          <article><span>成立予算</span><strong>{money(comparison.baselineAmount100mYen)}</strong></article>
+          <article><span>令和8年度当初予算</span><strong>{money(comparison.baselineAmount100mYen)}</strong></article>
           <article><span>あなたの案</span><strong>{money(comparison.proposedAmount100mYen)}</strong></article>
           <article><span>変更額</span><strong>{signedMoney(comparison.changeAmount100mYen)}</strong></article>
           <article><span>変更率</span><strong>{signedPercent(comparison.changeRatePercent)}</strong></article>
@@ -141,6 +144,8 @@ export default async function BudgetDetailPage({
         <p>{changeGuidance.finalQuestion}</p>
       </aside>
 
+      {policyContext && <BudgetPublishedPolicyDirection context={policyContext} />}
+
       <section className="budgetDetailSection budgetDetailNext" aria-labelledby="next-heading">
         <p className="sectionLabel">CHOOSE WHAT TO EXPLORE</p>
         <h2 id="next-heading">この変更を、もう少し考える</h2>
@@ -148,9 +153,11 @@ export default async function BudgetDetailPage({
         <div className="budgetDetailNextGrid">
           <article>
             <span>01</span>
-            <h3>実際の事例を見る</h3>
-            <p>他地域で何を変え、どんな制約や負担が確認されたかを公的資料から読みます。</p>
-            <Link href={casesHref}>事例を見る →</Link>
+            <h3>{comparison.direction === "unchanged" ? "令和8年度の取組を見る" : "実際の事例を見る"}</h3>
+            <p>{comparison.direction === "unchanged"
+              ? "現在の分野に関連する代表的な取組を、目的別予算の正式な内訳と混同せず確認します。"
+              : "他地域で何を変え、どんな制約や負担が確認されたかを公的資料から読みます。"}</p>
+            <Link href={casesHref}>{comparison.direction === "unchanged" ? "取組を見る →" : "事例を見る →"}</Link>
           </article>
           <article>
             <span>02</span>

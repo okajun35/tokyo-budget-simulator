@@ -71,6 +71,7 @@ export default async function BudgetMaterialsPage({
       <BudgetDetailContext category={category} comparison={comparison} />
       <BudgetLearningJourney
         current="materials"
+        direction={comparison.direction}
         meaningHref={meaningHref}
         casesHref={casesHref}
         materialsHref={materialsHref}
@@ -81,6 +82,7 @@ export default async function BudgetMaterialsPage({
       <CategoryBudgetMaterials category={category} />
       <BudgetLearningJourneyNext
         current="materials"
+        direction={comparison.direction}
         meaningHref={meaningHref}
         casesHref={casesHref}
         materialsHref={materialsHref}

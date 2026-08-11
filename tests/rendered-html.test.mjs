@@ -42,6 +42,50 @@ test("renders development preview metadata", async () => {
   assert.match(await response.text(), developmentPreviewMeta);
 });
 
+test("shows the same published FY2027 policy context independently of the selected direction", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `policy-context-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const paths = [
+    "/budget/education?amount=16762",
+    "/budget/education?amount=15922",
+    "/budget/education?amount=15082",
+  ];
+
+  for (const path of paths) {
+    const html = await fetchHtmlForWorker(worker, path);
+    const card = html.match(
+      /<section(?=[^>]*data-budget-policy-direction="education")(?=[^>]*data-independent-from-user-change="true")[^>]*>[\s\S]*?<\/section>/,
+    )?.[0];
+
+    assert.ok(card, path);
+    assert.match(card, /令和9年度に向けて公表されている政策・予算編成方針/);
+    assert.match(card, /2027年度アクションプラン/);
+    assert.match(card, /ユーザーの選択に対する評価ではありません/);
+    assert.match(card, /目的別予算の増減/);
+    assert.match(card, /予算額の確定を示すものではありません/);
+  }
+});
+
+test("replaces the unchanged public-case empty state with FY2026 related initiatives", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("test", `current-initiatives-${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const html = await fetchHtmlForWorker(
+    worker,
+    "/budget/education/cases?amount=15922",
+  );
+
+  assert.match(html, /data-budget-current-initiatives="education"/);
+  assert.match(html, /令和8年度、この分野に関連する取組/);
+  assert.match(html, /公立学校普通教室の空調更新支援/);
+  assert.match(html, /この分野の予算全体の内訳を示すものではありません/);
+  assert.doesNotMatch(
+    html,
+    /金額据え置きと実質的なサービス変化を安全に対応付けられる代表事例は現在未収録です/,
+  );
+});
+
 test("introduces the simulator briefly and links straight to the controls", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `intro-${process.pid}-${Date.now()}`);
@@ -650,7 +694,7 @@ test("shows the selected category and its complete comparison in the context pan
 
   assert.ok(panel);
   assert.match(panel, /<h2>福祉と保健<\/h2>/);
-  assert.match(panel, /成立予算.*?18,730億円/);
+  assert.match(panel, /令和8年度当初予算.*?18,730億円/);
   assert.match(panel, /あなたの案.*?18,730億円/);
   assert.match(panel, /変更額.*?±0億円/);
   assert.match(panel, /変更率.*?±0\.0%/);
@@ -842,7 +886,8 @@ test("renders the complete minimum detail for the remaining six categories", asy
     assert.equal(response.status, 200);
     assert.match(html, new RegExp(expectedText));
     assert.match(html, /公開情報だけでは判断できません/);
-    assert.match(casesHtml, /東京都で同じ結果になるとは限りません/);
+    assert.match(casesHtml, new RegExp(`data-budget-current-initiatives="${categoryId}"`));
+    assert.match(casesHtml, /この分野の予算全体の内訳を示すものではありません/);
     assert.ok(sourceSection);
     assert.equal(sourceSection.match(/公式資料を開く/g)?.length, 2);
   }
@@ -871,7 +916,7 @@ test("falls back safely when the detail amount is invalid or outside its range",
     const html = await response.text();
 
     assert.match(html, /あなたの案.*?2,799億円/);
-    assert.match(html, /指定された金額を利用できないため、成立予算額を表示しています/);
+    assert.match(html, /指定された金額を利用できないため、令和8年度当初予算額を表示しています/);
   }
 });
 
@@ -887,7 +932,7 @@ test("explains fallback amounts on the separate cases and materials pages", asyn
     const html = await fetchHtmlForWorker(worker, path);
 
     assert.match(html, /あなたの案.*?2,799億円/);
-    assert.match(html, /指定された金額を利用できないため、成立予算額を表示しています/);
+    assert.match(html, /指定された金額を利用できないため、令和8年度当初予算額を表示しています/);
   }
 });
 
@@ -915,7 +960,7 @@ test("explains a budget change through the complete shared detail template", asy
   const casesHtml = await fetchHtmlForWorker(worker, "/budget/debt/cases?amount=1959");
   const materialsHtml = await fetchHtmlForWorker(worker, "/budget/debt/materials?amount=1959");
 
-  assert.match(normalizedHtml, /成立予算.*?2,799億円/);
+  assert.match(normalizedHtml, /令和8年度当初予算.*?2,799億円/);
   assert.match(normalizedHtml, /あなたの案.*?1,959億円/);
   assert.match(normalizedHtml, /変更額.*?-840億円/);
   assert.match(normalizedHtml, /変更率.*?-30\.0%/);

@@ -1,9 +1,12 @@
 import Link from "next/link";
 
+import type { BudgetChangeDirection } from "./budget-detail.ts";
+
 type BudgetLearningJourneyStep = "cases" | "materials";
 
 type BudgetLearningJourneyProps = {
   current: BudgetLearningJourneyStep;
+  direction: BudgetChangeDirection;
   meaningHref: string;
   casesHref: string;
   materialsHref: string;
@@ -21,6 +24,7 @@ const journeySteps = [
 
 export function BudgetLearningJourney({
   current,
+  direction,
   meaningHref,
   casesHref,
   materialsHref,
@@ -32,6 +36,7 @@ export function BudgetLearningJourney({
     materials: materialsHref,
     participation: participationHref,
   };
+  const caseStepLabel = direction === "unchanged" ? "現在の取組" : "事例";
 
   return <nav
     className="budgetLearningPath"
@@ -44,8 +49,8 @@ export function BudgetLearningJourney({
       return <li key={step.id} aria-current={isCurrent ? "step" : undefined}>
         <span>{step.number}</span>
         {isCurrent
-          ? <strong>{step.label}<small>いまここ</small></strong>
-          : <Link href={hrefs[step.id]}>{step.label}</Link>}
+          ? <strong>{step.id === "cases" ? caseStepLabel : step.label}<small>いまここ</small></strong>
+          : <Link href={hrefs[step.id]}>{step.id === "cases" ? caseStepLabel : step.label}</Link>}
       </li>;
     })}</ol>
   </nav>;
@@ -53,6 +58,7 @@ export function BudgetLearningJourney({
 
 export function BudgetLearningJourneyNext({
   current,
+  direction,
   meaningHref,
   casesHref,
   materialsHref,
@@ -61,6 +67,7 @@ export function BudgetLearningJourneyNext({
   budgetProcessHref,
 }: BudgetLearningJourneyProps) {
   const isCases = current === "cases";
+  const showsCurrentInitiatives = direction === "unchanged";
   const primaryHref = isCases ? materialsHref : participationHref;
 
   return <section className="budgetSupplementNext" data-budget-next-from={current}>
@@ -69,7 +76,9 @@ export function BudgetLearningJourneyNext({
       ? "次に見るなら、東京都の編成資料"
       : "次は、関心のある話題を具体化する"}</h2>
     <p>{isCases
-      ? "他地域の事例は東京都の結果予測ではありません。東京都自身の要求・査定・予算案で、この分野に関連して何を確認できるかを見ます。"
+      ? showsCurrentInitiatives
+        ? "令和8年度の関連する取組を確認したら、東京都自身の要求・査定・予算案で、この分野に関連して何を確認できるかを見ます。"
+        : "他地域の事例は東京都の結果予測ではありません。東京都自身の要求・査定・予算案で、この分野に関連して何を確認できるかを見ます。"
       : "資料を確認したら、この分野を具体的な話題に分け、主な所管と確認済みの公式ルートを探せます。シミュレーションの増減が要望として自動確定されることはありません。"}</p>
     <Link href={primaryHref}>{isCases
       ? "予算編成資料へ進む →"
@@ -81,7 +90,7 @@ export function BudgetLearningJourneyNext({
           <Link href={meaningHref}>意味と制約へ戻る</Link>
           <Link href={participationHref}>話題と窓口を先に見る</Link>
         </> : <>
-          <Link href={casesHref}>事例へ戻る</Link>
+          <Link href={casesHref}>{showsCurrentInitiatives ? "現在の取組へ戻る" : "事例へ戻る"}</Link>
           <Link href={meaningHref}>意味と制約へ戻る</Link>
           {budgetProcessHref && <Link href={budgetProcessHref}>東京都の予算全体の流れを見る</Link>}
         </>}

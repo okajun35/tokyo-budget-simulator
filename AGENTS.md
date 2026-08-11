@@ -121,6 +121,9 @@ The category case and material pages show a compact four-step guide: meaning and
 - Request materials may be marked only as `direct` or `related_bureau`; Finance Bureau assessment examples may be marked only as `representative_item`. Explain the scope on screen, and treat an unavailable mapping as `unknown`, never as “要求なし” or “査定なし”.
 - The current request-material and assessment-example coverage counts are internal QA indicators only. Do not show them to users or make full coverage a completion condition.
 - OCR may help discover candidate passages, but every displayed amount and item name must be visually checked in the original PDF and cross-checked against other official material. Omit ambiguous mappings.
+- Keep three layers distinct on category detail pages: the enacted FY2026 initial-budget baseline, the user's simulated change, and policy or budget-formulation material published for FY2027. The FY2027 layer is independent of increase, decrease, or unchanged simulation choices and must render the same content for all three directions.
+- Label the FY2027 layer as published policy and budget-formulation context, not as an enacted budget or an inferred purpose-category increase/decrease. State that it is not an evaluation of the user's choice and does not establish either a purpose-category budget change or a finalized FY2027 amount.
+- When an allocation is unchanged, retain the explanation that inflation, demand, staffing, aging assets, and制度 changes can alter the real service level. The category cases route may instead show traceable FY2026 related initiatives; label them as examples rather than the formal breakdown of that purpose category.
 
 ## Purpose-driven code map
 
@@ -142,9 +145,9 @@ As of 2026-08-11:
 
 - Sections 2 through 18 of `docs/implementation-checklist.md` have been implemented and checked. The section 18 final MVP acceptance passed all 38 items; its evidence and non-blocking coverage limits are recorded directly below that section.
 - Fiscal-context implementation is recorded in commit `546f3a8`; later commits document the handoff and demo narrative. Inspect `git log` for the actual latest state instead of treating a hash in this file as the branch tip.
-- The last verification passed 144 tests, production build, ESLint, FY2026 data validation, the two-minute demo audit, desktop/mobile layout and heading audits over seven primary pages, keyboard and context-panel checks, and 50 unique external links with zero failures.
+- The last verification passed 191 tests, production build, ESLint, and desktop/mobile layout and heading audits over 12 stateful and primary paths, including keyboard checks.
 - The remaining unchecked section 1 items are historical decision-record entries whose substance is implemented; section 19 is intentionally future scope. Do not treat either group as a failed section 18 acceptance item.
-- The worktree was clean after the last commit. Confirm this with `git status --short` at the start of the next session rather than assuming it remains clean.
+- Confirm `git status --short` at the start of the next session. User-authored research and design Markdown may remain untracked; preserve it unless the user explicitly asks to include it in a commit.
 - The primary handoff documents are:
   - `docs/tokyo_budget_lab_spec_v0.1.md` for product scope and rationale.
   - `docs/implementation-checklist.md` for completion state and acceptance evidence.

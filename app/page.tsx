@@ -117,7 +117,7 @@ export default function Home() {
               const share = (item.baselineAmount100mYen / GENERAL_ACCOUNT_BASELINE_100M_YEN * 100).toFixed(1);
               return <article key={item.id} data-budget-category={item.id} aria-current={selected === item.id ? "true" : undefined} className={`budgetRow ${selected === item.id ? "selected" : ""}`}>
                 <button type="button" data-budget-select-control={item.id} aria-pressed={selected === item.id} className="rowIdentity rowSelect" onClick={() => setSelected(item.id)}><span className="colorDot" style={{background:item.color}}/><span><h3>{item.name}{selected === item.id && <span className="selectionState">選択中</span>}</h3><small>{item.shortDescription}</small><span className="rowShare"><i data-budget-share={item.id} style={{width: `${share}%`, background: item.color}} /><em>全体の{share}%</em></span>{item.adjustmentNote && <small data-adjustment-note={item.id} className="adjustmentNote">{item.adjustmentNote}</small>}</span></button>
-                <div className="budgetMetric"><small>成立予算</small><b>{money(item.baselineAmount100mYen)}</b></div>
+                <div className="budgetMetric"><small>令和8年度当初予算</small><b>{money(item.baselineAmount100mYen)}</b></div>
                 <div className="sliderCell"><input aria-label={`${item.name}の予算`} aria-describedby="allocation-guidance" type="range" min={range.minimumAmount100mYen} max={range.maximumAmount100mYen} value={values[item.id]} onChange={e => setValue(item.id, Number(e.target.value))} style={{"--accent": item.color} as React.CSSProperties}/></div>
                 <div className="budgetMetric"><small>あなたの案</small><b>{money(values[item.id])}</b></div>
                 <div className={`changeMetric ${direction}`}><small>変更</small><b>{change.amountLabel}</b><em>{change.rateLabel}</em></div>
@@ -129,7 +129,7 @@ export default function Home() {
 
           <aside className="contextPanel" id="category-context" aria-label="選択分野の変更の意味">
             <h2>{active.name}</h2>
-            <div className="amountCompare"><span>成立予算<b>{money(active.baselineAmount100mYen)}</b></span><span>あなたの案<b>{money(values[active.id])}</b></span><span>変更額<b>{activeChange.amountLabel}</b></span><span>変更率<b>{activeChange.rateLabel}</b></span></div>
+            <div className="amountCompare"><span>令和8年度当初予算<b>{money(active.baselineAmount100mYen)}</b></span><span>あなたの案<b>{money(values[active.id])}</b></span><span>変更額<b>{activeChange.amountLabel}</b></span><span>変更率<b>{activeChange.rateLabel}</b></span></div>
             <section className="contextSection categoryMeaning">
               <h3>そもそも何のお金？</h3>
               <p>{active.definition}</p>

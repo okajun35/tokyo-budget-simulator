@@ -257,7 +257,7 @@ export function getBudgetChangeGuidance(
     considerations: UNCHANGED_CONSIDERATIONS,
     caseHeading: "金額を据え置いたとき、何が変わり得る？",
     caseLead: "据え置きは変化がないという意味ではありません。物価、需要、老朽化、制度の変化と合わせて読みます。",
-    unavailableCaseMessage: "金額据え置きと実質的なサービス変化を安全に対応付けられる代表事例は現在未収録です。",
+    unavailableCaseMessage: "令和8年度の関連する取組を確認します。",
     finalQuestion: "今の金額を維持すれば、サービス水準も維持できるでしょうか？",
   };
 }

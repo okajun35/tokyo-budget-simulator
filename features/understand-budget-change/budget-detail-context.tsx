@@ -20,8 +20,8 @@ export function BudgetDetailFallbackNotice({
 
   return <aside className="budgetDetailFallback" role="status">
     {amount === undefined
-      ? "設定額が指定されていないため、成立予算額を表示しています。"
-      : "指定された金額を利用できないため、成立予算額を表示しています。"}
+      ? "設定額が指定されていないため、令和8年度当初予算額を表示しています。"
+      : "指定された金額を利用できないため、令和8年度当初予算額を表示しています。"}
   </aside>;
 }
 
@@ -39,7 +39,7 @@ export function BudgetDetailContext({
       <h2>{category.name}</h2>
     </div>
     <dl>
-      <div><dt>成立予算</dt><dd>{money(comparison.baselineAmount100mYen)}</dd></div>
+      <div><dt>令和8年度当初予算</dt><dd>{money(comparison.baselineAmount100mYen)}</dd></div>
       <div><dt>あなたの案</dt><dd>{money(comparison.proposedAmount100mYen)}</dd></div>
       <div><dt>変更額</dt><dd>{signedMoney(comparison.changeAmount100mYen)}</dd></div>
     </dl>
