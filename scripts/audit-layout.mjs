@@ -40,7 +40,8 @@ const viewports = [
   { name: "desktop", width: 1440, height: 900, mobile: false },
   { name: "mobile", width: 390, height: 844, mobile: true },
 ];
-const paths = ["/", "/budget/debt?amount=1959", "/budget-process", "/participation?category=debt", "/sources", "/about", "/fiscal-context"];
+const statefulProcessPath = "/budget-process?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education";
+const paths = ["/", "/budget/debt?amount=1959", "/budget-process", statefulProcessPath, "/participation?category=debt", "/sources", "/about", "/fiscal-context"];
 const results = [];
 
 // 開発サーバは初回の変換に時間がかかる。固定の待ち時間では読み込み前の

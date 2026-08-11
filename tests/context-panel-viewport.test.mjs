@@ -65,10 +65,9 @@ test("offers one route per destination from the panel", async () => {
   const panel = await topPanel("panel-one-route-each");
   const routes = [...panel.matchAll(/href="([^"]+)"/g)].map(match => match[1]);
 
-  assert.deepEqual(routes, [
-    "/budget/welfare?amount=18730",
-    "/participation?category=welfare",
-  ]);
+  assert.equal(routes.length, 2);
+  assert.match(routes[0], /^\/budget\/welfare\?.*category=welfare.*amount=18730$/);
+  assert.match(routes[1], /^\/participation\?.*category=welfare$/);
 });
 
 test("still states on the top page that a change has more than one method", async () => {

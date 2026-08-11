@@ -627,7 +627,7 @@ test("carries the selected category and amount to its detail page", async () => 
   assert.ok(panel);
   assert.match(
     panel,
-    /<a class="detailLink" href="\/budget\/welfare\?amount=18730">詳しく見る/,
+    /<a class="detailLink" href="\/budget\/welfare\?[^"']*category=welfare[^"']*amount=18730">詳しく見る/,
   );
 
   const detailResponse = await worker.fetch(
@@ -668,7 +668,7 @@ test("offers a direct detail route from every mobile budget card", async () => {
   assert.equal(html.match(/data-mobile-detail-link=/g)?.length, 9);
   assert.match(
     html,
-    /data-mobile-detail-link="debt"[^>]*href="\/budget\/debt\?amount=2799"[^>]*>詳しく見る/,
+    /data-mobile-detail-link="debt"[^>]*href="\/budget\/debt\?[^"']*category=debt[^"']*amount=2799"[^>]*>詳しく見る/,
   );
 });
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import {
   BUDGET_PROCESS_SUMMARY_STEPS,
@@ -17,17 +18,27 @@ import {
 } from "@/features/simulate-budget/budget-categories";
 import type { BudgetCategoryId } from "@/features/simulate-budget/budget-category";
 import { describeBudgetChange } from "@/features/simulate-budget/budget-change";
+import {
+  createBudgetDetailHref,
+  createBudgetParticipationHref,
+  createBudgetProcessHref,
+  resolveBudgetPlanState,
+} from "@/features/simulate-budget/budget-plan-query";
 import { createInitialBudgetSimulationState } from "@/features/simulate-budget/budget-simulation-state";
 import { FISCAL_CONTEXTS } from "@/features/understand-fiscal-context/fiscal-contexts";
 
 const money = (v: number) => `${Math.round(v).toLocaleString("ja-JP")}億円`;
 export default function Home() {
-  const [values, setValues] = useState<BudgetAllocations>(() =>
-    createInitialBudgetSimulationState(BUDGET_CATEGORIES).allocations,
+  const searchParams = useSearchParams();
+  const restoredState = useMemo(
+    () => resolveBudgetPlanState(
+      searchParams.get("plan") ?? undefined,
+      searchParams.get("category") ?? undefined,
+    ),
+    [searchParams],
   );
-  const [selected, setSelected] = useState<BudgetCategoryId>(() =>
-    createInitialBudgetSimulationState(BUDGET_CATEGORIES).selectedCategoryId,
-  );
+  const [values, setValues] = useState<BudgetAllocations>(() => restoredState.allocations);
+  const [selected, setSelected] = useState<BudgetCategoryId>(() => restoredState.selectedCategoryId);
   const allocationSummary = useMemo(
     () => calculateBudgetAllocationSummary(values, GENERAL_ACCOUNT_BASELINE_100M_YEN),
     [values],
@@ -111,7 +122,7 @@ export default function Home() {
                 <div className="budgetMetric"><small>あなたの案</small><b>{money(values[item.id])}</b></div>
                 <div className={`changeMetric ${direction}`}><small>変更</small><b>{change.amountLabel}</b><em>{change.rateLabel}</em></div>
                 {selected === item.id && <a className="selectedDetailLink" href="#category-context">この変更の意味を見る</a>}
-                <a data-mobile-detail-link={item.id} href={`/budget/${item.id}?amount=${values[item.id]}`} className="mobileDetailLink" onClick={event => event.stopPropagation()}>詳しく見る <span>→</span></a>
+                <a data-mobile-detail-link={item.id} href={createBudgetDetailHref(item.id, values)} className="mobileDetailLink" onClick={event => event.stopPropagation()}>詳しく見る <span>→</span></a>
               </article>
             })}
           </section>
@@ -125,9 +136,9 @@ export default function Home() {
               <ul className="mainUseTags">{active.mainUses.map(use => <li key={use}>{use}</li>)}</ul>
             </section>
             <p className="contextCaution">実際の変え方は一つに決まりません。</p>
-            <a className="detailLink" href={`/budget/${active.id}?amount=${values[active.id]}`}>詳しく見る <span>変更方法と論点、事例、出典まで →</span></a>
+            <a className="detailLink" href={createBudgetDetailHref(active.id, values)}>詳しく見る <span>変更方法と論点、事例、出典まで →</span></a>
             <p className="participationContext">
-              <a className="participationDetailLink" href={`/participation?category=${active.id}`}>この分野の参加制度と所管局を見る →</a>
+              <a className="participationDetailLink" href={createBudgetParticipationHref(values, active.id)}>この分野の参加制度と所管局を見る →</a>
               <small>提出による予算への反映は保証されません。</small>
             </p>
           </aside>
@@ -142,7 +153,7 @@ export default function Home() {
           <em>{step.plainMeaning}</em>
           <small>{step.summary}</small>
         </li>)}</ol>
-        <a className="processDetailLink" href="/budget-process">全過程と令和8年度の公式資料を見る →</a>
+        <a className="processDetailLink" href={createBudgetProcessHref(values, active.id)}>全過程と令和8年度の公式資料を見る →</a>
       </section>
 
       <section className="fiscalFacts">

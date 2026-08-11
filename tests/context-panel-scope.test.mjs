@@ -84,7 +84,7 @@ test("still reaches the participation page for the selected category from the to
 
   assert.match(
     panel,
-    /<a(?=[^>]*class="participationDetailLink")(?=[^>]*href="\/participation\?category=welfare")[^>]*>/,
+    /<a(?=[^>]*class="participationDetailLink")(?=[^>]*href="\/participation\?[^"']*category=welfare")[^>]*>/,
   );
   assert.match(panel, /反映は保証されません/);
 });

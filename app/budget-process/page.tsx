@@ -6,7 +6,21 @@ import {
 import {
   BUDGET_PROCESS_STEPS,
 } from "@/features/learn-budget-process/budget-process-steps";
+import { BUDGET_CATEGORIES } from "@/features/simulate-budget/budget-categories";
+import {
+  createBudgetDetailHref,
+  createBudgetParticipationHref,
+  createBudgetSimulatorHref,
+  parseBudgetPlan,
+} from "@/features/simulate-budget/budget-plan-query";
 import { BUDGET_SOURCES } from "@/features/trace-budget-sources/budget-sources";
+
+type BudgetProcessPageProps = {
+  searchParams: Promise<{
+    plan?: string | string[];
+    category?: string | string[];
+  }>;
+};
 
 const fiscalYearStatusLabels = {
   completed: "令和8年度・完了",
@@ -26,10 +40,30 @@ const processHeading = (documentStage: string) => {
   ];
 };
 
-export default function BudgetProcessPage() {
+const money = (value: number) => `${value.toLocaleString("ja-JP")}億円`;
+
+export default async function BudgetProcessPage({
+  searchParams,
+}: BudgetProcessPageProps) {
+  const { plan, category } = await searchParams;
+  const planAllocations = parseBudgetPlan(typeof plan === "string" ? plan : undefined);
+  const selectedCategory = typeof category === "string"
+    ? BUDGET_CATEGORIES.find(item => item.id === category)
+    : undefined;
+  const simulatorHref = planAllocations && selectedCategory
+    ? createBudgetSimulatorHref(planAllocations, selectedCategory.id)
+    : selectedCategory
+      ? `/?category=${selectedCategory.id}#simulator`
+      : "/#simulator";
+  const participationHref = planAllocations && selectedCategory
+    ? createBudgetParticipationHref(planAllocations, selectedCategory.id)
+    : selectedCategory
+      ? `/participation?category=${selectedCategory.id}`
+      : "/participation";
+
   return <main className="budgetProcessPage" data-budget-process-page="fy2026">
     <header className="budgetProcessHeader">
-      <Link href="/">← トップへ戻る</Link>
+      <Link href={simulatorHref}>← 予算シミュレーターへ戻る</Link>
       <p className="eyebrow">TOKYO BUDGET PROCESS · FY2026</p>
       <h1>東京都の予算が<br />決まるまで</h1>
       <p>予算は、要望、各局要求、二つの査定（要求された事業や金額を確認・調整すること）、都議会審議を経て成立します。成立後も執行、決算、評価を通じて次年度へつながります。</p>
@@ -42,6 +76,22 @@ export default function BudgetProcessPage() {
         </ul>
       </div>
     </header>
+
+    {selectedCategory && <aside
+      className="budgetProcessCategoryContext"
+      data-budget-process-category={selectedCategory.id}
+    >
+      <div><span>選択中の分野</span><h2>{selectedCategory.name}</h2></div>
+      {planAllocations && <dl>
+        <div><dt>成立予算</dt><dd>{money(selectedCategory.baselineAmount100mYen)}</dd></div>
+        <div><dt>あなたの案</dt><dd>{money(planAllocations[selectedCategory.id])}</dd></div>
+      </dl>}
+      <p>この分野の金額も、以下の要求、査定、予算案、議会審議を経て決まります。目的別分野と各資料は一対一対応しないため、具体の関連資料は分野別ページで確認します。</p>
+      <Link href={planAllocations
+        ? createBudgetDetailHref(selectedCategory.id, planAllocations)
+        : `/budget/${selectedCategory.id}?amount=${selectedCategory.baselineAmount100mYen}`
+      }>この分野の資料へ戻る →</Link>
+    </aside>}
 
     <div className="budgetProcessTimeline">
       {BUDGET_PROCESS_STEPS.map((step, index) => {
@@ -85,8 +135,8 @@ export default function BudgetProcessPage() {
     </div>
 
     <nav className="budgetProcessNext" aria-label="次に確認する内容">
-      <Link href="/#simulator">予算シミュレーターへ戻る</Link>
-      <Link href="/participation">声を届ける制度を見る</Link>
+      <Link href={simulatorHref}>予算シミュレーターへ戻る</Link>
+      <Link href={participationHref}>声を届ける制度を見る</Link>
     </nav>
   </main>;
 }

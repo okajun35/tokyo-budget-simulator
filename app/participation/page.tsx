@@ -2,25 +2,44 @@ import Link from "next/link";
 
 import { PARTICIPATION_ROUTES } from "@/features/find-participation-route/participation-routes";
 import { BUDGET_CATEGORIES } from "@/features/simulate-budget/budget-categories";
+import {
+  createBudgetProcessHref,
+  createBudgetSimulatorHref,
+  parseBudgetPlan,
+} from "@/features/simulate-budget/budget-plan-query";
 
 type ParticipationPageProps = {
-  searchParams: Promise<{ category?: string | string[] }>;
+  searchParams: Promise<{
+    category?: string | string[];
+    plan?: string | string[];
+  }>;
 };
 
 export default async function ParticipationPage({
   searchParams,
 }: ParticipationPageProps) {
-  const { category } = await searchParams;
+  const { category, plan } = await searchParams;
   const selectedCategory = typeof category === "string"
     ? BUDGET_CATEGORIES.find(item => item.id === category)
     : undefined;
+  const planAllocations = parseBudgetPlan(typeof plan === "string" ? plan : undefined);
+  const simulatorHref = planAllocations && selectedCategory
+    ? createBudgetSimulatorHref(planAllocations, selectedCategory.id)
+    : selectedCategory
+      ? `/?category=${selectedCategory.id}#simulator`
+      : "/#simulator";
+  const budgetProcessHref = planAllocations && selectedCategory
+    ? createBudgetProcessHref(planAllocations, selectedCategory.id)
+    : selectedCategory
+      ? `/budget-process?category=${selectedCategory.id}`
+      : "/budget-process";
 
   return <main
     className="participationPage"
     data-participation-page={selectedCategory?.id ?? "none"}
   >
     <header className="participationPageHeader">
-      <Link href="/">← トップへ戻る</Link>
+      <Link href={simulatorHref}>← 予算シミュレーターへ戻る</Link>
       <p className="eyebrow">CIVIC PARTICIPATION · TOKYO</p>
       <h1>声を届ける</h1>
       <p>シミュレーションで感じた関心を、現実の制度へつなぎます。制度ごとに提出先や扱われ方が異なり、提出しても予算への反映は保証されません。</p>
@@ -54,8 +73,8 @@ export default async function ParticipationPage({
     </section>
 
     <nav className="participationPageBack" aria-label="関連ページへ移動">
-      <Link href="/#simulator">予算シミュレーターへ戻る</Link>
-      <Link href="/budget-process">予算の決まり方を見る</Link>
+      <Link href={simulatorHref}>予算シミュレーターへ戻る</Link>
+      <Link href={budgetProcessHref}>予算の決まり方を見る</Link>
     </nav>
   </main>;
 }

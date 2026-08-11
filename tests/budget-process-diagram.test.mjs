@@ -69,6 +69,6 @@ test("still offers the complete budget process on its own page", async () => {
   assert.ok(section);
   assert.match(
     section,
-    /<a(?=[^>]*href=["']\/budget-process["'])[^>]*>全過程と令和8年度の公式資料を見る/,
+    /<a(?=[^>]*href=["']\/budget-process\?[^"']*category=welfare["'])[^>]*>全過程と令和8年度の公式資料を見る/,
   );
 });

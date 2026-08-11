@@ -22,6 +22,12 @@ import {
   GENERAL_ACCOUNT_BASELINE_100M_YEN,
 } from "@/features/simulate-budget/budget-categories";
 import {
+  createBudgetParticipationHref,
+  createBudgetProcessHref,
+  createBudgetSimulatorHref,
+  parseBudgetPlan,
+} from "@/features/simulate-budget/budget-plan-query";
+import {
   createBudgetDetailComparison,
   resolveBudgetDetailAmount,
 } from "@/features/understand-budget-change/budget-detail";
@@ -33,7 +39,11 @@ import { BUDGET_SOURCES } from "@/features/trace-budget-sources/budget-sources";
 
 type BudgetDetailPageProps = {
   params: Promise<{ categoryId: string }>;
-  searchParams: Promise<{ amount?: string | string[] }>;
+  searchParams: Promise<{
+    amount?: string | string[];
+    plan?: string | string[];
+    category?: string | string[];
+  }>;
 };
 
 const money = (value: number) =>
@@ -68,15 +78,16 @@ export default async function BudgetDetailPage({
   searchParams,
 }: BudgetDetailPageProps) {
   const { categoryId } = await params;
-  const { amount } = await searchParams;
+  const { amount, plan } = await searchParams;
   const category = BUDGET_CATEGORIES.find(item => item.id === categoryId);
 
   if (!category) {
     return <main className="budgetDetailPage"><section className="budgetDetailMissing"><h1>分野が見つかりません</h1><p>URLの分野IDを確認してください。</p><Link href="/#simulator">← 予算一覧へ戻る</Link></section></main>;
   }
 
+  const planAllocations = parseBudgetPlan(typeof plan === "string" ? plan : undefined);
   const resolvedAmount = resolveBudgetDetailAmount(
-    amount,
+    planAllocations ? String(planAllocations[category.id]) : amount,
     category.baselineAmount100mYen,
   );
   const comparison = createBudgetDetailComparison(
@@ -111,6 +122,15 @@ export default async function BudgetDetailPage({
     (category.participationRouteIds as readonly string[]).includes(route.id),
   );
   const detailedCategory = findDetailedBudgetCategory(category.id);
+  const simulatorHref = planAllocations
+    ? createBudgetSimulatorHref(planAllocations, category.id)
+    : "/#simulator";
+  const participationHref = planAllocations
+    ? createBudgetParticipationHref(planAllocations, category.id)
+    : `/participation?category=${category.id}`;
+  const budgetProcessHref = planAllocations
+    ? createBudgetProcessHref(planAllocations, category.id)
+    : "/budget-process";
   const changeVerb = comparison.direction === "increase"
     ? "増やしました"
     : comparison.direction === "decrease"
@@ -119,7 +139,7 @@ export default async function BudgetDetailPage({
 
   return <main className="budgetDetailPage" data-budget-detail={category.id} data-change-direction={comparison.direction}>
     <header className="budgetDetailHeader">
-      <Link href="/#simulator">← 予算に戻る</Link>
+      <Link href={simulatorHref}>← 予算に戻る</Link>
       <p className="eyebrow">BUDGET DETAIL · FY2026</p>
       <h1>{category.name}</h1>
       <p>{categoryTermMeaning && <>{category.name}は{categoryTermMeaning}です。</>}シミュレーターで選んだ分野と金額を引き継ぎ、変更の意味と根拠を確認します。</p>
@@ -321,7 +341,7 @@ export default async function BudgetDetailPage({
         </article>)}</div>
       </section>
 
-      <nav className="budgetDetailBack" aria-label="関連ページへ移動"><Link href="/#simulator">← 予算に戻る</Link><Link href={`/participation?category=${category.id}`}>この分野の意見先を見る</Link><Link href="/budget-process">予算の決まり方を確認する →</Link></nav>
+      <nav className="budgetDetailBack" aria-label="関連ページへ移動"><Link href={simulatorHref}>← 予算に戻る</Link><Link href={participationHref}>この分野の意見先を見る</Link><Link href={budgetProcessHref}>予算の決まり方を確認する →</Link></nav>
     </div>
   </main>;
 }
