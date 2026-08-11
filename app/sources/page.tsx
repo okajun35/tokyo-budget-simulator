@@ -16,6 +16,12 @@ const sourceTypeLabels = {
   government_inspectorate: "政府の監察・調査機関",
 } as const;
 
+const caseDirectionLabels = {
+  increase: "増額",
+  decrease: "減額",
+  restructure: "再編",
+} as const;
+
 export default function SourcesPage() {
   return <main className="sourcesPage" data-sources-page="fy2026">
     <header className="sourcesPageHeader">
@@ -65,11 +71,12 @@ export default function SourcesPage() {
           (budgetCase.categoryIds as readonly string[]).includes(category.id),
         );
 
-        return <article key={budgetCase.id} data-budget-case-source={budgetCase.id}>
+        return <article key={budgetCase.id} data-budget-case-source={budgetCase.id} data-case-source-direction={budgetCase.direction}>
           <div><span>{budgetCase.country === "日本" ? "国内事例" : "海外事例"}</span><h3>{budgetCase.title}</h3><p>{budgetCase.jurisdiction}／{budgetCase.period}</p></div>
           <dl>
             <dt>資料日・取得日</dt><dd>{budgetCase.sourceDate}／{budgetCase.retrievedAt}</dd>
             <dt>出典種別</dt><dd>{BUDGET_CASE_SOURCE_KIND_LABELS[budgetCase.sourceKind]}</dd>
+            <dt>変更方向</dt><dd>{caseDirectionLabels[budgetCase.direction]}</dd>
             <dt>ライセンス</dt><dd>リンク先の利用条件を確認</dd>
             <dt>対象ページ・項目</dt><dd>{budgetCase.sourceTitle}／確認された変更内容</dd>
             <dt>アプリ内の使用箇所</dt><dd>{categories.map(category => `${category.name}の詳細`).join("／")}</dd>

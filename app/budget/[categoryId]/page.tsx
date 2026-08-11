@@ -13,7 +13,10 @@ import {
   changeTypeGroupOf,
 } from "@/features/learn-from-budget-cases/budget-case";
 import { BUDGET_CASES } from "@/features/learn-from-budget-cases/budget-cases";
-import { CASE_INTERPRETATIONS } from "@/features/learn-from-budget-cases/case-interpretations";
+import {
+  CASE_INTERPRETATIONS,
+  INCREASE_CASE_INTERPRETATIONS,
+} from "@/features/learn-from-budget-cases/case-interpretations";
 import {
   BUDGET_CATEGORIES,
   GENERAL_ACCOUNT_BASELINE_100M_YEN,
@@ -22,6 +25,7 @@ import {
   createBudgetDetailComparison,
   resolveBudgetDetailAmount,
 } from "@/features/understand-budget-change/budget-detail";
+import { getBudgetChangeGuidance } from "@/features/understand-budget-change/budget-change-guidance";
 import {
   findDetailedBudgetCategory,
 } from "@/features/understand-budget-change/detailed-budget-categories";
@@ -80,10 +84,24 @@ export default async function BudgetDetailPage({
     resolvedAmount.amount100mYen,
     GENERAL_ACCOUNT_BASELINE_100M_YEN,
   );
-  const categoryCases = BUDGET_CASES.filter(budgetCase =>
+  const allCategoryCases = BUDGET_CASES.filter(budgetCase =>
     (category.caseIds as readonly string[]).includes(budgetCase.id),
   );
-  const caseInterpretation = CASE_INTERPRETATIONS[category.id];
+  const categoryCases = comparison.direction === "increase"
+    ? allCategoryCases.filter(budgetCase => budgetCase.direction === "increase")
+    : comparison.direction === "decrease"
+      ? allCategoryCases.filter(budgetCase => budgetCase.direction !== "increase")
+      : [];
+  const caseInterpretation = comparison.direction === "increase"
+    ? INCREASE_CASE_INTERPRETATIONS[category.id]
+    : comparison.direction === "decrease"
+      ? CASE_INTERPRETATIONS[category.id]
+      : undefined;
+  const changeGuidance = getBudgetChangeGuidance(
+    category,
+    comparison.direction,
+    Math.abs(comparison.changeAmount100mYen),
+  );
   const categoryTermMeaning =
     BUDGET_TERM_GLOSSARY[category.name as keyof typeof BUDGET_TERM_GLOSSARY]?.meaning;
   const categorySources = BUDGET_SOURCES.filter(source =>
@@ -93,13 +111,13 @@ export default async function BudgetDetailPage({
     (category.participationRouteIds as readonly string[]).includes(route.id),
   );
   const detailedCategory = findDetailedBudgetCategory(category.id);
-  const changeVerb = comparison.changeAmount100mYen > 0
+  const changeVerb = comparison.direction === "increase"
     ? "増やしました"
-    : comparison.changeAmount100mYen < 0
+    : comparison.direction === "decrease"
       ? "減らしました"
       : "変更していません";
 
-  return <main className="budgetDetailPage" data-budget-detail={category.id}>
+  return <main className="budgetDetailPage" data-budget-detail={category.id} data-change-direction={comparison.direction}>
     <header className="budgetDetailHeader">
       <Link href="/#simulator">← 予算に戻る</Link>
       <p className="eyebrow">BUDGET DETAIL · FY2026</p>
@@ -143,14 +161,17 @@ export default async function BudgetDetailPage({
 
       <section className="budgetDetailSection" aria-labelledby="options-heading">
         <p className="sectionLabel">OPTIONS &amp; TRADE-OFFS</p>
-        <h2 id="options-heading">変更方法と検討の論点</h2>
-        <p className="detailLead">同じ増減額でも実現方法は一つではありません。以下は確定案ではなく、検討時の選択肢です。</p>
-        <div className="detailOptionGrid">{category.changeOptions.map((option, index) => <article key={option.id}>
+        <h2 id="options-heading">{changeGuidance.optionsHeading}</h2>
+        <p className="detailLead">{changeGuidance.optionsLead}</p>
+        <div className="detailOptionGrid">{changeGuidance.options.map((option, index) => <article key={option.id}>
           <span>{String(index + 1).padStart(2, "0")}</span>
           <h3>{option.title}</h3>
-          <b>検討時のトレードオフ</b>
           <p>{option.description}</p>
-          <dl><dt>短期</dt><dd>当年度の支出と、現在提供している事業・サービスへの影響を確認する必要があります。</dd><dt>中長期</dt><dd>変更を継続した場合の成果や負担は、公開情報だけから一意に決められません。</dd></dl>
+        </article>)}</div>
+        <h3 className="directionConsiderationsHeading">{changeGuidance.considerationsHeading}</h3>
+        <div className="directionConsiderationGrid">{changeGuidance.considerations.map(consideration => <article key={consideration.id}>
+          <h4>{consideration.title}</h4>
+          <p>{consideration.description}</p>
         </article>)}</div>
       </section>
 
@@ -167,8 +188,8 @@ export default async function BudgetDetailPage({
 
       <section className="budgetDetailSection" aria-labelledby="cases-heading">
         <p className="sectionLabel">PUBLIC CASES</p>
-        <h2 id="cases-heading">金額を減らすと、現実には何が変わったのか</h2>
-        <p className="detailLead">国内外の事例から、財政対策として実際に支出を変えた自治体や国で、公的資料に記録された変更を示します。</p>
+        <h2 id="cases-heading">{changeGuidance.caseHeading}</h2>
+        <p className="detailLead">{changeGuidance.caseLead}</p>
         {caseInterpretation && <p className="caseInterpretation">{caseInterpretation}</p>}
         <p className="detailCaution">同じ割合を変えても、東京都で同じ結果になるとは限りません。制度、財政状況、人口などの条件が異なります。</p>
         <details className="caseTagLegend">
@@ -180,10 +201,10 @@ export default async function BudgetDetailPage({
               <dd>{BUDGET_CASE_CHANGE_TYPE_DESCRIPTIONS[changeType]}</dd>
             </div>)}</dl>
           </div>)}
-          <p>1件の事例に複数付きます。「費用はどこへ動いたか」のタグが付いていれば、支出が減っても費用が消えたわけではなく、住民や将来の年度へ動いたことを表します。</p>
+          <p>1件の事例に複数付きます。追加予算が何へ変わったか、または削減した費用や負担がどこへ動いたかを区別して読みます。</p>
         </details>
-        {categoryCases.length > 0 ? <div className="detailCaseGrid">{categoryCases.map(budgetCase => <article key={budgetCase.id}>
-          <div className="detailCaseHeading"><span>{budgetCase.country === "日本" ? "国内事例" : "海外事例"}</span><h3>{budgetCase.title}</h3></div>
+        {categoryCases.length > 0 ? <div className="detailCaseGrid">{categoryCases.map(budgetCase => <article key={budgetCase.id} data-case-direction={budgetCase.direction}>
+          <div className="detailCaseHeading"><span>{budgetCase.country === "日本" ? "国内" : "海外"}・{budgetCase.direction === "increase" ? "増額事例" : budgetCase.direction === "decrease" ? "減額事例" : "再編事例"}</span><h3>{budgetCase.title}</h3></div>
           <ul className="caseChangeTypes">{budgetCase.changeTypes.map(changeType => <li key={changeType} data-case-change-type={changeType} data-case-change-group={changeTypeGroupOf(changeType)}>{BUDGET_CASE_CHANGE_TYPE_LABELS[changeType]}</li>)}</ul>
           <dl><dt>実施地域</dt><dd>{budgetCase.jurisdiction}</dd><dt>実施時期</dt><dd>{budgetCase.period}</dd><dt>変更した理由</dt><dd>{budgetCase.budgetContext}</dd></dl>
           <h4>何を変えた？</h4>
@@ -193,7 +214,11 @@ export default async function BudgetDetailPage({
           <h4>まだ分からないこと</h4>
           <p className="detailCaution">{budgetCase.whatRemainsUnknown}</p>
           <a href={budgetCase.sourceUrl} target="_blank" rel="noreferrer">{budgetCase.sourceTitle}（{BUDGET_CASE_SOURCE_KIND_LABELS[budgetCase.sourceKind]}・{budgetCase.sourceDate}・外部リンク）↗</a>
-        </article>)}</div> : <div className="detailUnavailable" data-evidence-kind="unknown"><b>事例は未収録です</b><p>信頼できる公的事例を確認できるまで、推測例は表示しません。</p></div>}
+        </article>)}</div> : <div className="detailUnavailable" data-evidence-kind="unknown"><b>事例は未収録です</b><p>{changeGuidance.unavailableCaseMessage}</p></div>}
+        <aside className="directionQuestion" data-direction-question={comparison.direction}>
+          <b>最後に考えること</b>
+          <p>{changeGuidance.finalQuestion}</p>
+        </aside>
       </section>
 
       <section className="budgetDetailSection" aria-labelledby="background-heading">

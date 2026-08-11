@@ -79,6 +79,7 @@ export const BUDGET_CATEGORIES = [
     caseIds: [
       "case-hanno-welfare-review-2026",
       "case-england-adult-social-care",
+      "case-england-adult-social-care-increase",
     ],
     leadBureaus: [BUREAUS.welfare, BUREAUS.health],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
@@ -157,6 +158,7 @@ export const BUDGET_CATEGORIES = [
       "case-hanno-library-2026",
       "case-england-school-resource-management",
       "case-england-school-financial-pressure",
+      "case-giga-device-investment",
     ],
     leadBureaus: [BUREAUS.education, BUREAUS.culture, BUREAUS.sports],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
@@ -350,7 +352,11 @@ export const BUDGET_CATEGORIES = [
       },
     ],
     sourceIds: COMMON_SOURCE_IDS,
-    caseIds: ["case-yubari-consolidated-facility", "case-england-local-roads"],
+    caseIds: [
+      "case-yubari-consolidated-facility",
+      "case-england-local-roads",
+      "case-us-iija-infrastructure-investment",
+    ],
     leadBureaus: [BUREAUS.urbanDevelopment, BUREAUS.housing, BUREAUS.construction],
     participationRouteIds: COMMON_PARTICIPATION_ROUTE_IDS,
     requestUnavailableReason: REQUEST_CROSSWALK_UNAVAILABLE,

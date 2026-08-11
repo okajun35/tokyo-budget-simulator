@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { BUDGET_CASES } from "@/features/learn-from-budget-cases/budget-cases";
 import { BUDGET_CATEGORIES } from "@/features/simulate-budget/budget-categories";
 import {
   ABOUT_DATA_RETRIEVED_AT,
@@ -14,6 +15,11 @@ import {
 
 export default function AboutPage() {
   const caseCoverage = BUDGET_CATEGORIES.filter(category => category.caseIds.length > 0);
+  const increaseCaseIds = new Set(
+    BUDGET_CASES.filter(budgetCase => budgetCase.direction === "increase")
+      .flatMap(budgetCase => budgetCase.categoryIds),
+  );
+  const increaseCaseCoverage = BUDGET_CATEGORIES.filter(category => increaseCaseIds.has(category.id));
 
   return <main className="aboutPage" data-about-page="prototype">
     <header className="aboutPageHeader">
@@ -40,6 +46,7 @@ export default function AboutPage() {
         {caseCoverage.length === BUDGET_CATEGORIES.length
           ? `国内外の公的事例は${caseCoverage.length}分野すべてに収録しています。分野ごとに、公的資料で確認できた変更だけを示し、確認できないことは確認できないと書きます。`
           : `国内外の公的事例は、公的資料で確認できた分野から順に収録しています。現在は${caseCoverage.length}分野（${caseCoverage.map(category => category.name).join("、")}）に収録済みで、残る分野では推測による事例を表示しません。`}
+        {` 増額後の使途と制約まで確認できる事例は、現在は${increaseCaseCoverage.map(category => category.name).join("、")}に限定しています。`}
       </p>
     </section>
 

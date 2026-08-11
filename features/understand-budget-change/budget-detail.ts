@@ -5,10 +5,13 @@ export type ResolvedBudgetDetailAmount = {
   usedFallback: boolean;
 };
 
+export type BudgetChangeDirection = "increase" | "decrease" | "unchanged";
+
 export type BudgetDetailComparison = {
   baselineAmount100mYen: number;
   proposedAmount100mYen: number;
   changeAmount100mYen: number;
+  direction: BudgetChangeDirection;
   changeRatePercent: number;
   baselineSharePercent: number;
   proposedSharePercent: number;
@@ -45,11 +48,17 @@ export function createBudgetDetailComparison(
 ): BudgetDetailComparison {
   const changeAmount100mYen =
     proposedAmount100mYen - baselineAmount100mYen;
+  const direction: BudgetChangeDirection = changeAmount100mYen > 0
+    ? "increase"
+    : changeAmount100mYen < 0
+      ? "decrease"
+      : "unchanged";
 
   return {
     baselineAmount100mYen,
     proposedAmount100mYen,
     changeAmount100mYen,
+    direction,
     changeRatePercent: roundToOneDecimal(
       changeAmount100mYen / baselineAmount100mYen * 100,
     ),

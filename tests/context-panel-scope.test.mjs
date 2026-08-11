@@ -43,9 +43,9 @@ test("keeps public cases out of the top panel", async () => {
 });
 
 test("keeps public cases on the category detail page", async () => {
-  const html = await fetchHtml("/budget/welfare?amount=18730", "detail-with-cases");
+  const html = await fetchHtml("/budget/welfare?amount=15000", "detail-with-cases");
 
-  assert.match(html, /国内外の事例/);
+  assert.match(html, /他の自治体では、予算を減らして何を変えた/);
   assert.match(html, /飯能市の在宅・障害・高齢者福祉事業/);
   assert.match(html, /ねたきり老人等手当と老人日常生活用具給付費を廃止/);
   assert.match(html, /イングランドの成人社会福祉支出/);
@@ -188,4 +188,64 @@ test("keeps every budget stage on the category detail page", async () => {
   assert.match(html, /知事査定/);
   assert.match(html, /都議会へ提出した段階/);
   assert.match(html, /18,730億円/);
+});
+
+test("renders increase guidance and increase cases for an increased education budget", async () => {
+  const html = await fetchHtml(
+    "/budget/education?amount=16762",
+    "education-increase-guidance",
+  );
+
+  assert.match(html, /data-change-direction="increase"/);
+  assert.match(html, /この840億円を増やすと、何を変えられる/);
+  assert.match(html, /教員・支援員を増やす/);
+  assert.match(html, /財源の機会費用/);
+  assert.match(html, /実施能力/);
+  assert.match(html, /恒常経費化/);
+  assert.match(html, /他の自治体では、予算を増やして何を変えた/);
+  assert.match(html, /GIGAスクール構想による端末整備/);
+  assert.doesNotMatch(html, /飯能市立図書館のサービス見直し/);
+  assert.match(html, /この840億円を増やすなら、何に使いますか/);
+});
+
+test("renders decrease guidance and decrease cases for a decreased education budget", async () => {
+  const html = await fetchHtml(
+    "/budget/education?amount=11145",
+    "education-decrease-guidance",
+  );
+
+  assert.match(html, /data-change-direction="decrease"/);
+  assert.match(html, /この4,777億円を減らすには、何を変える/);
+  assert.match(html, /学校・施設の統合や更新延期/);
+  assert.match(html, /サービス低下/);
+  assert.match(html, /負担移転/);
+  assert.match(html, /他の自治体では、予算を減らして何を変えた/);
+  assert.match(html, /飯能市立図書館のサービス見直し/);
+  assert.doesNotMatch(html, /GIGAスクール構想による端末整備/);
+  assert.match(html, /この4,777億円を減らすなら、何を変えますか/);
+});
+
+test("renders unchanged pressures without pretending a reduction was selected", async () => {
+  const html = await fetchHtml(
+    "/budget/education?amount=15922",
+    "education-unchanged-guidance",
+  );
+
+  assert.match(html, /data-change-direction="unchanged"/);
+  assert.match(html, /現在の水準を維持するとは/);
+  assert.match(html, /金額を据え置いても、実質的なサービス水準が同じとは限りません/);
+  assert.match(html, /インフレ・物価上昇/);
+  assert.match(html, /今の金額を維持すれば、サービス水準も維持できるでしょうか/);
+  assert.doesNotMatch(html, /金額を減らすと、現実には何が変わったのか/);
+});
+
+test("does not fill unsupported increase cases for every category", async () => {
+  const html = await fetchHtml(
+    "/budget/industry?amount=8000",
+    "industry-increase-case-unavailable",
+  );
+
+  assert.match(html, /data-change-direction="increase"/);
+  assert.match(html, /増額後の使途と制約を公的資料で確認できる事例は現在未収録です/);
+  assert.doesNotMatch(html, /飯能市が一部の観光施設を休止/);
 });

@@ -35,6 +35,15 @@ test("describes the experience as four stages that each lead into the site", () 
   }
 });
 
+test("defines meaning as constraints on increases, decreases, and unchanged budgets", () => {
+  const understand = PROTOTYPE_EXPERIENCE_STAGES.find(stage => stage.id === "understand");
+
+  assert.match(understand.summary, /増額/);
+  assert.match(understand.summary, /減額/);
+  assert.match(understand.summary, /据え置/);
+  assert.match(understand.summary, /実施能力|制約/);
+});
+
 test("states what the prototype is for before how to read it", async () => {
   const html = await fetchAboutHtml("about-purpose-order");
 

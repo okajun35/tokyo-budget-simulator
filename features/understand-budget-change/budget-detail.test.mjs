@@ -36,8 +36,15 @@ test("compares the inherited amount with the enacted amount and annual budget", 
     baselineAmount100mYen: 2_799,
     proposedAmount100mYen: 1_959,
     changeAmount100mYen: -840,
+    direction: "decrease",
     changeRatePercent: -30,
     baselineSharePercent: 2.9,
     proposedSharePercent: 2,
   });
+});
+
+test("classifies increased, decreased, and unchanged allocations", () => {
+  assert.equal(createBudgetDetailComparison(1_000, 1_100, 10_000).direction, "increase");
+  assert.equal(createBudgetDetailComparison(1_000, 900, 10_000).direction, "decrease");
+  assert.equal(createBudgetDetailComparison(1_000, 1_000, 10_000).direction, "unchanged");
 });

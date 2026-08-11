@@ -26,12 +26,20 @@ const fetchHtml = async (path, label) => {
 
 test("labels a change by what kind of change it was, not by success or failure", () => {
   assert.deepEqual(Object.keys(BUDGET_CASE_CHANGE_TYPE_LABELS), [
+    "service_expansion",
+    "workforce_expansion",
+    "capacity_expansion",
+    "capital_investment",
     "service_reduction",
     "efficiency_reorganization",
     "burden_shift",
     "deferral",
   ]);
   assert.deepEqual(Object.values(BUDGET_CASE_CHANGE_TYPE_LABELS), [
+    "サービス拡充",
+    "人員拡充",
+    "供給能力の拡充",
+    "設備・インフラ投資",
     "サービス縮小",
     "効率化・再編",
     "負担移転",
@@ -52,14 +60,14 @@ test("gives every case at least one change type and an internal evidence level",
 });
 
 test("keeps the evidence level out of the screen and names the source kind instead", async () => {
-  const html = await fetchHtml("/budget/welfare", "case-evidence-internal");
+  const html = await fetchHtml("/budget/welfare?amount=15000", "case-evidence-internal");
 
   assert.doesNotMatch(html, /証拠レベル|evidence-level|evidenceLevel/);
   assert.match(html, new RegExp(BUDGET_CASE_SOURCE_KIND_LABELS.national_audit_office));
 });
 
 test("reads a case as what changed, what was confirmed, and what is still unknown", async () => {
-  const html = await fetchHtml("/budget/welfare", "case-card-sections");
+  const html = await fetchHtml("/budget/welfare?amount=15000", "case-card-sections");
   const englandCase = BUDGET_CASES.find(item => item.id === "case-england-adult-social-care");
 
   assert.match(html, /何を変えた/);
@@ -73,8 +81,8 @@ test("reads a case as what changed, what was confirmed, and what is still unknow
   );
 });
 
-test("groups the four tags by what changed and where the cost moved", async () => {
-  const html = await fetchHtml("/budget/welfare", "case-tag-groups");
+test("groups the change tags by what changed and where the cost moved", async () => {
+  const html = await fetchHtml("/budget/welfare?amount=15000", "case-tag-groups");
   const legend = html.match(/<details class="caseTagLegend">[\s\S]*?<\/details>/)?.[0];
 
   assert.ok(legend, "事例の見方が見つからない");
@@ -90,7 +98,7 @@ test("groups the four tags by what changed and where the cost moved", async () =
 });
 
 test("colours a tag by its group so a scan shows when the cost moved", async () => {
-  const html = await fetchHtml("/budget/welfare", "case-tag-group-attribute");
+  const html = await fetchHtml("/budget/welfare?amount=15000", "case-tag-group-attribute");
   const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
 
   assert.match(
@@ -114,8 +122,8 @@ test("colours a tag by its group so a scan shows when the cost moved", async () 
   assert.deepEqual([...colouredGroups], ["where_the_cost_moved"], "既定色から外れるまとまりは1つで足りる");
 });
 
-test("explains the four tags next to the cases without a separate page", async () => {
-  const html = await fetchHtml("/budget/welfare", "case-tag-legend");
+test("explains the change tags next to the cases without a separate page", async () => {
+  const html = await fetchHtml("/budget/welfare?amount=15000", "case-tag-legend");
   const legend = html.match(/<details class="caseTagLegend">[\s\S]*?<\/details>/)?.[0];
 
   assert.ok(legend, "事例の見方が見つからない");

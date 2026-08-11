@@ -53,11 +53,11 @@ test("never clips the panel content", () => {
 
 test("keeps the change options on the category detail page", async () => {
   const panel = await topPanel("panel-without-options");
-  const detail = await fetchHtml("/budget/welfare?amount=18730", "detail-with-options");
+  const detail = await fetchHtml("/budget/welfare?amount=15000", "detail-with-options");
 
   assert.doesNotMatch(panel, /data-change-option=/);
   assert.doesNotMatch(panel, /給付対象や単価を見直す/);
-  assert.match(detail, /変更方法と検討の論点/);
+  assert.match(detail, /この3,730億円を減らすには、何を変える/);
   assert.match(detail, /給付対象や単価を見直す/);
 });
 

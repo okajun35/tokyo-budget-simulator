@@ -122,7 +122,8 @@ test("renders traceable budget and case sources on an independent page", async (
   assert.equal(response.status, 200);
   assert.match(html, /data-sources-page="fy2026"/);
   assert.equal(html.match(/data-budget-source=/g)?.length, 13);
-  assert.equal(html.match(/data-budget-case-source=/g)?.length, 17);
+  assert.equal(html.match(/data-budget-case-source=/g)?.length, 20);
+  assert.equal(html.match(/data-case-source-direction=/g)?.length, 20);
   for (const label of [
     "資料日・年度",
     "取得日",
@@ -833,12 +834,12 @@ test("explains a budget change through the complete shared detail template", asy
   assert.match(normalizedHtml, /構成比.*?2\.9%.*?2\.0%/);
   assert.match(normalizedHtml, /そもそも何のお金/);
   assert.match(normalizedHtml, /主な用途/);
-  assert.match(normalizedHtml, /変更方法と検討の論点/);
+  assert.match(normalizedHtml, /この840億円を減らすには、何を変える/);
   assert.match(normalizedHtml, /data-evidence-kind="fact"/);
   assert.match(normalizedHtml, /data-evidence-kind="case_fact"/);
   assert.match(normalizedHtml, /data-evidence-kind="interpretation"/);
   assert.match(normalizedHtml, /data-evidence-kind="unknown"/);
-  assert.match(normalizedHtml, /国内外の事例/);
+  assert.match(normalizedHtml, /他の自治体では、予算を減らして何を変えた/);
   assert.match(normalizedHtml, /この予算が決まるまでの資料を見る/);
   assert.match(normalizedHtml, /分野に直接対応する資料/);
   assert.match(normalizedHtml, /公債費（款）.*?要求額.*?2,801\.14億円.*?前年度.*?2,871\.77億円/s);
@@ -867,7 +868,7 @@ test("renders the completed content for debt, welfare, and education", async () 
       ],
     },
     {
-      path: "/budget/welfare?amount=18730",
+      path: "/budget/welfare?amount=15000",
       patterns: [
         /高齢者福祉.*?障害福祉.*?子育て・児童福祉.*?医療提供体制.*?保健・健康施策/s,
         /給付対象や単価/,
@@ -881,12 +882,12 @@ test("renders the completed content for debt, welfare, and education", async () 
       path: "/budget/education?amount=16762",
       patterns: [
         /学校運営と教職員.*?学校施設の整備・更新.*?図書館.*?文化施設・文化事業.*?スポーツ・生涯学習/s,
-        /学校・施設の統合や更新延期/,
-        /教職員・支援職員の人員体制/,
-        /選択科目・行事/,
-        /図書館・文化施設の開館日や時間/,
-        /飯能市立図書館のサービス見直し/,
-        /イングランドの学校が財政圧力へ対応した方法/,
+        /教員・支援員を増やす/,
+        /給食や教材への補助を増やす/,
+        /学校施設を更新する/,
+        /ICT・特別支援を拡充する/,
+        /GIGAスクール構想による端末整備/,
+        /端末を整備しても、対象者の需要把握や貸与・活用の運用が整わなければ利用へ結び付かない/,
       ],
     },
   ];

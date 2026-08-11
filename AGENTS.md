@@ -36,19 +36,19 @@ The experience has four stages. Every feature should be traceable to one of them
 | --- | --- |
 | 見る | Learn how Tokyo actually allocates its budget across the nine fields. |
 | 動かす | Redistribute it themselves: raise education, cut debt service, raise welfare. |
-| 意味を知る | Learn what 「公債費を30%減らす」 or 「教育費を減らす」 would actually reduce, including public cases from Japan and abroad. |
+| 意味を知る | For increases, decreases, and unchanged allocations, learn what would actually change, what delivery constraints or shifted burdens arise, and what public cases can and cannot establish. |
 | 現実につなぐ | Learn how the budget is decided through bureau requests, Finance Bureau assessment, governor assessment, and the assembly, and where a resident can raise an opinion. |
 
 The operating experience is modelled on Liverpool's Budget Challenge. Four things are the Tokyo-specific difference and must not be dropped to simplify the product:
 
-1. Public cases of jurisdictions and countries that actually made reductions.
+1. Public cases showing what jurisdictions and countries actually changed when they increased, reduced, or restructured spending.
 2. Tokyo's own budget formation process.
 3. Routes to 都民の声, petitions, written requests, and responsible bureaus.
 4. Provenance back to official primary sources.
 
 `features/understand-prototype/prototype-purpose.ts` holds the user-facing copy for the concept, the four stages, and the non-goals. `/about` renders it. Keep that file and this section consistent; if the concept changes, change both.
 
-When assessing the product against the concept, measure coverage rather than presence. As of 2026-08-11 public cases exist for all nine fields, but depth is uneven: 税連動経費等 has one case while the other fields have at least two. `/about` derives coverage from the data so the page cannot overstate it.
+When assessing the product against the concept, measure coverage rather than presence. As of 2026-08-11, decrease or restructuring cases cover all nine fields, while independently verified increase cases are intentionally limited to welfare, education, and urban development. `/about` derives general case coverage from the data so the page cannot overstate it. Do not fill increase cases merely to equalize counts.
 
 ### Intended reader and how to write for them
 
@@ -75,6 +75,7 @@ The same rule applies to process stages. `BUDGET_PROCESS_SUMMARY_STEPS` carries 
 - Each field is currently adjustable from 70% through 130% of its baseline, in increments of 1 hundred-million yen. “70% of baseline” means a 30% reduction, not a 70% reduction.
 - Always show the annual total, allocated amount, and available amount together while the user is changing allocations.
 - A simulated allocation is a learning exercise, not an executable official budget. Do not infer which individual project, contract, law, staffing level, or outcome would change unless supported by public evidence.
+- Category details branch on the selected delta. An increase asks what the money becomes and tests opportunity cost, delivery capacity, recurring cost, distribution, diminishing returns, and timing. A decrease asks what service, burden, staffing, or future cost changes. An unchanged nominal amount asks whether inflation, wages, demand, aging assets, or rule changes alter the real service level. Never frame increase as inherently good or decrease as inherently bad.
 - The simulator deliberately focuses on distributing a fixed total. It does not currently model multiple fiscal years, tax-policy changes, economic forecasts, borrowing capacity, or fund balances as controls.
 
 基金、都債、都税 are displayed as “動かせない前提”, but this must never be explained as if they are legally or practically immutable:

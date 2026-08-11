@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { BUDGET_CATEGORIES } from "../features/simulate-budget/budget-categories.ts";
-import { CASE_INTERPRETATIONS } from "../features/learn-from-budget-cases/case-interpretations.ts";
+import {
+  CASE_INTERPRETATIONS,
+  INCREASE_CASE_INTERPRETATIONS,
+} from "../features/learn-from-budget-cases/case-interpretations.ts";
 
 const fetchHtml = async (path, label) => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -26,13 +29,35 @@ const fetchHtml = async (path, label) => {
  */
 test("explains what the cases show for the field before the caution", async () => {
   for (const categoryId of Object.keys(CASE_INTERPRETATIONS)) {
-    const html = await fetchHtml(`/budget/${categoryId}`, `case-lead-${categoryId}`);
+    const category = BUDGET_CATEGORIES.find(item => item.id === categoryId);
+    const decreasedAmount = Math.round(category.baselineAmount100mYen * 0.9);
+    const html = await fetchHtml(
+      `/budget/${categoryId}?amount=${decreasedAmount}`,
+      `case-lead-${categoryId}`,
+    );
     const interpretation = CASE_INTERPRETATIONS[categoryId];
 
     assert.ok(html.includes(interpretation), `${categoryId} の分野別の説明がない`);
     assert.ok(
       html.indexOf(interpretation) < html.indexOf("同じ結果になるとは限りません"),
       `${categoryId} は説明より先に注意書きが来ている`,
+    );
+  }
+});
+
+test("shows increase interpretations only when the selected amount increased", async () => {
+  for (const [categoryId, interpretation] of Object.entries(INCREASE_CASE_INTERPRETATIONS)) {
+    const category = BUDGET_CATEGORIES.find(item => item.id === categoryId);
+    const increasedAmount = Math.round(category.baselineAmount100mYen * 1.05);
+    const html = await fetchHtml(
+      `/budget/${categoryId}?amount=${increasedAmount}`,
+      `increase-case-lead-${categoryId}`,
+    );
+
+    assert.ok(html.includes(interpretation), `${categoryId} の増額事例の説明がない`);
+    assert.ok(
+      html.indexOf(interpretation) < html.indexOf("同じ結果になるとは限りません"),
+      `${categoryId} は増額事例の説明より先に注意書きが来ている`,
     );
   }
 });
@@ -51,6 +76,20 @@ test("states each interpretation as a possibility rather than a certainty", () =
       /ことがあ|場合があ|とは限|方法があ|方法もあ|選択肢もあ|制約し|異なりま|ではありません/,
       categoryId,
     );
+    assert.doesNotMatch(interpretation, /必ず|確実に|東京都では/, categoryId);
+  }
+});
+
+test("keeps increase interpretations limited to fields with verified increase cases", () => {
+  assert.deepEqual(Object.keys(INCREASE_CASE_INTERPRETATIONS).sort(), [
+    "city",
+    "education",
+    "welfare",
+  ]);
+
+  for (const [categoryId, interpretation] of Object.entries(INCREASE_CASE_INTERPRETATIONS)) {
+    assert.match(interpretation, /増や|追加|投資/);
+    assert.match(interpretation, /とは限|必要|制約|課題|場合/);
     assert.doesNotMatch(interpretation, /必ず|確実に|東京都では/, categoryId);
   }
 });

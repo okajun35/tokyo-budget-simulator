@@ -45,7 +45,7 @@ export const PROTOTYPE_EXPERIENCE_STAGES: readonly PrototypeExperienceStage[] = 
     id: "understand",
     label: "意味を知る",
     summary:
-      "「公債費を30%減らす」とは何を減らすことなのか、実際にはどんな変更方法があるのかを、国内外の公的資料で確認できた実例とともに読みます。",
+      "増額・減額・据え置きのそれぞれで、何を変えるのか、実施能力や将来負担などの制約は何かを考え、公的資料で確認できた実例と限界を読みます。",
     routeHref: "/budget/debt",
     routeLabel: "公債費を例に読む",
   },
