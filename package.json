@@ -16,10 +16,13 @@
     "data:fetch": "node scripts/fetch-budget-data.ts",
     "data:normalize": "node scripts/normalize-budget-data.ts",
     "data:validate": "node scripts/validate-budget-data.ts",
+    "data:participation:generate": "node scripts/generate-participation-topic-data.mjs",
+    "data:participation:validate": "node scripts/generate-participation-topic-data.mjs --check",
     "audit:layout": "node scripts/audit-layout.mjs",
     "audit:links": "node scripts/audit-external-links.mjs",
     "audit:demo": "node scripts/audit-demo.mjs",
     "audit:panel": "node scripts/audit-context-panel.mjs",
+    "audit:participation": "node scripts/audit-participation.mjs",
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"
   },
   "dependencies": {

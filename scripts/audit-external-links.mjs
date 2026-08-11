@@ -1,18 +1,11 @@
+import { OFFICIAL_CONTACTS } from "../features/find-participation-route/official-contacts.ts";
+import { PARTICIPATION_TOPICS } from "../features/find-participation-route/participation-topics.ts";
+import { BUDGET_CATEGORIES } from "../features/simulate-budget/budget-categories.ts";
+
 const workerUrl = new URL("../dist/server/index.js", import.meta.url);
 workerUrl.searchParams.set("audit", `${process.pid}-${Date.now()}`);
 const { default: worker } = await import(workerUrl.href);
 
-const categoryIds = [
-  "welfare",
-  "education",
-  "economy",
-  "environment",
-  "infrastructure",
-  "safety",
-  "administration",
-  "debt",
-  "tax-linked",
-];
 const paths = [
   "/",
   "/budget-process",
@@ -20,8 +13,8 @@ const paths = [
   "/sources",
   "/about",
   "/fiscal-context",
-  ...categoryIds.map(categoryId => `/budget/${categoryId}`),
-  ...categoryIds.map(categoryId => `/participation?category=${categoryId}`),
+  ...BUDGET_CATEGORIES.map(category => `/budget/${category.id}`),
+  ...BUDGET_CATEGORIES.map(category => `/participation?category=${category.id}`),
 ];
 const environment = {
   ASSETS: {
@@ -33,6 +26,16 @@ const executionContext = {
   passThroughOnException() {},
 };
 const externalUrls = new Set();
+
+for (const contact of Object.values(OFFICIAL_CONTACTS)) {
+  externalUrls.add(contact.contactUrl);
+  externalUrls.add(contact.contactSourceUrl);
+}
+for (const topic of PARTICIPATION_TOPICS) {
+  for (const relation of topic.bureauRelations) {
+    externalUrls.add(relation.relationSourceUrl);
+  }
+}
 
 for (const path of paths) {
   const response = await worker.fetch(

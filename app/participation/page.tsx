@@ -1,6 +1,10 @@
 import Link from "next/link";
 
-import { PARTICIPATION_ROUTES } from "@/features/find-participation-route/participation-routes";
+import { CommonParticipationRoutes } from "@/features/find-participation-route/common-participation-routes";
+import { OFFICIAL_CONTACTS } from "@/features/find-participation-route/official-contacts";
+import { resolveParticipationBudgetContext } from "@/features/find-participation-route/participation-budget-context";
+import { PARTICIPATION_TOPICS } from "@/features/find-participation-route/participation-topics";
+import { ParticipationWorkspace } from "@/features/find-participation-route/participation-workspace";
 import { BUDGET_CATEGORIES } from "@/features/simulate-budget/budget-categories";
 import {
   createBudgetProcessHref,
@@ -19,10 +23,10 @@ export default async function ParticipationPage({
   searchParams,
 }: ParticipationPageProps) {
   const { category, plan } = await searchParams;
-  const selectedCategory = typeof category === "string"
-    ? BUDGET_CATEGORIES.find(item => item.id === category)
-    : undefined;
-  const planAllocations = parseBudgetPlan(typeof plan === "string" ? plan : undefined);
+  const categoryValue = typeof category === "string" ? category : undefined;
+  const planValue = typeof plan === "string" ? plan : undefined;
+  const selectedCategory = BUDGET_CATEGORIES.find(item => item.id === categoryValue);
+  const planAllocations = parseBudgetPlan(planValue);
   const simulatorHref = planAllocations && selectedCategory
     ? createBudgetSimulatorHref(planAllocations, selectedCategory.id)
     : selectedCategory
@@ -42,35 +46,29 @@ export default async function ParticipationPage({
       <Link href={simulatorHref}>← 予算シミュレーターへ戻る</Link>
       <p className="eyebrow">CIVIC PARTICIPATION · TOKYO</p>
       <h1>声を届ける</h1>
-      <p>シミュレーションで感じた関心を、現実の制度へつなぎます。制度ごとに提出先や扱われ方が異なり、提出しても予算への反映は保証されません。</p>
+      <p>自分が動かした予算について、関心を具体化し、行政上の主な所管と公式ルートを確認して、伝えたいことを整理します。</p>
     </header>
 
-    {selectedCategory ? <aside className="selectedParticipationCategory">
-      <span>選択中の分野</span>
-      <h2>{selectedCategory.name}</h2>
-      <p>目的別予算と組織別予算は一対一対応ではありません。以下を主な所管として案内します。</p>
-      <div>{selectedCategory.leadBureaus.map(bureau => <a key={bureau.name} href={bureau.url} target="_blank" rel="noreferrer">{bureau.name}（外部リンク）↗</a>)}</div>
-    </aside> : <aside className="selectedParticipationCategory empty">
-      <span>分野指定なし</span>
-      <p>予算シミュレーターで分野を選ぶと、主な所管局を引き継いで表示します。</p>
-      <Link href="/#simulator">予算シミュレーターで分野を選ぶ →</Link>
-    </aside>}
-
-    <section className="participationPageContent" aria-labelledby="routes-heading">
-      <div className="participationPageIntro">
-        <div><p className="eyebrow">OFFICIAL ROUTES</p><h2 id="routes-heading">制度を選ぶ</h2></div>
-        <aside role="note"><b>このサイトからは送信しません</b><p>このサイトは意見や個人情報を保存・送信しません。各制度の公式案内を確認して、東京都または東京都議会の窓口を利用してください。</p></aside>
-      </div>
-      <div className="participationGrid">{PARTICIPATION_ROUTES.map((route, index) => <article key={route.id} data-participation-route={route.id}>
-        <div className="participationTitle"><span>{String(index + 1).padStart(2, "0")}</span><h3>{route.title}</h3></div>
-        <dl><dt>提出先</dt><dd>{route.recipient}</dd><dt>対象</dt><dd>{route.target}</dd><dt>必要な手続</dt><dd>{route.procedure}</dd><dt>処理の流れ</dt><dd>{route.flow}</dd><dt>できること</dt><dd>{route.canDo}</dd><dt>できないこと</dt><dd>{route.cannotGuarantee}</dd></dl>
-        <div className="guarantee">予算への反映は保証されません</div>
-        <div className="participationOfficialLinks">
-          <a href={route.officialGuideUrl} target="_blank" rel="noreferrer">公式案内を開く（外部リンク）↗</a>
-          {"relatedOfficialGuide" in route && <a href={route.relatedOfficialGuide.url} target="_blank" rel="noreferrer">{route.relatedOfficialGuide.label}（外部リンク）↗</a>}
-        </div>
-      </article>)}</div>
-    </section>
+    {selectedCategory ? <div className="participationPageContent">
+      <ParticipationWorkspace
+        category={{
+          id: selectedCategory.id,
+          name: selectedCategory.name,
+          color: selectedCategory.color,
+        }}
+        budgetContext={resolveParticipationBudgetContext(selectedCategory.id, planValue)}
+        topics={PARTICIPATION_TOPICS.filter(topic => topic.categoryId === selectedCategory.id)}
+        contacts={OFFICIAL_CONTACTS}
+      />
+    </div> : <div className="participationPageContent">
+      <aside className="selectedParticipationCategory empty">
+        <span>分野指定なし</span>
+        <h2>まず予算分野を選んでください</h2>
+        <p>予算シミュレーターで分野を選ぶと、9分野の粗い分類から具体的な話題・主な所管・確認済み窓口へ進めます。</p>
+        <Link href="/#simulator">予算シミュレーターで分野を選ぶ →</Link>
+      </aside>
+      <CommonParticipationRoutes />
+    </div>}
 
     <nav className="participationPageBack" aria-label="関連ページへ移動">
       <Link href={simulatorHref}>予算シミュレーターへ戻る</Link>

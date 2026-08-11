@@ -67,6 +67,10 @@ test("keeps the plan when moving from participation back to the process or simul
     "participation-complete-plan",
   );
 
+  assert.match(html, /あなたの変更[\s\S]*?教育と文化[\s\S]*?\+840億円/);
+  assert.match(html, /成立予算[\s\S]*?15,922億円/);
+  assert.match(html, /あなたの案[\s\S]*?16,762億円/);
+  assert.match(html, /行政へ要求する意思表示ではありません/);
   assert.ok(html.includes(createBudgetSimulatorHref(plan, "education")));
   assert.ok(html.includes(createBudgetProcessHref(plan, "education")));
 });

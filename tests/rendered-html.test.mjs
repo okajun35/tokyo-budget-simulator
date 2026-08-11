@@ -233,7 +233,7 @@ test("explains the fiscal conditions and their relationship to the simulator on 
   }
 });
 
-test("renders participation routes for the selected budget category without collecting data", async () => {
+test("renders the topic-first participation workspace without inventing a simulation change", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `participation-page-${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
@@ -256,23 +256,28 @@ test("renders participation routes for the selected budget category without coll
 
   assert.equal(response.status, 200);
   assert.match(html, /data-participation-page="education"/);
-  assert.match(html, /選択中の分野.*?教育と文化/);
-  assert.match(html, /教育庁/);
-  assert.match(html, /生活文化局/);
-  assert.match(html, /スポーツ推進本部/);
-  assert.equal(html.match(/data-participation-route=/g)?.length, 7);
+  assert.match(html, /あなたの変更.*?教育と文化/);
+  assert.match(html, /シミュレーターでの変更額を確認できません/);
+  assert.match(html, /どの話について？/);
+  assert.equal(html.match(/data-participation-topic=/g)?.length, 7);
   for (const label of [
-    "提出先",
-    "対象",
-    "必要な手続",
-    "処理の流れ",
-    "できること",
-    "できないこと",
+    "都立学校・教育行政・教職員",
+    "給食・教育内容・ICT",
+    "私立学校",
+    "文化・文化事業",
+    "スポーツ",
+    "その他",
+    "何が気になっていますか？",
+    "東京都に何をしてほしいですか？",
+    "なぜそう思いますか？",
   ]) {
     assert.match(html, new RegExp(label));
   }
-  assert.match(html, /予算への反映は保証されません/);
-  assert.match(html, /このサイトは意見や個人情報を保存・送信しません/);
+  assert.match(html, /テーマを選ぶと、主な所管と確認済みの公式ルートを表示します/);
+  assert.match(html, /氏名・住所などの個人情報は入力しないでください/);
+  assert.match(html, /入力内容はこのページ内だけで保持し、保存・送信しません/);
+  assert.match(html, /東京都議会への意見・要望/);
+  assert.match(html, /現在募集されている計画等を見る/);
 });
 
 test("renders the complete FY2026 budget process on an independent page", async () => {
