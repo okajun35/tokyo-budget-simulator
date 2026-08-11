@@ -120,6 +120,17 @@ for (const viewport of [
   const summary = await evaluate("document.querySelector('.participationSummary')?.innerText");
   check(`${viewport.name}: 本人入力を構造化`,
     summary.includes("給食費の負担") && summary.includes("支援・サービスを増やしてほしい") && summary.includes("経済状況による差"));
+  const aiBoundary = JSON.parse(await evaluate(`JSON.stringify({
+    text: document.querySelector('.participationAiRefinement')?.innerText,
+    consent: document.querySelector('.participationAiConsent input')?.checked,
+    runDisabled: document.querySelector('.participationAiRunButton')?.disabled,
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+  })`));
+  check(`${viewport.name}: AIは任意で送信内容を明示`,
+    aiBoundary.text.includes("Cloudflare Workers AI") &&
+    aiBoundary.text.includes("分野、予算変更額、所管、窓口URLは送りません"));
+  check(`${viewport.name}: AI同意は初期オフ`, aiBoundary.consent === false && aiBoundary.runDisabled === true);
+  check(`${viewport.name}: AI説明表示後も横あふれなし`, aiBoundary.overflow === 0, aiBoundary.overflow);
 }
 
 await command("Page.navigate", { url: `${siteUrl}/participation?category=safety` });

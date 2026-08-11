@@ -37,7 +37,19 @@ Scripts that need writable project-scoped home, npm, XDG, and temporary paths us
 - `examples/d1/` contains an optional D1 example surface
 - `drizzle.config.ts` supports local migration generation when needed
 
-`.openai/hosting.json` とSitesマニフェストは使用しません。公開先はVercel、Cloudflare Pages、AWS Amplify等を候補として今後決定します。
+`.openai/hosting.json` とSitesマニフェストは使用しません。最終的な公開先とドメインは未決定ですが、任意のAI推敲はCloudflare WorkerのWorkers AI bindingで動作する構成です。
+
+## Optional AI copy-editing
+
+`/participation/prepare` では、本人が明示的に同意して実行した場合だけ、入力した3項目を `@cf/openai/gpt-oss-120b` で整えます。ブラウザへAPIトークンを渡さず、Workerの `AI` bindingを使用します。通常の入力整理とコピーはAIなしで利用できます。
+
+Workerには次のbindingを設定しています。
+
+- `AI`: Workers AI
+- `AI_GLOBAL_RATE_LIMITER`: 全体の短時間制限
+- `AI_CLIENT_RATE_LIMITER`: 接続元ごとの短時間制限
+
+自動テストはbindingをモックし、実AIや無料枠を消費しません。通常の `npm run dev` もremote AIへ接続しません。ローカル画面から実推論を試す場合だけ、remote Worker preview権限を持つCloudflare認証を環境へ読み込んだ上で `CLOUDFLARE_REMOTE_AI=true npm run dev` とします。Workers AI REST実行だけを許可したトークンではpreviewを開始できません。本番前の残確認は [`docs/adversarial-release-checklist.md`](docs/adversarial-release-checklist.md) を参照してください。
 
 ## Workspace Auth Headers
 
@@ -103,7 +115,7 @@ actions tied to the current ChatGPT user. Leave public content anonymous.
 - `npm run dev`: start the Vite/Vinext development server
 - `npm run build`: build and validate the local deployable artifact
 - `npm run start`: start the built Vinext application
-- `npm test`: build, validate, and verify the rendered development-preview metadata
+- `npm test`: build, validate, and run the automated test suite
 - `npm run validate:artifact`: recheck an existing artifact's ESM `default.fetch` export
 - `npm run db:generate`: generate Drizzle migrations after schema changes
 

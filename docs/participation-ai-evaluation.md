@@ -1,7 +1,7 @@
 # 参加意見推敲AIの事前評価
 
 `/participation` へAI推敲を組み込む前に、Cloudflare Workers AI上の
-`@cf/openai/gpt-oss-20b` が東京予算ラボの用途に耐えるかを確認する。
+`@cf/openai/gpt-oss-120b` が東京予算ラボの用途に耐えるかを確認する。
 OpenAIの公式説明では学習データは主に英語とされているため、一般ベンチマークの
 評価だけで日本語の行政向け文章品質を判断しない。
 
@@ -124,18 +124,19 @@ gpt-oss-120bをWorkers AI REST APIから実行した。
 | モデル | 結果 | 応答・使用量の傾向 | 判断 |
 | --- | --- | --- | --- |
 | Llama 3.2 3B | 前置きや入力JSONを出力する指示逸脱が再現 | 最速・最少 | 候補外 |
-| gpt-oss-20b | 通常10ケースで事実・具体策の追加なし | 概ね1〜2秒、約15〜20 Neurons | MVP第一候補 |
-| gpt-oss-120b | 通常10ケースで大きな事実追加なし | 概ね1〜3秒、約24〜37 Neurons | 比較・代替候補 |
+| gpt-oss-20b | 通常10ケースで事実・具体策の追加なし | 概ね1〜2秒、約15〜20 Neurons | 比較候補 |
+| gpt-oss-120b | 通常10ケースで大きな事実追加なし | 概ね1〜4秒、約24〜37 Neurons | MVP採用モデル |
 
 明白なプロンプト注入を含む1ケースは、20b・120bともモデルへ送信する前に遮断した。
 一方、20bと120bの両方で「シミュレーターで動かした金額」を「算出した金額」と
-言い換える小さな意味ずれが発生した。したがって、20bを第一候補としても、出力を
+言い換える小さな意味ずれが発生した。したがって、どちらを採用しても出力を
 自動確定しない。本人による編集・確認、検査失敗時の棄却、構造化内容のコピーへの
 フォールバックを必須条件とする。
 
-この結果は固定ケース各1回の事前評価であり、本番品質や安全性を保証するものでは
-ない。UIへ組み込む際は、送信への明示同意、文字数制限、レート制限、エラー時の
-フォールバックを別途実装する。
+追加確認では120bが「本人が気になっている」を「懸念されます」と一般化する意味ずれも
+確認した。自動検査へ代表表現を追加したが、意味保存を機械的に保証することはできない。
+そのため120bを採用しても、原文との比較、編集、本人の確認、検査失敗時の棄却、原文への
+フォールバックを必須とする。実装・公開判定は `docs/adversarial-release-checklist.md` で管理する。
 
 ## 本体へ組み込む場合も維持する境界
 
@@ -144,12 +145,13 @@ gpt-oss-120bをWorkers AI REST APIから実行した。
 - 送信前に、Cloudflare Workers AIへ入力を送ることを明示する
 - 氏名、住所、連絡先などの入力を避けるよう案内する
 - 出力は本人が編集・確認してからコピーする
-- 東京予算ラボから東京都へ自動送信しない
+- 公式窓口を開く操作とAI推敲を分け、AI案を本人の確認なしに確定しない
 - AIが失敗しても、現在の構造化内容をコピーできる
 
 ## 参照した仕様
 
 - [Cloudflare Workers AI: gpt-oss-20b](https://developers.cloudflare.com/workers-ai/models/gpt-oss-20b/)
+- [Cloudflare Workers AI: gpt-oss-120b](https://developers.cloudflare.com/workers-ai/models/gpt-oss-120b/)
 - [Cloudflare Workers AI: Llama 3.2 3B Instruct](https://developers.cloudflare.com/workers-ai/models/llama-3.2-3b-instruct/)
 - [Cloudflare Workers AI: REST API](https://developers.cloudflare.com/workers-ai/get-started/rest-api/)
 - [OpenAI: Introducing gpt-oss](https://openai.com/index/introducing-gpt-oss/)

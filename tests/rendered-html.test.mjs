@@ -14,7 +14,7 @@ const fetchHtmlForWorker = async (worker, path) => {
   return (await response.text()).replaceAll("<!-- -->", "");
 };
 
-test("renders development preview metadata", async () => {
+test("renders production metadata without development preview markers", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
@@ -39,7 +39,12 @@ test("renders development preview metadata", async () => {
     response.headers.get("content-type") ?? "",
     /^text\/html\b/i,
   );
-  assert.match(await response.text(), developmentPreviewMeta);
+  assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+  assert.equal(response.headers.get("x-frame-options"), "DENY");
+  assert.equal(response.headers.get("referrer-policy"), "strict-origin-when-cross-origin");
+  const html = await response.text();
+  assert.doesNotMatch(html, developmentPreviewMeta);
+  assert.match(html, /property="og:title" content="東京予算ラボ/);
 });
 
 test("shows the same published FY2027 policy context independently of the selected direction", async () => {
@@ -389,7 +394,8 @@ test("renders opinion drafting on a focused page with the selected topic", async
   assert.match(html, /東京都に何をしてほしいですか？/);
   assert.match(html, /なぜそう思いますか？/);
   assert.match(html, /氏名・住所などの個人情報は入力しないでください/);
-  assert.match(html, /入力内容はこのページ内だけで保持し、保存しません/);
+  assert.match(html, /入力内容はURL・ブラウザ保存領域・DB・分析基盤へ保存しません/);
+  assert.match(html, /AI推敲を使わない限り外部通信せず/);
   assert.doesNotMatch(html, /ほかの方法/);
 });
 

@@ -45,7 +45,7 @@ test("dry-run shows one synthetic case without requiring Cloudflare credentials"
     },
   );
 
-  assert.match(stdout, /gpt-oss-20b/);
+  assert.match(stdout, /gpt-oss-120b/);
   assert.match(stdout, /education-meals/);
   assert.match(stdout, /給食費が上がり/);
   assert.match(stdout, /入力にない事実/);

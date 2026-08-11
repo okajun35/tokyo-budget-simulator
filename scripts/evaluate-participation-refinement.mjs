@@ -41,7 +41,7 @@ function printHelp() {
   --dry-run       APIを呼ばず、評価ケースとプロンプトを表示
   --case ID       1件だけ実行
   --compare       Llama 3B、gpt-oss-20b、gpt-oss-120bを同条件で比較
-  --model llama-3b|20b|120b（既定: 20b）
+  --model llama-3b|20b|120b（既定: 120b）
   --repeat 1..5   同じケースの反復回数（既定: 1）
 
 実行時に必要な環境変数:
@@ -60,7 +60,7 @@ if (process.argv.includes("--help")) {
 const dryRun = process.argv.includes("--dry-run");
 const compare = process.argv.includes("--compare");
 const caseId = optionValue("--case");
-const modelAlias = optionValue("--model") ?? "20b";
+const modelAlias = optionValue("--model") ?? "120b";
 const model = MODEL_ALIASES[modelAlias];
 if (!model) {
   throw new Error("--model は llama-3b、20b、120b のいずれかを指定してください。");
@@ -101,7 +101,7 @@ async function runInference(messages, selectedModel) {
       },
       body: JSON.stringify({
         messages,
-        max_tokens: 600,
+        max_tokens: 300,
         temperature: 0,
         seed: 20260811,
       }),
@@ -143,6 +143,7 @@ function formatInspection(inspection) {
     `- ${pass(inspection.overclaimExpressions.length === 0)} 強い断定表現: ${inspection.overclaimExpressions.join("、") || "なし"}`,
     `- ${pass(inspection.formatViolations.length === 0)} 禁止した書式: ${inspection.formatViolations.join("、") || "なし"}`,
     `- ${pass(inspection.actionContradictions.length === 0)} 本人の選択との矛盾: ${inspection.actionContradictions.join("、") || "なし"}`,
+    `- ${pass(inspection.perspectiveGeneralizations.length === 0)} 第三者視点への一般化: ${inspection.perspectiveGeneralizations.join("、") || "なし"}`,
   ].join("\n");
 }
 

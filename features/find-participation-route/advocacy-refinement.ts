@@ -1,7 +1,4 @@
 export type AdvocacyRefinementInput = {
-  categoryName: string;
-  topicName: string;
-  bureauNames: string[];
   concern: string;
   requestedAction: string;
   reason: string;
@@ -20,6 +17,7 @@ export type AdvocacyRefinementInspection = {
   overclaimExpressions: string[];
   formatViolations: string[];
   actionContradictions: string[];
+  perspectiveGeneralizations: string[];
 };
 
 export type AdvocacyRefinementInputRisk = "embedded_model_instruction";
@@ -67,6 +65,9 @@ const EMBEDDED_MODEL_INSTRUCTION_PATTERNS = [
   /(?:前|上|これまで)の(?:指示|命令).{0,16}(?:無視|忘れ|従わ)/,
   /(?:システム|開発者|プロンプト)の?指示/,
   /(?:断言|出力|回答|生成).{0,8}(?:して(?:ください|下さい)|せよ)/,
+  /ignore\s+(?:all\s+)?(?:previous|prior|above)\s+instructions?/i,
+  /(?:reveal|show|print).{0,24}(?:system|developer)\s+prompt/i,
+  /<\/?(?:system|developer|assistant|tool)>/i,
 ] as const;
 
 export function findAdvocacyRefinementInputRisks(
@@ -134,6 +135,12 @@ const DECIDED_DIRECTION_EXPRESSIONS = [
   "増や",
   "減ら",
 ] as const;
+const PERSPECTIVE_GENERALIZATIONS = [
+  "懸念されます",
+  "懸念されています",
+  "求められます",
+  "必要とされています",
+] as const;
 
 export function inspectAdvocacyRefinementOutput(
   input: AdvocacyRefinementInput,
@@ -152,6 +159,9 @@ export function inspectAdvocacyRefinementOutput(
   const actionContradictions = input.requestedAction === "まだ決めていない"
     ? DECIDED_DIRECTION_EXPRESSIONS.filter(expression => output.includes(expression))
     : [];
+  const perspectiveGeneralizations = PERSPECTIVE_GENERALIZATIONS.filter(
+    expression => output.includes(expression) && !inputText.includes(expression),
+  );
 
   return {
     passed:
@@ -160,12 +170,14 @@ export function inspectAdvocacyRefinementOutput(
       !leakedPromptMarkup &&
       overclaimExpressions.length === 0 &&
       formatViolations.length === 0 &&
-      actionContradictions.length === 0,
+      actionContradictions.length === 0 &&
+      perspectiveGeneralizations.length === 0,
     addedNumbers,
     addedUrls,
     leakedPromptMarkup,
     overclaimExpressions,
     formatViolations,
     actionContradictions,
+    perspectiveGeneralizations,
   };
 }

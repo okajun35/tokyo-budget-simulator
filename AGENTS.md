@@ -95,7 +95,7 @@ The same rule applies to process stages. `BUDGET_PROCESS_SUMMARY_STEPS` carries 
 - `/budget/[categoryId]/materials` — Tokyo request, assessment, proposal, and enacted-budget materials related to the inherited category, with classification-axis caveats and official sources.
 - `/budget-process` — requests, Finance Bureau assessment, governor assessment, proposal, assembly review, enactment, execution, settlement, and evaluation as separate stages.
 - `/participation` — select a concrete topic for the inherited category, identify the responsible organizations, and compare verified official contacts with common participation routes.
-- `/participation/prepare` — privately organize the person's concern, requested action, and reason for the selected topic before copying it or opening an official contact. Free text remains in client memory only.
+- `/participation/prepare` — privately organize the person's concern, requested action, and reason for the selected topic before copying it or opening an official contact. Free text remains in client memory and is not persisted. Only when the person explicitly opts into AI copy-editing are those three fields sent to the Cloudflare Workers AI binding for one inference.
 - `/sources` — provenance, document stage, retrieval date, source type, license status, and app usage.
 - `/about` — prototype status and interpretive limits.
 - `/fiscal-context` — what funds, Tokyo bonds, and metropolitan taxes are; what changes imply; and why they are outside the current simulator controls.
@@ -124,6 +124,7 @@ The category case and material pages show a compact four-step guide: meaning and
 - Keep three layers distinct on category detail pages: the enacted FY2026 initial-budget baseline, the user's simulated change, and policy or budget-formulation material published for FY2027. The FY2027 layer is independent of increase, decrease, or unchanged simulation choices and must render the same content for all three directions.
 - Label the FY2027 layer as published policy and budget-formulation context, not as an enacted budget or an inferred purpose-category increase/decrease. State that it is not an evaluation of the user's choice and does not establish either a purpose-category budget change or a finalized FY2027 amount.
 - When an allocation is unchanged, retain the explanation that inflation, demand, staffing, aging assets, and制度 changes can alter the real service level. The category cases route may instead show traceable FY2026 related initiatives; label them as examples rather than the formal breakdown of that purpose category.
+- AI copy-editing is optional and must receive only the person's concern, requested action, and reason. Never send the simulated category, allocation, delta, direction, bureau, or contact URL to the model. Show the original and editable AI draft separately, require explicit confirmation before copying the AI draft, and preserve the original structured-copy path when AI is unavailable or rejected.
 
 ## Purpose-driven code map
 
@@ -145,7 +146,8 @@ As of 2026-08-11:
 
 - Sections 2 through 18 of `docs/implementation-checklist.md` have been implemented and checked. The section 18 final MVP acceptance passed all 38 items; its evidence and non-blocking coverage limits are recorded directly below that section.
 - Fiscal-context implementation is recorded in commit `546f3a8`; later commits document the handoff and demo narrative. Inspect `git log` for the actual latest state instead of treating a hash in this file as the branch tip.
-- The last verification passed 191 tests, production build, ESLint, and desktop/mobile layout and heading audits over 12 stateful and primary paths, including keyboard checks.
+- The last verification passed 212 tests, production build, ESLint, and desktop/mobile layout and heading audits over 12 stateful and primary paths, including keyboard checks. The participation audit also covers the optional AI disclosure and default-off consent state.
+- Optional AI copy-editing uses `@cf/openai/gpt-oss-120b`, sends only the three resident-authored fields after explicit consent, and retains an editable, confirm-before-copy result beside the original. Production binding and rate-limit configuration pass Wrangler dry-run; live preview, CPU, quota, and logging checks remain external release gates in `docs/adversarial-release-checklist.md`.
 - The remaining unchecked section 1 items are historical decision-record entries whose substance is implemented; section 19 is intentionally future scope. Do not treat either group as a failed section 18 acceptance item.
 - Confirm `git status --short` at the start of the next session. User-authored research and design Markdown may remain untracked; preserve it unless the user explicitly asks to include it in a commit.
 - The primary handoff documents are:
@@ -198,4 +200,5 @@ At the beginning of the next session:
 
 - Treat local development with `npm run dev` as the current runtime baseline.
 - Do not reintroduce `.openai/hosting.json` or a Sites manifest; that validation phase is complete and those files are retired.
-- The production hosting target is intentionally undecided. Do not add Vercel, Cloudflare Pages, or AWS Amplify configuration until the user selects a target.
+- The optional AI copy-editing runtime uses a Cloudflare Workers AI binding with `@cf/openai/gpt-oss-120b` and Cloudflare Rate Limiting bindings. Never expose an API token to browser code.
+- The final public deployment and domain are still undecided. The Worker binding configuration is part of the AI implementation, but do not deploy or add a different hosting platform configuration until the user explicitly requests it.
