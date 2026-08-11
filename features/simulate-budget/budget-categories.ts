@@ -302,6 +302,15 @@ export const BUDGET_CATEGORIES = [
         description: "重点配分はできますが、対象地域や活動範囲との調整が必要です。",
       },
     ],
+    request: {
+      bureau: "警視庁＋東京消防庁（警察費・消防費）",
+      requestedAmount100mYen: 10_368.9,
+      previousAmount100mYen: 10_125.74,
+      reason:
+        "警察費と消防費を合わせた要求です。財務局査定後は10,571.75億円となり、成立額との差は知事査定以降の変更によるものです。",
+    },
+    bureauAssessment:
+      "警察本部費は要求5,388.75億円→査定5,536.16億円（事項の追加等による増額）。消防管理費のうち管理費は2,189.48億円→2,269.19億円（事項の追加等による増額）。",
     sourceIds: COMMON_SOURCE_IDS,
     caseIds: ["case-japan-fire-service-consolidation", "case-england-fire-and-rescue"],
     leadBureaus: [BUREAUS.police, BUREAUS.fire],
@@ -373,6 +382,15 @@ export const BUDGET_CATEGORIES = [
         description: "利率や償還期間は市場環境などに左右され、既に約束した支払条件を一方的に変更できるという意味ではありません。",
       },
     ],
+    request: {
+      bureau: "公債費（款）",
+      requestedAmount100mYen: 2_801.14,
+      previousAmount100mYen: 2_871.77,
+      reason:
+        "過去に発行した都債の元利償還に必要な額を見積もった要求です。令和7年度予算額より57.16億円少ない要求で、財務局査定後は2,814.61億円となりました。成立額との差は知事査定以降の変更によるものです。",
+    },
+    bureauAssessment:
+      "公債費会計繰出金は要求2,800.39億円→査定2,813.86億円（事項の追加等による増額）。",
     sourceIds: COMMON_SOURCE_IDS,
     caseIds: [
       "case-yubari-financial-reconstruction",
