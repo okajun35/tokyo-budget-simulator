@@ -48,7 +48,7 @@ The operating experience is modelled on Liverpool's Budget Challenge. Four thing
 
 `features/understand-prototype/prototype-purpose.ts` holds the user-facing copy for the concept, the four stages, and the non-goals. `/about` renders it. Keep that file and this section consistent; if the concept changes, change both.
 
-When assessing the product against the concept, measure coverage rather than presence. As of 2026-08-10 the weakest stage is 意味を知る, because public cases exist for three of nine fields; `/about` derives that count from the data so the page cannot overstate it.
+When assessing the product against the concept, measure coverage rather than presence. As of 2026-08-11 public cases exist for all nine fields, but depth is uneven: 税連動経費等 has one case while the other fields have at least two. `/about` derives coverage from the data so the page cannot overstate it.
 
 ### Intended reader and how to write for them
 
@@ -127,15 +127,16 @@ When adding behavior, put it under the user purpose that would cause it to chang
 
 ## Current handoff state
 
-As of 2026-08-09:
+As of 2026-08-11:
 
-- Sections 2 through 17 of `docs/implementation-checklist.md` have been implemented and checked. Section 18 is the next formal MVP final-acceptance pass; its unchecked boxes are an acceptance review, not evidence that the preceding implementation is missing.
+- Sections 2 through 18 of `docs/implementation-checklist.md` have been implemented and checked. The section 18 final MVP acceptance passed all 38 items; its evidence and non-blocking coverage limits are recorded directly below that section.
 - Fiscal-context implementation is recorded in commit `546f3a8`; later commits document the handoff and demo narrative. Inspect `git log` for the actual latest state instead of treating a hash in this file as the branch tip.
-- The last verification passed 90 tests, production build, ESLint, the two-minute demo audit, desktop/mobile layout and heading audits over seven primary pages, keyboard checks, and 39 unique external links with zero failures.
+- The last verification passed 139 tests, production build, ESLint, FY2026 data validation, the two-minute demo audit, desktop/mobile layout and heading audits over seven primary pages, keyboard and context-panel checks, and 50 unique external links with zero failures.
+- The remaining unchecked section 1 items are historical decision-record entries whose substance is implemented; section 19 is intentionally future scope. Do not treat either group as a failed section 18 acceptance item.
 - The worktree was clean after the last commit. Confirm this with `git status --short` at the start of the next session rather than assuming it remains clean.
 - The primary handoff documents are:
   - `docs/tokyo_budget_lab_spec_v0.1.md` for product scope and rationale.
-  - `docs/implementation-checklist.md` for completion state and the next acceptance pass.
+  - `docs/implementation-checklist.md` for completion state and acceptance evidence.
   - `docs/two-minute-demo.md` for the intended two-minute story.
   - `docs/data-refresh.md` for reproducible data updates.
   - `docs/web-image.png` and `docs/レイアウト-補足.md` for layout direction only.
@@ -145,7 +146,7 @@ At the beginning of the next session:
 1. Read this file and the relevant checklist section before editing.
 2. Run `git status --short` and inspect recent commits so user work is not overwritten.
 3. Start locally with `npm run dev` when a visual check is needed.
-4. Continue with section 18 only if the user wants the final acceptance pass; otherwise follow the user's new priority.
+4. Do not repeat section 18 without new evidence or a user request; follow the user's next priority.
 5. Preserve completed decisions unless new evidence or an explicit user decision changes them. Record any changed product decision in this file or the checklist so another agent can reconstruct why.
 
 ## Development flow
