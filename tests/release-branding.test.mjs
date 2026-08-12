@@ -10,3 +10,13 @@ test("uses the Tokyo Budget Lab identity in package metadata and favicon", async
   assert.match(favicon, /<title>東京予算ラボ<\/title>/);
   assert.match(favicon, />都<\/text>/);
 });
+
+test("does not emit unused next/font requests from a deployment build path", async () => {
+  const layout = await readFile(
+    new URL("../app/layout.tsx", import.meta.url),
+    "utf8",
+  );
+
+  assert.doesNotMatch(layout, /next\/font/);
+  assert.doesNotMatch(layout, /font-geist/);
+});

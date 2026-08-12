@@ -37,7 +37,7 @@ Scripts that need writable project-scoped home, npm, XDG, and temporary paths us
 - `examples/d1/` contains an optional D1 example surface
 - `drizzle.config.ts` supports local migration generation when needed
 
-`.openai/hosting.json` とSitesマニフェストは使用しません。公開先はCloudflare Workersとし、CloudflareネイティブのWorkers BuildsでGitHubを接続します。独自ドメインは初回の`workers.dev`確認後に決定します。任意のAI推敲はCloudflare WorkerのWorkers AI bindingで動作する構成です。
+`.openai/hosting.json` とSitesマニフェストは使用しません。公開先は個人CloudflareアカウントのWorkers Freeプランとし、CloudflareネイティブのWorkers BuildsでGitHubを接続します。独自ドメインは`workers.dev`確認後に決定します。任意のAI推敲はCloudflare WorkerのWorkers AI bindingで動作する構成です。
 
 ## Optional AI copy-editing
 
@@ -50,7 +50,7 @@ Workerには次のbindingを設定しています。
 - `AI_CLIENT_RATE_LIMITER`: 接続元ごとの短時間制限
 
 本番bindingの設定は`wrangler.jsonc`で管理し、ビルド後の
-`dist/server/wrangler.json`だけを配置します。GitHub連携のコマンドと初回公開手順は
+`dist/server/wrangler.json`だけを配置します。GitHub連携のコマンドと公開手順は
 [`docs/cloudflare-deployment.md`](docs/cloudflare-deployment.md)を参照してください。
 
 自動テストはbindingをモックし、実AIや無料枠を消費しません。通常の `npm run dev` もremote AIへ接続しません。ローカル画面から実推論を試す場合だけ、remote Worker preview権限を持つCloudflare認証を環境へ読み込んだ上で `CLOUDFLARE_REMOTE_AI=true npm run dev` とします。Workers AI REST実行だけを許可したトークンではpreviewを開始できません。本番前の残確認は [`docs/adversarial-release-checklist.md`](docs/adversarial-release-checklist.md) を参照してください。

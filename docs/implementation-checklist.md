@@ -687,6 +687,8 @@ PCレイアウト    docs/web-image.png
 
 確認方法：本番bindingのソース・オブ・トゥルースとして`wrangler.jsonc`を追加し、Vite/Vinextが生成する`dist/server/wrangler.json`へ互換日付、`nodejs_compat`、AI、全体10回/分・接続元3回/分のRate Limiting、`workers.dev`、preview URL、静的資産が引き継がれることを自動検証する。Cloudflare Builds用に検証・本番配置・非本番previewの3コマンドを追加し、設定値と初回公開手順を`docs/cloudflare-deployment.md`へ記録した。`npm run verify:cloudflare`はproduction build、215テスト、ESLint、生成設定検証を通過し、本番・preview両コマンドのWrangler dry-runで圧縮367.81 KiB、静的39ファイル、AIと二段Rate Limiting bindingを確認した。
 
-残課題：CloudflareとGitHubのアカウント連携、GitHub Appの対象リポジトリ制限、production branch・build commandの登録、previewと`workers.dev`への実配置は外部設定である。配置後にAI、Rate Limiting、CPU、使用量、ログ、favicon、OG、外部リンクを実URLで確認するまで「公開運用確認済み」とは扱わない。
+当時の残課題：CloudflareとGitHubのアカウント連携、GitHub Appの対象リポジトリ制限、production branch・build commandの登録、previewと`workers.dev`への実配置は外部設定であった。現在の状態は下の更新記録を参照する。
 
 判断・注意事項：独自GitHub ActionsへAPIトークンを保存せず、CloudflareネイティブのWorkers Buildsを使う。`main`へのpushは本番配置を開始するため、build・全テスト・ESLint・Worker設定検証が成功した生成物だけをWranglerへ渡す。初回は独自ドメインではなく`workers.dev`で確認する。
+
+更新（2026-08-12）：個人CloudflareアカウントのWorkers FreeでWorkers BuildsのGitHub連携を行い、`main`から`workers.dev`へ配置した。ODH Paid相当チームは9月末以降に配置済みWorkerを参加者側で管理できなくなるため、本番所有先にはしない。公開URLで主要経路、favicon、非公式表示、OG、安全ヘッダー、PC・モバイル24画面、状態引継ぎ、参加導線、AI bindingの合成推論1件を確認した。本番HTMLに未使用`next/font`由来のビルド環境絶対パスが露出し11件が404となる問題を発見し、システムフォント指定だけを残す修正と回帰テストを追加した。修正後はproduction build、216テスト、ESLint、Cloudflare設定検証を通過し、生成物内の参照に`/workspace`と`.vinext/fonts`が残らないことを確認した。GitHub連携による再配置後の実URL確認、SSR CPU・Workers AI Neurons・429率の継続監視、ログ・Analyticsに自由記述が保存されない設定確認が残る。
