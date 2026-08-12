@@ -76,13 +76,12 @@ npm run deploy:cloudflare
 
 ## 配置後に残る確認
 
-- フォント修正の再配置後、HTMLにビルド環境の絶対パスが出ないことを確認する
 - Rate Limitingの429率と通常時の応答を継続監視する
 - SSR CPU時間、Workers AI Neurons、エラー率を確認する
 - CloudflareのログやAnalyticsに意見本文が保存されないことを確認する
 
-favicon、OG表示、主要経路、AI bindingによる合成推論1件は、
-2026-08-12に実URLで確認済み。
+favicon、OG表示、主要経路、AI bindingによる合成推論1件、
+フォント修正後のHTMLとレスポンスヘッダーは、2026-08-12に実URLで確認済み。
 
 リポジトリ側の検証通過は、これらの本番運用条件を確認済みであることを意味しない。
 

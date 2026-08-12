@@ -86,7 +86,7 @@ Cloudflare Rate Limiting bindingは拠点単位・結果整合が遅延する仕
 - [x] 本番確認：個人Freeの`workers.dev`へ初回配置し、主要7経路とfaviconがHTTP 200である
 - [x] 本番確認：PC・モバイルの主要12経路、状態引継ぎ、参加導線、横あふれ、見出し、キーボード操作を監査する
 - [x] 本番確認：AI bindingで合成文を1件だけ推論し、200、`no-store`、安全ヘッダー、原意を維持した応答を確認する
-- [ ] 本番確認：修正後の再配置で、HTMLから無効なビルド環境font preloadが消えたことを確認する
+- [x] 本番確認：修正後の再配置で、HTMLから無効なビルド環境font preloadが消えたことを確認する
 
 2026-08-11のlocal remote preview試行では、Workers AI REST評価に使えたAPIトークンが `/workers/subdomain/edge-preview` を許可せず、Cloudflare API code 10000で開始できなかった。コード不具合やAI binding不具合とは判定せず、remote Worker preview権限を持つ認証または実配置後に上記の本番確認を行う。
 
