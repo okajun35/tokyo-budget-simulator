@@ -1,5 +1,6 @@
 {
   "name": "tokyo-budget-simulator",
+  "license": "MIT",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -32,7 +33,7 @@
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",
-    "next": "16.2.6",
+    "next": "16.3.0",
     "react": "19.2.6",
     "react-dom": "19.2.6"
   },
@@ -46,7 +47,7 @@
     "@vitejs/plugin-rsc": "0.5.26",
     "drizzle-kit": "0.31.10",
     "eslint": "9.39.4",
-    "eslint-config-next": "16.2.6",
+    "eslint-config-next": "16.3.0",
     "react-server-dom-webpack": "19.2.6",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
@@ -55,5 +56,5 @@
     "wrangler": "4.92.0"
   },
   "type": "module",
-  "displayName": "\u6771\u4eac\u4e88\u7b97\u30e9\u30dc"
+  "displayName": "東京予算ラボ"
 }

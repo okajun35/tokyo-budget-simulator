@@ -39,6 +39,11 @@ Scripts that need writable project-scoped home, npm, XDG, and temporary paths us
 
 `.openai/hosting.json` とSitesマニフェストは使用しません。公開先は個人CloudflareアカウントのWorkers Freeプランとし、CloudflareネイティブのWorkers BuildsでGitHubを接続します。東京予算ラボの正規公開URLは `https://tokyobudget.page/` です。任意のAI推敲はCloudflare WorkerのWorkers AI bindingで動作する構成です。
 
+## ライセンス
+
+プロジェクト作成者が著作権を持つソースコードと文書は
+[MIT License](LICENSE)で提供する。東京都のデータ・公式資料・引用・要約はMITの対象外であり、それぞれの配布元の利用条件が適用される。詳しくは[NOTICE](NOTICE)と[/sources](https://tokyobudget.page/sources)を参照。
+
 ## Optional AI copy-editing
 
 `/participation/prepare` では、本人が明示的に同意して実行した場合だけ、入力した3項目を `@cf/openai/gpt-oss-120b` で整えます。ブラウザへAPIトークンを渡さず、Workerの `AI` bindingを使用します。通常の入力整理とコピーはAIなしで利用できます。
