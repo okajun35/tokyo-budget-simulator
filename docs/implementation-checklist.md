@@ -680,3 +680,13 @@ PCレイアウト    docs/web-image.png
 残課題：Cloudflare上のSSR CPU、実使用量、429率、ログ・Analytics設定、実URLのfavicon・OG表示は配置後に確認する。local remote previewは、現在のWorkers AI REST用トークンが `/workers/subdomain/edge-preview` を許可せずCloudflare API code 10000となったため未確認である。本番デプロイは行っていない。
 
 判断・注意事項：AIは本人の意見を作らず、本人が入力した「気になること・してほしいこと・理由」だけを整える任意機能とする。分野、シミュレーション額、増減方向、所管、窓口URLはモデルへ渡さない。意味保存の自動保証はできないため、原文と編集可能なAI案を並べ、本人の確認なしにAI案をコピーできない。AI障害時にも原文の構造化・コピー・公式ルートを維持する。
+
+完了項目：Cloudflare Workers Builds向けGitHub連携準備（2026-08-12）
+
+対応コミット：この作業のコミット
+
+確認方法：本番bindingのソース・オブ・トゥルースとして`wrangler.jsonc`を追加し、Vite/Vinextが生成する`dist/server/wrangler.json`へ互換日付、`nodejs_compat`、AI、全体10回/分・接続元3回/分のRate Limiting、`workers.dev`、preview URL、静的資産が引き継がれることを自動検証する。Cloudflare Builds用に検証・本番配置・非本番previewの3コマンドを追加し、設定値と初回公開手順を`docs/cloudflare-deployment.md`へ記録した。`npm run verify:cloudflare`はproduction build、215テスト、ESLint、生成設定検証を通過し、本番・preview両コマンドのWrangler dry-runで圧縮367.81 KiB、静的39ファイル、AIと二段Rate Limiting bindingを確認した。
+
+残課題：CloudflareとGitHubのアカウント連携、GitHub Appの対象リポジトリ制限、production branch・build commandの登録、previewと`workers.dev`への実配置は外部設定である。配置後にAI、Rate Limiting、CPU、使用量、ログ、favicon、OG、外部リンクを実URLで確認するまで「公開運用確認済み」とは扱わない。
+
+判断・注意事項：独自GitHub ActionsへAPIトークンを保存せず、CloudflareネイティブのWorkers Buildsを使う。`main`へのpushは本番配置を開始するため、build・全テスト・ESLint・Worker設定検証が成功した生成物だけをWranglerへ渡す。初回は独自ドメインではなく`workers.dev`で確認する。

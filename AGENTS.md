@@ -142,12 +142,13 @@ When adding behavior, put it under the user purpose that would cause it to chang
 
 ## Current handoff state
 
-As of 2026-08-11:
+As of 2026-08-12:
 
 - Sections 2 through 18 of `docs/implementation-checklist.md` have been implemented and checked. The section 18 final MVP acceptance passed all 38 items; its evidence and non-blocking coverage limits are recorded directly below that section.
 - Fiscal-context implementation is recorded in commit `546f3a8`; later commits document the handoff and demo narrative. Inspect `git log` for the actual latest state instead of treating a hash in this file as the branch tip.
-- The last verification passed 212 tests, production build, ESLint, and desktop/mobile layout and heading audits over 12 stateful and primary paths, including keyboard checks. The participation audit also covers the optional AI disclosure and default-off consent state.
+- The last verification passed 215 tests, production build, ESLint, Cloudflare deployment-contract validation, and desktop/mobile layout and heading audits over 12 stateful and primary paths, including keyboard checks. The participation audit also covers the optional AI disclosure and default-off consent state.
 - Optional AI copy-editing uses `@cf/openai/gpt-oss-120b`, sends only the three resident-authored fields after explicit consent, and retains an editable, confirm-before-copy result beside the original. Production binding and rate-limit configuration pass Wrangler dry-run; live preview, CPU, quota, and logging checks remain external release gates in `docs/adversarial-release-checklist.md`.
+- Cloudflare Workers is the selected hosting target. `wrangler.jsonc` is the committed binding contract, while Workers Builds must deploy the generated `dist/server/wrangler.json` through the commands recorded in `docs/cloudflare-deployment.md`. GitHub/Cloudflare account authorization and the first live release remain external actions.
 - The remaining unchecked section 1 items are historical decision-record entries whose substance is implemented; section 19 is intentionally future scope. Do not treat either group as a failed section 18 acceptance item.
 - Confirm `git status --short` at the start of the next session. User-authored research and design Markdown may remain untracked; preserve it unless the user explicitly asks to include it in a commit.
 - The primary handoff documents are:
@@ -201,4 +202,4 @@ At the beginning of the next session:
 - Treat local development with `npm run dev` as the current runtime baseline.
 - Do not reintroduce `.openai/hosting.json` or a Sites manifest; that validation phase is complete and those files are retired.
 - The optional AI copy-editing runtime uses a Cloudflare Workers AI binding with `@cf/openai/gpt-oss-120b` and Cloudflare Rate Limiting bindings. Never expose an API token to browser code.
-- The final public deployment and domain are still undecided. The Worker binding configuration is part of the AI implementation, but do not deploy or add a different hosting platform configuration until the user explicitly requests it.
+- Cloudflare Workers with native Workers Builds GitHub integration is the selected production hosting path. Keep `main` as the production branch, use `workers.dev` for the first smoke test, and deploy only the generated config after `npm run verify:cloudflare` passes. The custom domain remains undecided. Do not add another hosting platform or perform an external deployment unless the user explicitly requests it.

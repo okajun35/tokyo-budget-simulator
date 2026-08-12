@@ -21,25 +21,6 @@ export default defineConfig(async ({ command, mode }) => {
   // Wrangler snapshots its log path while the Cloudflare plugin is imported.
   const { cloudflare } = await import("@cloudflare/vite-plugin");
   const enableAiBinding = command === "build" || useRemoteAiBinding;
-  const localBindingConfig = {
-    main: "./worker/index.ts",
-    compatibility_flags: ["nodejs_compat"],
-    ...(enableAiBinding
-      ? { ai: { binding: "AI", ...(useRemoteAiBinding ? { remote: true } : {}) } }
-      : {}),
-    ratelimits: [
-      {
-        name: "AI_GLOBAL_RATE_LIMITER",
-        namespace_id: "1001",
-        simple: { limit: 10, period: 60 },
-      },
-      {
-        name: "AI_CLIENT_RATE_LIMITER",
-        namespace_id: "1002",
-        simple: { limit: 3, period: 60 },
-      },
-    ],
-  } satisfies import("@cloudflare/vite-plugin").WorkerConfig;
 
   return {
     server: {
@@ -54,7 +35,19 @@ export default defineConfig(async ({ command, mode }) => {
       cloudflare({
         viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
         inspectorPort: false,
-        config: localBindingConfig,
+        configPath: "./wrangler.jsonc",
+        config: workerConfig => {
+          // AI is deployed from the committed Wrangler config, but local dev
+          // stays offline unless the developer explicitly opts into a remote
+          // binding. Mutating the resolved config avoids a second source of
+          // truth for production bindings and rate limits.
+          workerConfig.ai = enableAiBinding
+            ? {
+                binding: "AI",
+                ...(useRemoteAiBinding ? { remote: true } : {}),
+              }
+            : undefined;
+        },
       }),
     ],
   };

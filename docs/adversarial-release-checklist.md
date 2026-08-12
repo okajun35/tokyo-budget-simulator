@@ -73,6 +73,18 @@ Cloudflare Rate Limiting bindingは拠点単位・結果整合が遅延する仕
 - [ ] 本番確認：Cloudflare previewで1件だけ実推論し、モデル名、応答時間、Neurons、画面フォールバックを確認する
 - [ ] 本番確認：公開後の外部リンク、favicon、OG表示を実URLで確認する
 
+## 7. GitHub連携と配置境界
+
+- [x] Cloudflare Workersを公開先として選び、独自GitHub ActionsではなくWorkers BuildsのGitHub連携を使う
+- [x] `wrangler.jsonc`に互換日付、`nodejs_compat`、AI、二段Rate Limitingを明示する
+- [x] 本番・previewとも、ビルド生成物`dist/server/wrangler.json`だけを配置するコマンドを用意する
+- [x] build・全テスト・ESLint・生成設定検証を一つのCloudflare build commandで実行できる
+- [x] `workers.dev`とpreview URLを初回確認用に有効化する
+- [ ] 外部設定：Cloudflare GitHub Appをこのリポジトリだけに限定して接続する
+- [ ] 外部設定：production branchを`main`にし、`docs/cloudflare-deployment.md`記載の3コマンドを登録する
+- [ ] 外部設定：Cloudflareが使用するデプロイトークンの権限範囲を確認する
+- [ ] 本番確認：preview成功後に`workers.dev`へ初回配置し、本チェックリストの本番確認を実施する
+
 2026-08-11のlocal remote preview試行では、Workers AI REST評価に使えたAPIトークンが `/workers/subdomain/edge-preview` を許可せず、Cloudflare API code 10000で開始できなかった。コード不具合やAI binding不具合とは判定せず、remote Worker preview権限を持つ認証または実配置後に上記の本番確認を行う。
 
 ## リリース判定

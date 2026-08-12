@@ -37,7 +37,7 @@ Scripts that need writable project-scoped home, npm, XDG, and temporary paths us
 - `examples/d1/` contains an optional D1 example surface
 - `drizzle.config.ts` supports local migration generation when needed
 
-`.openai/hosting.json` とSitesマニフェストは使用しません。最終的な公開先とドメインは未決定ですが、任意のAI推敲はCloudflare WorkerのWorkers AI bindingで動作する構成です。
+`.openai/hosting.json` とSitesマニフェストは使用しません。公開先はCloudflare Workersとし、CloudflareネイティブのWorkers BuildsでGitHubを接続します。独自ドメインは初回の`workers.dev`確認後に決定します。任意のAI推敲はCloudflare WorkerのWorkers AI bindingで動作する構成です。
 
 ## Optional AI copy-editing
 
@@ -48,6 +48,10 @@ Workerには次のbindingを設定しています。
 - `AI`: Workers AI
 - `AI_GLOBAL_RATE_LIMITER`: 全体の短時間制限
 - `AI_CLIENT_RATE_LIMITER`: 接続元ごとの短時間制限
+
+本番bindingの設定は`wrangler.jsonc`で管理し、ビルド後の
+`dist/server/wrangler.json`だけを配置します。GitHub連携のコマンドと初回公開手順は
+[`docs/cloudflare-deployment.md`](docs/cloudflare-deployment.md)を参照してください。
 
 自動テストはbindingをモックし、実AIや無料枠を消費しません。通常の `npm run dev` もremote AIへ接続しません。ローカル画面から実推論を試す場合だけ、remote Worker preview権限を持つCloudflare認証を環境へ読み込んだ上で `CLOUDFLARE_REMOTE_AI=true npm run dev` とします。Workers AI REST実行だけを許可したトークンではpreviewを開始できません。本番前の残確認は [`docs/adversarial-release-checklist.md`](docs/adversarial-release-checklist.md) を参照してください。
 
@@ -117,6 +121,10 @@ actions tied to the current ChatGPT user. Leave public content anonymous.
 - `npm run start`: start the built Vinext application
 - `npm test`: build, validate, and run the automated test suite
 - `npm run validate:artifact`: recheck an existing artifact's ESM `default.fetch` export
+- `npm run validate:cloudflare`: verify the committed and generated Worker deployment contracts
+- `npm run verify:cloudflare`: run the production build, all tests, ESLint, and Worker config checks
+- `npm run preview:cloudflare`: upload the verified artifact as a non-production Worker version
+- `npm run deploy:cloudflare`: deploy the verified artifact to the production Worker
 - `npm run db:generate`: generate Drizzle migrations after schema changes
 
 Use build and validation commands for targeted diagnosis after a remote failure, not as part of the normal checkpoint path.
