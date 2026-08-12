@@ -693,4 +693,4 @@ PCレイアウト    docs/web-image.png
 
 更新（2026-08-12）：個人CloudflareアカウントのWorkers FreeでWorkers BuildsのGitHub連携を行い、`main`から`workers.dev`へ配置した。ODH Paid相当チームは9月末以降に配置済みWorkerを参加者側で管理できなくなるため、本番所有先にはしない。公開URLで主要経路、favicon、非公式表示、OG、安全ヘッダー、PC・モバイル24画面、状態引継ぎ、参加導線、AI bindingの合成推論1件を確認した。本番HTMLに未使用`next/font`由来のビルド環境絶対パスが露出し11件が404となる問題を発見し、システムフォント指定だけを残す修正と回帰テストを追加した。修正後はproduction build、216テスト、ESLint、Cloudflare設定検証を通過し、生成物内の参照に`/workspace`と`.vinext/fonts`が残らないことを確認した。再配置後の公開HTMLとレスポンスヘッダーからも11件の無効な参照が消えたことを確認済み。SSR CPU・Workers AI Neurons・429率の継続監視、ログ・Analyticsに自由記述が保存されない設定確認が残る。
 
-ドメイン更新（2026-08-12）：東京予算ラボの正規公開URLを `https://tokyobudget.page/` とし、canonicalとOpen Graph URLの基準に設定する。「正規公開」は東京都公式という意味ではない。CloudflareとGoogleの公開DNS応答、SNI付きTLS接続、HTTP 200、非公式表示を確認済み。canonical設定は本コミットのデプロイ後に実HTMLを確認する。
+ドメイン更新（2026-08-12）：東京予算ラボの正規公開URLを `https://tokyobudget.page/` とし、canonicalとOpen Graph URLの基準に設定する。「正規公開」は東京都公式という意味ではない。CloudflareとGoogleの公開DNS応答、SNI付きTLS接続、HTTP 200、非公式表示を確認済み。デプロイ後の実HTMLでcanonicalとOpen Graph URLがともに `https://tokyobudget.page/` を指すことも確認済み。
