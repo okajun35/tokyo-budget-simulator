@@ -10,6 +10,10 @@
 - 東京都、東京都財務局、東京都議会その他の公式サイトから得た数値、資料名、URL、
   引用・要約
 
+このうち`data/tokyo-budget/`のCSVは、東京都財務局の
+[「TOKYO予算見える化ボード データ一覧」](https://catalog.data.metro.tokyo.lg.jp/dataset/t000004d0000000005)
+に由来するCC BY 4.0のオープンデータである。再利用時は「TOKYO予算見える化ボード データ一覧（東京都財務局）」と出典を表示し、CC BY 4.0の条件に従うこと。
+
 各資料の出典、利用条件、アプリ内での用途は
 `features/trace-budget-sources/budget-sources.ts` と `/sources` に記録している。
 利用者は、再利用時に各配布元の利用条件を確認すること。

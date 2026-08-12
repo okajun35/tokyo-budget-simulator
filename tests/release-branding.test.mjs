@@ -42,6 +42,8 @@ test("licenses project code without relicensing Tokyo source materials", async (
 
   assert.match(license, /MIT License/);
   assert.match(notice, /data\/tokyo-budget/);
+  assert.match(notice, /TOKYO予算見える化ボード データ一覧（東京都財務局）/);
+  assert.match(notice, /CC BY 4\.0/);
   assert.match(notice, /features\/trace-budget-sources\/budget-sources\.ts/);
   assert.match(notice, /docs\/web-image\.png/);
   assert.match(readme, /## ライセンス/);
