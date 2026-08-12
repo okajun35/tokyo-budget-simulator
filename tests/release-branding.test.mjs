@@ -47,6 +47,9 @@ test("licenses project code without relicensing Tokyo source materials", async (
   assert.match(notice, /features\/trace-budget-sources\/budget-sources\.ts/);
   assert.match(notice, /docs\/web-image\.png/);
   assert.match(readme, /## ライセンス/);
+  assert.match(readme, /## 出典とデータ利用/);
+  assert.match(readme, /TOKYO予算見える化ボード データ一覧/);
+  assert.match(readme, /東京予算ラボは、東京都の公式サービスではありません/);
   assert.equal(packageJson.license, "MIT");
 });
 

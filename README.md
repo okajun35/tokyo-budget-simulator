@@ -1,142 +1,100 @@
 # 東京予算ラボ
 
-令和8年度東京都一般会計当初予算を題材にした、予算配分シミュレーターです。
-React／Next.js互換の[vinext](https://github.com/cloudflare/vinext)で動作します。
+[tokyobudget.page](https://tokyobudget.page/) で公開している、令和8年度東京都一般会計当初予算を題材にした学習・情報探索プロトタイプです。
 
-## Prerequisites
+> **東京予算ラボは、東京都の公式サービスではありません。**
+> 東京都の予算を題材に、利用者が自分で配分を動かし、その変更が現実に何を意味し得るかを考えるための非公式サイトです。
+
+## できること
+
+- 令和8年度当初予算の9分野を、総額を変えずに配分し直す
+- 増額・減額・据え置きが意味し得る変化、実施上の制約、他自治体等の公開事例を確認する
+- 東京都の予算要求、財務局査定、知事査定、都議会審議、執行・評価の流れを知る
+- 関心のある話題から主な所管と確認済みの公式窓口を探す
+- 自分の考えを整理し、コピーして公式窓口へ進む
+
+シミュレーションは学習のためのものであり、実際の予算・事業・制度・成果を予測するものではありません。東京都の目的別予算と、局別・款別の資料は分類軸が異なるため、対応関係を公式資料で確認できる範囲だけを表示します。
+
+## サイトの構成
+
+| ページ | 内容 |
+| --- | --- |
+| [`/`](https://tokyobudget.page/) | 予算の概要と固定総額のシミュレーター |
+| [`/budget/[categoryId]`](https://tokyobudget.page/budget/welfare) | 分野別の意味、制約、令和8年度の取組例、令和9年度に向けた公開方針 |
+| [`/budget/[categoryId]/cases`](https://tokyobudget.page/budget/welfare/cases) | 公開事例と、その事例から分かる範囲 |
+| [`/budget/[categoryId]/materials`](https://tokyobudget.page/budget/welfare/materials) | 東京都の要求・査定・予算案などの関連資料 |
+| [`/budget-process`](https://tokyobudget.page/budget-process) | 予算が決まり、執行・評価されるまでの流れ |
+| [`/participation`](https://tokyobudget.page/participation) | 話題、所管、公式の参加・問い合わせ先 |
+| [`/participation/prepare`](https://tokyobudget.page/participation/prepare) | 意見の下書き・コピー（東京都へは送信しない） |
+| [`/sources`](https://tokyobudget.page/sources) | アプリ内で使う資料の出典、取得日、用途、利用条件 |
+| [`/about`](https://tokyobudget.page/about) | プロトタイプの目的、限界、データ品質方針 |
+
+## 開発環境
+
+### 必要なもの
 
 - Node.js `>=22.13.0`
-- Linux with `flock`, `curl`, and GNU `timeout`
+- Linux（`flock`、`curl`、GNU `timeout` を使用）
 
-## Local Development
-
-依存関係を導入し、ローカル開発サーバーを起動します。
+### ローカルで起動する
 
 ```bash
 npm run install:ci
 npm run dev
 ```
 
-標準では `http://localhost:5173/` で起動します。
+標準では [http://localhost:5173/](http://localhost:5173/) で起動します。`npm run install:ci` は、同一プロジェクトでの同時実行を避けた一度だけの `npm ci` です。
 
-`install:ci` is intentionally a single, non-retrying `npm ci`. It refuses a concurrent install for the same project, consumes a matching image-seeded npm cache with `--prefer-offline` while retaining registry fallback for a missing cache object, otherwise downloads and verifies the complete vinext tarball recorded in `package-lock.json`, limits npm to one socket, and terminates a stalled install. `build` applies a short timeout and then validates the generated Worker artifact. These helpers target Linux and use GNU `timeout`; they are not native macOS scripts.
+### 主なコマンド
 
-Scripts that need writable project-scoped home, npm, XDG, and temporary paths use `scripts/sites-env.sh`. The `dev` and `start` scripts honor the caller's runtime environment and keep Wrangler logs inside the checkout. The generated `.sites-runtime/` directory is disposable and ignored by Git.
+| 目的 | コマンド |
+| --- | --- |
+| 開発サーバー | `npm run dev` |
+| 本番用ビルド | `npm run build` |
+| テスト・ビルド・検証 | `npm test` |
+| 本番相当の総合検証 | `npm run verify:cloudflare` |
+| Cloudflareへの本番デプロイ | `npm run deploy:cloudflare` |
 
-## Project Structure
+デプロイは個人Cloudflareアカウントの Workers Free プランと、Cloudflare Workers Builds のGitHub連携を使用します。設定・確認手順は [`docs/cloudflare-deployment.md`](docs/cloudflare-deployment.md) を参照してください。
 
-- `app/` はルーティングと画面構成を担当
-- `features/simulate-budget/` は予算配分のデータと計算を担当
-- `features/learn-budget-process/` は予算成立過程を担当
-- `features/find-participation-route/` は参加制度を担当
-- `features/trace-budget-sources/` は出典追跡を担当
-- `domain/tokyo-budget/` は複数機能で共有する東京都予算の概念を担当
-- `app/chatgpt-auth.ts` provides optional dispatch-owned ChatGPT sign-in helpers
-- `db/index.ts` reads the D1 binding from the Cloudflare Worker environment
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+## 実装の構成
 
-`.openai/hosting.json` とSitesマニフェストは使用しません。公開先は個人CloudflareアカウントのWorkers Freeプランとし、CloudflareネイティブのWorkers BuildsでGitHubを接続します。東京予算ラボの正規公開URLは `https://tokyobudget.page/` です。任意のAI推敲はCloudflare WorkerのWorkers AI bindingで動作する構成です。
+- `app/`：ルーティングと画面構成
+- `features/simulate-budget/`：9分野の予算配分、固定総額、状態引継ぎ
+- `features/understand-budget-change/`：増額・減額・据え置きの意味と制約
+- `features/learn-from-budget-cases/`：公開事例と根拠の限界
+- `features/learn-budget-process/`：東京都の予算編成過程
+- `features/find-participation-route/`：話題、所管、公式窓口
+- `features/trace-budget-sources/`：出典と来歴
+- `features/prepare-budget-data/`、`scripts/`：データ取得・正規化・検証
+
+設計の背景、受け入れ条件、データ更新手順は [`docs/`](docs) に記録しています。
+
+## AIによる下書きの推敲
+
+`/participation/prepare` では、利用者が明示的に実行したときだけ、入力済みの「気になっていること」「してほしいこと」「理由」を Workers AI の `@cf/openai/gpt-oss-120b` で読みやすく整えられます。
+
+- AIは本人が入力していない主張・制度・数値を追加しない方針です。
+- AIを使わず、下書きの整理とコピーだけを行うこともできます。
+- 自由記述はURL、localStorage、sessionStorage、DB、Analytics、telemetryに保存・送信しません。ページを離れると消えます。
+- 東京予算ラボから東京都へ意見を自動送信することはありません。コピー後に、利用者自身が公式窓口を開いて送信します。
+
+本番ではCloudflare WorkerのAI bindingを使い、ブラウザやGitHubへAI用APIトークンを渡しません。自動テストと通常のローカル開発では実AIを呼び出しません。
 
 ## ライセンス
 
-プロジェクト作成者が著作権を持つソースコードと文書は
-[MIT License](LICENSE)で提供する。東京都のデータ・公式資料・引用・要約はMITの対象外であり、それぞれの配布元の利用条件が適用される。詳しくは[NOTICE](NOTICE)と[/sources](https://tokyobudget.page/sources)を参照。
+このリポジトリでプロジェクト作成者が著作権を持つソースコードと文書は、[MIT License](LICENSE) で提供します。
 
-## Optional AI copy-editing
+東京都のデータ・公式資料・引用・要約はMITの対象外です。再利用時は各配布元の利用条件を確認してください。対象の区分と必要な表示は [NOTICE](NOTICE) に、アプリ内での資料の用途・取得日・利用条件は [出典ページ](https://tokyobudget.page/sources) に記録しています。
 
-`/participation/prepare` では、本人が明示的に同意して実行した場合だけ、入力した3項目を `@cf/openai/gpt-oss-120b` で整えます。ブラウザへAPIトークンを渡さず、Workerの `AI` bindingを使用します。通常の入力整理とコピーはAIなしで利用できます。
+## 出典とデータ利用
 
-Workerには次のbindingを設定しています。
+予算額・予算過程・評価に関する主な一次資料は、以下の東京都・東京都議会の公開資料です。個別の画面で使う資料、取得日、利用条件は [/sources](https://tokyobudget.page/sources) に一覧で表示します。
 
-- `AI`: Workers AI
-- `AI_GLOBAL_RATE_LIMITER`: 全体の短時間制限
-- `AI_CLIENT_RATE_LIMITER`: 接続元ごとの短時間制限
+- [令和8年度予算概要（東京都財務局）](https://www.zaimu.metro.tokyo.lg.jp/zaisei/yosan/r8/8yosangaiyounituite)
+- [TOKYO予算見える化ボード データ一覧（東京都オープンデータカタログ）](https://catalog.data.metro.tokyo.lg.jp/dataset/t000004d0000000005) — リポジトリ内の `data/tokyo-budget/` のCSVは、このCC BY 4.0オープンデータに由来します。再利用時は「TOKYO予算見える化ボード データ一覧（東京都財務局）」を出典として表示し、CC BY 4.0の条件に従ってください。
+- [令和8年度予算要求（東京都財務局）](https://www.zaimu.metro.tokyo.lg.jp/zaisei/yosan/r8/08yosanyokyujokyou_index/)
+- [令和8年度一般会計予算 財務局査定結果（事項別）（東京都財務局）](https://www.zaimu.metro.tokyo.lg.jp/zaisei/yosan/r8/8zaimukyokusateikekka)
+- [令和8年 予算特別委員会速記録（東京都議会）](https://www.gikai.metro.tokyo.lg.jp/record/budget/2026/)
 
-本番bindingの設定は`wrangler.jsonc`で管理し、ビルド後の
-`dist/server/wrangler.json`だけを配置します。GitHub連携のコマンドと公開手順は
-[`docs/cloudflare-deployment.md`](docs/cloudflare-deployment.md)を参照してください。
-
-自動テストはbindingをモックし、実AIや無料枠を消費しません。通常の `npm run dev` もremote AIへ接続しません。ローカル画面から実推論を試す場合だけ、remote Worker preview権限を持つCloudflare認証を環境へ読み込んだ上で `CLOUDFLARE_REMOTE_AI=true npm run dev` とします。Workers AI REST実行だけを許可したトークンではpreviewを開始できません。本番前の残確認は [`docs/adversarial-release-checklist.md`](docs/adversarial-release-checklist.md) を参照してください。
-
-## Workspace Auth Headers
-
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
-
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
-
-Treat the full name as optional and fall back to email when it is absent:
-
-```tsx
-import { headers } from "next/headers";
-
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
-```
-
-## Optional Dispatch-Owned ChatGPT Sign-In
-
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
-
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
-
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
-
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
-
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
-
-## Diagnostic Commands
-
-- `npm run install:ci`: perform the one bounded lockfile install
-- `npm run dev`: start the Vite/Vinext development server
-- `npm run build`: build and validate the local deployable artifact
-- `npm run start`: start the built Vinext application
-- `npm test`: build, validate, and run the automated test suite
-- `npm run validate:artifact`: recheck an existing artifact's ESM `default.fetch` export
-- `npm run validate:cloudflare`: verify the committed and generated Worker deployment contracts
-- `npm run verify:cloudflare`: run the production build, all tests, ESLint, and Worker config checks
-- `npm run preview:cloudflare`: upload the verified artifact as a non-production Worker version
-- `npm run deploy:cloudflare`: deploy the verified artifact to the production Worker
-- `npm run db:generate`: generate Drizzle migrations after schema changes
-
-Use build and validation commands for targeted diagnosis after a remote failure, not as part of the normal checkpoint path.
-
-The timeout defaults can be overridden for a controlled canary with `SITES_INSTALL_TIMEOUT`, `SITES_INSTALL_KILL_AFTER`, `SITES_BUILD_TIMEOUT`, and `SITES_BUILD_KILL_AFTER`. A timeout fails the command; the helpers never retry an unchanged install or build.
-
-## Learn More
-
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+公式資料は東京都等の著作物であり、このリポジトリのMITライセンスによって再許諾するものではありません。引用・要約・リンクの扱いを含め、再利用する場合は必ず元のサイトの利用条件を確認してください。
