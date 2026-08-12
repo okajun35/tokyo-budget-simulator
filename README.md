@@ -37,7 +37,7 @@ Scripts that need writable project-scoped home, npm, XDG, and temporary paths us
 - `examples/d1/` contains an optional D1 example surface
 - `drizzle.config.ts` supports local migration generation when needed
 
-`.openai/hosting.json` とSitesマニフェストは使用しません。公開先は個人CloudflareアカウントのWorkers Freeプランとし、CloudflareネイティブのWorkers BuildsでGitHubを接続します。独自ドメインは`workers.dev`確認後に決定します。任意のAI推敲はCloudflare WorkerのWorkers AI bindingで動作する構成です。
+`.openai/hosting.json` とSitesマニフェストは使用しません。公開先は個人CloudflareアカウントのWorkers Freeプランとし、CloudflareネイティブのWorkers BuildsでGitHubを接続します。東京予算ラボの正規公開URLは `https://tokyobudget.page/` です。任意のAI推敲はCloudflare WorkerのWorkers AI bindingで動作する構成です。
 
 ## Optional AI copy-editing
 

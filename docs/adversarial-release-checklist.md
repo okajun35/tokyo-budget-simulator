@@ -83,6 +83,9 @@ Cloudflare Rate Limiting bindingは拠点単位・結果整合が遅延する仕
 - [x] build・全テスト・ESLint・生成設定検証を一つのCloudflare build commandで実行できる
 - [x] `workers.dev`とpreview URLを初回確認用に有効化する
 - [x] Production branchを`main`として個人アカウントのWorkerへ配置する
+- [x] 正規公開URLを `https://tokyobudget.page/` とし、メタデータのcanonical originに使う
+- [x] 本番確認：新ドメインの公開DNS、TLS、HTTP 200、非公式表示を確認する
+- [ ] 本番確認：canonical設定のデプロイ後、canonical・OG URLを実HTMLで確認する
 - [x] 本番確認：個人Freeの`workers.dev`へ初回配置し、主要7経路とfaviconがHTTP 200である
 - [x] 本番確認：PC・モバイルの主要12経路、状態引継ぎ、参加導線、横あふれ、見出し、キーボード操作を監査する
 - [x] 本番確認：AI bindingで合成文を1件だけ推論し、200、`no-store`、安全ヘッダー、原意を維持した応答を確認する

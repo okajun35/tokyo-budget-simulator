@@ -3,10 +3,15 @@ import "./globals.css";
 import { SiteFooter, SiteHeader } from "./site-navigation";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://tokyobudget.page"),
   title: "東京予算ラボ｜令和8年度東京都予算シミュレーター",
   description: "成立後の令和8年度東京都一般会計を、要求・財務局査定・知事査定の背景とともに組み替えて学ぶ非公式プロトタイプ。",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
+    url: "/",
     locale: "ja_JP",
     title: "東京予算ラボ｜予算を動かして、現実の意味を考える",
     description: "令和8年度東京都一般会計当初予算を題材に、9分野の配分とトレードオフを学ぶ非公式プロトタイプ。",

@@ -3,6 +3,8 @@
 東京予算ラボの公開先は、継続して管理できる個人Cloudflareアカウントの
 Workers Freeプランとする。CloudflareネイティブのWorkers BuildsでGitHub
 リポジトリを接続し、`main`を本番ブランチとして`workers.dev`へ配置する。
+正規公開URLは `https://tokyobudget.page/` とする。これは東京予算ラボの
+公開先を指す表現であり、東京都の公式サイトという意味ではない。
 
 都知事杯ODHの期間限定Paid相当チームは、2026年9月末以降に参加者側から
 配置済みWorkerを管理できなくなるため、本番の所有先にはしない。
@@ -61,7 +63,7 @@ Worker runtime variables/secretsは別物として扱う。
 2. 完成した変更だけをコミットする。
 3. `main`へpushする。
 4. Cloudflareのbuildとdeployが成功したことを確認する。
-5. `workers.dev`の実URLでスモークテストする。
+5. `https://tokyobudget.page/` でスモークテストする。
 
 `main`へのpushは本番配置を開始する。Cloudflare側のbuildが失敗した場合は本番確認へ
 進まず、最初の意味のある失敗を修正する。複数人運用に移る場合はGitHub側でもPRと

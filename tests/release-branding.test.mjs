@@ -20,3 +20,14 @@ test("does not emit unused next/font requests from a deployment build path", asy
   assert.doesNotMatch(layout, /next\/font/);
   assert.doesNotMatch(layout, /font-geist/);
 });
+
+test("uses the public custom domain as the canonical metadata origin", async () => {
+  const layout = await readFile(
+    new URL("../app/layout.tsx", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(layout, /metadataBase:\s*new URL\("https:\/\/tokyobudget\.page"\)/);
+  assert.match(layout, /canonical:\s*"\/"/);
+  assert.match(layout, /url:\s*"\/"/);
+});
