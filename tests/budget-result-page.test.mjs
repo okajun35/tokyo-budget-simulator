@@ -46,6 +46,10 @@ test("shows only increased and decreased fields in the allocation result", async
   assert.equal(html.match(/data-budget-result-change=/g)?.length, 2);
   assert.match(html, /data-budget-result-change="education"[^>]*data-change-direction="increase"/);
   assert.match(html, /data-budget-result-change="debt"[^>]*data-change-direction="decrease"/);
+  assert.match(
+    html,
+    /id="budget-result-change-education"[^>]*tabindex="-1"[^>]*data-budget-result-change="education"/,
+  );
   assert.doesNotMatch(html, /data-budget-result-change="welfare"/);
   assert.equal(html.match(/data-budget-result-meaning=/g)?.length, 2);
   assert.match(
@@ -58,8 +62,8 @@ test("shows only increased and decreased fields in the allocation result", async
   assert.equal(html.match(/data-budget-result-scope-note=/g)?.length, 2);
   assert.match(html, /増減分の具体的な使い道は、この操作だけでは決まりません。/);
   assert.match(html, /東京都の正式な予算案ではありません/);
-  assert.ok(html.includes(createBudgetDetailHref("education", allocations)));
-  assert.ok(html.includes(createBudgetDetailHref("debt", allocations)));
+  assert.ok(html.includes(createBudgetDetailHref("education", allocations, "budget-result")));
+  assert.ok(html.includes(createBudgetDetailHref("debt", allocations, "budget-result")));
 });
 
 test("distinguishes redistributed money from money that remains available", async () => {

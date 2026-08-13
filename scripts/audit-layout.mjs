@@ -45,9 +45,11 @@ const statefulParticipationPreparePath = "/participation/prepare?plan=18730%2C16
 const statefulCasePath = "/budget/education/cases?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education&amount=16762";
 const statefulMaterialsPath = "/budget/education/materials?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education&amount=16762";
 const statefulResultPath = "/budget-result?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education";
+const focusedResultPath = `${statefulResultPath}#budget-result-change-education`;
 const statefulTopPath = "/?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education";
 const paths = ["/", statefulTopPath, statefulResultPath, "/budget/welfare?amount=15000", "/budget/debt?amount=1959", statefulCasePath, statefulMaterialsPath, "/budget-process", statefulProcessPath, "/participation?category=debt", statefulParticipationPreparePath, "/sources", "/about", "/fiscal-context"];
 const results = [];
+const focusRestorationAudits = [];
 
 // 開発サーバは初回の変換に時間がかかる。固定の待ち時間では読み込み前の
 // 空のDOMを測ってしまうため、描画が終わるまで待ってから測定する。
@@ -104,6 +106,65 @@ for (const viewport of viewports) {
     const value = JSON.parse(response.result.value);
     results.push({ viewport: viewport.name, ...value });
   }
+
+  await command("Page.navigate", { url: `${siteUrl}${statefulResultPath}` });
+  await waitForRenderedPage();
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const response = await command("Runtime.evaluate", {
+      expression: `(() => {
+        if (location.pathname === '/budget/education') return true;
+        document.querySelector('[data-budget-result-change=education] a')?.click();
+        return false;
+      })()`,
+      returnByValue: true,
+    });
+    if (response.result.value === true) break;
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const response = await command("Runtime.evaluate", {
+      expression: `(() => {
+        if (location.pathname === '/budget-result' && location.hash === '${new URL(focusedResultPath, siteUrl).hash}') return true;
+        if (location.pathname === '/budget/education') document.querySelector('.budgetDetailHeader>a')?.click();
+        return false;
+      })()`,
+      returnByValue: true,
+    });
+    if (response.result.value === true) break;
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const response = await command("Runtime.evaluate", {
+      expression: `(() => {
+        const target = document.querySelector('#budget-result-change-education');
+        const rect = target?.getBoundingClientRect();
+        return document.activeElement === target && Boolean(rect && rect.top >= 64 && rect.bottom <= window.innerHeight);
+      })()`,
+      returnByValue: true,
+    });
+    if (response.result.value === true) break;
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  const focusRestorationResponse = await command("Runtime.evaluate", {
+    expression: `JSON.stringify((() => {
+      const target = document.querySelector('#budget-result-change-education');
+      const rect = target?.getBoundingClientRect();
+      return {
+        activeId: document.activeElement?.id ?? null,
+        inViewport: Boolean(rect && rect.top >= 64 && rect.bottom <= window.innerHeight),
+        targetTop: rect ? Math.round(rect.top) : null,
+        targetBottom: rect ? Math.round(rect.bottom) : null,
+        scrollY: Math.round(window.scrollY),
+        outlineStyle: target ? getComputedStyle(target).outlineStyle : null,
+        outlineWidth: target ? getComputedStyle(target).outlineWidth : null
+      };
+    })())`,
+    returnByValue: true,
+  });
+  focusRestorationAudits.push({
+    viewport: viewport.name,
+    ...JSON.parse(focusRestorationResponse.result.value),
+  });
 }
 
 await command("Emulation.setDeviceMetricsOverride", {
@@ -357,5 +418,14 @@ const mobileMenuValid = openedMenuAudit.expanded === "true" &&
   closedMenuAudit.focusReturned === true;
 if (!mobileMenuValid) failed = true;
 console.log(JSON.stringify({ openedMenuAudit, closedMenuAudit, mobileMenuValid }));
+
+for (const focusRestorationAudit of focusRestorationAudits) {
+  const focusRestorationValid = focusRestorationAudit.activeId === "budget-result-change-education" &&
+    focusRestorationAudit.inViewport === true &&
+    focusRestorationAudit.outlineStyle !== "none" &&
+    focusRestorationAudit.outlineWidth !== "0px";
+  if (!focusRestorationValid) failed = true;
+  console.log(JSON.stringify({ focusRestorationAudit, focusRestorationValid }));
+}
 
 if (failed) process.exitCode = 1;

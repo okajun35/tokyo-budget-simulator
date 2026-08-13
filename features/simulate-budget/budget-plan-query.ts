@@ -10,6 +10,7 @@ import {
   BUDGET_CATEGORIES,
   GENERAL_ACCOUNT_BASELINE_100M_YEN,
 } from "./budget-categories.ts";
+import { createBudgetResultChangeId } from "./budget-result-focus.ts";
 
 export type ResolvedBudgetPlanState = {
   allocations: BudgetAllocations;
@@ -111,8 +112,12 @@ export function createBudgetProcessHref(
 export function createBudgetResultHref(
   allocations: BudgetAllocations,
   selectedCategoryId: BudgetCategoryId,
+  focusCategoryId?: BudgetCategoryId,
 ): string {
-  return `/budget-result?${stateQuery(allocations, selectedCategoryId)}`;
+  const href = `/budget-result?${stateQuery(allocations, selectedCategoryId)}`;
+  return focusCategoryId
+    ? `${href}#${createBudgetResultChangeId(focusCategoryId)}`
+    : href;
 }
 
 export function createBudgetParticipationHref(

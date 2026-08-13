@@ -62,6 +62,7 @@ test("returns from a detail page with the complete plan", async () => {
 
 test("returns to the allocation result when detail was opened from the result", async () => {
   const resultHref = createBudgetResultHref(plan, "education");
+  const focusedResultHref = createBudgetResultHref(plan, "education", "education");
   const detailHref = createBudgetDetailHref("education", plan, "budget-result");
   const resultHtml = await fetchHtml(resultHref, "result-origin-detail-link");
   const detailHtml = await fetchHtml(detailHref, "result-origin-detail-return");
@@ -69,7 +70,7 @@ test("returns to the allocation result when detail was opened from the result", 
   assert.ok(resultHtml.includes(detailHref));
   assert.match(
     detailHtml,
-    new RegExp(`href="${resultHref.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"[^>]*>← 配分結果に戻る`),
+    new RegExp(`href="${focusedResultHref.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"[^>]*>← 配分結果に戻る`),
   );
   assert.ok(
     detailHtml.includes(

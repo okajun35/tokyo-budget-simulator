@@ -14,6 +14,8 @@ import {
   summarizeBudgetResult,
   type BudgetResultEntry,
 } from "@/features/simulate-budget/budget-result-summary";
+import { createBudgetResultChangeId } from "@/features/simulate-budget/budget-result-focus";
+import { BudgetResultFocusRestoration } from "@/features/simulate-budget/budget-result-focus-restoration";
 
 type BudgetResultPageProps = {
   searchParams: Promise<{
@@ -42,6 +44,8 @@ function BudgetResultChanges({
     <h2>{heading}</h2>
     <div className="budgetResultChangeList">{entries.map(entry => <article
       key={entry.category.id}
+      id={createBudgetResultChangeId(entry.category.id)}
+      tabIndex={-1}
       data-budget-result-change={entry.category.id}
       data-change-direction={direction}
     >
@@ -92,6 +96,7 @@ export default async function BudgetResultPage({ searchParams }: BudgetResultPag
     data-budget-result-state={result.hasChanges ? "changed" : "unchanged"}
     data-budget-result-query={queryStatus}
   >
+    <BudgetResultFocusRestoration />
     <header className="budgetResultHeader">
       <Link href={simulatorHref}>← 配分を調整し直す</Link>
       <p className="eyebrow">ALLOCATION RESULT · FY2026</p>

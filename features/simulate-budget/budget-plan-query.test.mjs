@@ -73,4 +73,8 @@ test("builds state-preserving simulator, result, detail, and process routes", ()
     createBudgetResultHref(allocations, "education"),
     `/budget-result?plan=${encoded}&category=education`,
   );
+  assert.equal(
+    createBudgetResultHref(allocations, "education", "education"),
+    `/budget-result?plan=${encoded}&category=education#budget-result-change-education`,
+  );
 });

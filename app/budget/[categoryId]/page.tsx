@@ -66,7 +66,7 @@ export default async function BudgetDetailPage({
     ? createBudgetSimulatorHref(planAllocations, category.id)
     : "/#simulator";
   const returnHref = detailOrigin === "budget-result" && planAllocations
-    ? createBudgetResultHref(planAllocations, category.id)
+    ? createBudgetResultHref(planAllocations, category.id, category.id)
     : simulatorHref;
   const returnLabel = detailOrigin === "budget-result"
     ? "← 配分結果に戻る"

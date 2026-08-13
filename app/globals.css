@@ -164,7 +164,8 @@ input[type="range"]::-webkit-slider-thumb { appearance:none; width:16px; height:
 .budgetResultCounts dd { margin:6px 0 0; font-size:21px; font-weight:900; }
 .budgetResultChanges { margin-top:16px; }
 .budgetResultChangeList { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:18px; }
-.budgetResultChangeList article { display:grid; grid-template-columns:auto auto minmax(0,1fr); align-items:center; gap:8px; min-width:0; padding:20px; border:1px solid var(--line); border-top:4px solid var(--teal); border-radius:8px; }
+.budgetResultChangeList article { display:grid; grid-template-columns:auto auto minmax(0,1fr); align-items:center; gap:8px; min-width:0; padding:20px; scroll-margin-top:88px; border:1px solid var(--line); border-top:4px solid var(--teal); border-radius:8px; }
+.budgetResultChangeList article:focus { outline:3px solid #f5a623; outline-offset:3px; }
 .budgetResultChanges[data-result-direction="increase"] .budgetResultChangeList article { border-top-color:#c84f35; }
 .budgetResultChanges[data-result-direction="decrease"] .budgetResultChangeList article { border-top-color:#246fa8; }
 .budgetResultDirectionLabel { padding:3px 7px; border-radius:999px; font-size:12px; font-weight:900; }
