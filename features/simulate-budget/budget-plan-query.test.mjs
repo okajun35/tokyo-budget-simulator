@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   createBudgetDetailHref,
   createBudgetProcessHref,
+  createBudgetResultHref,
   createBudgetSimulatorHref,
   parseBudgetPlan,
   resolveBudgetPlanState,
@@ -52,7 +53,7 @@ test("restores the selected category and safely falls back to the enacted plan",
   assert.equal(fallback.restoredFromQuery, false);
 });
 
-test("builds state-preserving simulator, detail, and process routes", () => {
+test("builds state-preserving simulator, result, detail, and process routes", () => {
   const allocations = redistributedPlan();
   const encoded = encodeURIComponent(serializeBudgetPlan(allocations));
 
@@ -67,5 +68,9 @@ test("builds state-preserving simulator, detail, and process routes", () => {
   assert.equal(
     createBudgetProcessHref(allocations, "education"),
     `/budget-process?plan=${encoded}&category=education`,
+  );
+  assert.equal(
+    createBudgetResultHref(allocations, "education"),
+    `/budget-result?plan=${encoded}&category=education`,
   );
 });

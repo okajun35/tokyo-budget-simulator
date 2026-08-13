@@ -98,6 +98,13 @@ export function createBudgetProcessHref(
   return `/budget-process?${stateQuery(allocations, selectedCategoryId)}`;
 }
 
+export function createBudgetResultHref(
+  allocations: BudgetAllocations,
+  selectedCategoryId: BudgetCategoryId,
+): string {
+  return `/budget-result?${stateQuery(allocations, selectedCategoryId)}`;
+}
+
 export function createBudgetParticipationHref(
   allocations: BudgetAllocations,
   selectedCategoryId: BudgetCategoryId,

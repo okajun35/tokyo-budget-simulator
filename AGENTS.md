@@ -16,6 +16,7 @@ The core experience is:
 Understand the FY2026 baseline
   -> redistribute a fixed annual total across nine fields
   -> experience trade-offs
+  -> review only the changed fields and optionally finish
   -> understand what the selected field and change mean
   -> inspect public cases and evidential limits
   -> learn how Tokyo's budget is decided
@@ -35,7 +36,7 @@ The experience has four stages. Every feature should be traceable to one of them
 | Stage | What the person does |
 | --- | --- |
 | 見る | Learn how Tokyo actually allocates its budget across the nine fields. |
-| 動かす | Redistribute it themselves: raise education, cut debt service, raise welfare. |
+| 動かす | Redistribute it themselves, then review which fields gained or lost money; the summary may be the end of a light experience. |
 | 意味を知る | For increases, decreases, and unchanged allocations, learn what would actually change, what delivery constraints or shifted burdens arise, and what public cases can and cannot establish. |
 | 現実につなぐ | Learn how the budget is decided through bureau requests, Finance Bureau assessment, governor assessment, and the assembly, and where a resident can raise an opinion. |
 
@@ -75,7 +76,7 @@ The same rule applies to process stages. `BUDGET_PROCESS_SUMMARY_STEPS` carries 
 - Each field is currently adjustable from 70% through 130% of its baseline, in increments of 1 hundred-million yen. “70% of baseline” means a 30% reduction, not a 70% reduction.
 - Always show the annual total, allocated amount, and available amount together while the user is changing allocations.
 - In each simulator row, clicking any non-interactive card surface selects that field. Moving its slider changes the amount and selects the field; detail links keep their navigation behavior without being treated as row selection. Preserve the explicit keyboard-operable selection button rather than making the article itself an inaccessible click target.
-- Preserve the complete nine-field allocation and selected field when the person opens a category detail, returns to the simulator, or continues through the budget-process and participation routes. Validate URL-carried allocations against every field range and the fixed annual total before restoring them; malformed state must fall back safely.
+- Preserve the complete nine-field allocation and selected field when the person opens the allocation result, a category detail, returns to the simulator, or continues through the budget-process and participation routes. Validate URL-carried allocations against every field range and the fixed annual total before restoring them; malformed state must fall back safely.
 - A simulated allocation is a learning exercise, not an executable official budget. Do not infer which individual project, contract, law, staffing level, or outcome would change unless supported by public evidence.
 - Category details branch on the selected delta. An increase asks what the money becomes and tests opportunity cost, delivery capacity, recurring cost, distribution, diminishing returns, and timing. A decrease asks what service, burden, staffing, or future cost changes. An unchanged nominal amount asks whether inflation, wages, demand, aging assets, or rule changes alter the real service level. Never frame increase as inherently good or decrease as inherently bad.
 - The simulator deliberately focuses on distributing a fixed total. It does not currently model multiple fiscal years, tax-policy changes, economic forecasts, borrowing capacity, or fund balances as controls.
@@ -91,6 +92,7 @@ The same rule applies to process stages. `BUDGET_PROCESS_SUMMARY_STEPS` carries 
 ## Information architecture and reading order
 
 - `/` — short purpose statement, FY2026 overview, fixed-total simulator, selected-field context, budget-process summary, and fiscal-condition cards.
+- `/budget-result` — changed fields grouped into increases and decreases, the amount already reallocated, any amount still unallocated, and optional links into category details. Unchanged fields are counted but not listed again.
 - `/budget/[categoryId]` — inherited user amount, meaning, uses, direction-specific change options, constraints, and three next-step choices for one of the nine fields.
 - `/budget/[categoryId]/cases` — direction-matched public cases and their evidential limits for the inherited category and amount.
 - `/budget/[categoryId]/materials` — Tokyo request, assessment, proposal, and enacted-budget materials related to the inherited category, with classification-axis caveats and official sources.
@@ -101,7 +103,7 @@ The same rule applies to process stages. `BUDGET_PROCESS_SUMMARY_STEPS` carries 
 - `/about` — prototype status and interpretive limits.
 - `/fiscal-context` — what funds, Tokyo bonds, and metropolitan taxes are; what changes imply; and why they are outside the current simulator controls.
 
-The normal learning order is allocation first, meaning and trade-offs second, budget process third, and participation routes last. Links may let informed users skip ahead, but page changes should preserve this narrative.
+The normal learning order is allocation first, an optional result summary and stopping point, meaning and trade-offs second, budget process third, and participation routes last. Links may let informed users skip ahead, but page changes should preserve this narrative.
 
 The category case and material pages show a compact four-step guide: meaning and constraints, public cases, Tokyo formation materials, then topics and official routes. Treat it as a suggested path, not a mandatory wizard. At the end of each page, show one primary next action and separate return or skip links as secondary alternatives.
 
@@ -130,7 +132,7 @@ The category case and material pages show a compact four-step guide: meaning and
 ## Purpose-driven code map
 
 - `app/` owns routes and page composition only.
-- `features/simulate-budget/` owns the nine fields, baseline allocations, fixed-total redistribution, ranges, and simulation state.
+- `features/simulate-budget/` owns the nine fields, baseline allocations, fixed-total redistribution, ranges, simulation state, and the factual allocation-result summary.
 - `features/understand-budget-change/` owns detailed explanations for a selected allocation change.
 - `features/understand-fiscal-context/` owns the fund, bond, and tax explanations used by the top cards and fiscal-context page.
 - `features/learn-budget-process/` owns the stages by which the budget is formed and evaluated.
@@ -145,9 +147,9 @@ When adding behavior, put it under the user purpose that would cause it to chang
 
 As of 2026-08-13:
 
-- Sections 2 through 18 of `docs/implementation-checklist.md` have been implemented and checked. The section 18 final MVP acceptance passed all 38 items; its evidence and non-blocking coverage limits are recorded directly below that section.
+- Sections 2 through 18-A of `docs/implementation-checklist.md` have been implemented and checked. The section 18 final MVP acceptance passed all 38 items; section 18-A records the later allocation-result summary. Their evidence and non-blocking coverage limits are recorded directly below those sections.
 - Fiscal-context implementation is recorded in commit `546f3a8`; later commits document the handoff and demo narrative. Inspect `git log` for the actual latest state instead of treating a hash in this file as the branch tip.
-- The last verification passed 222 tests, production build, ESLint, Cloudflare deployment-contract validation, and desktop/mobile layout and heading audits over 12 stateful and primary paths. The simulator audit covers whole-card pointer selection, keyboard selection, and keyboard slider operation. The participation audit also covers the optional AI disclosure, default-off consent state, and the selected official contact repeated after the drafting and AI workflow. At 900px and below, the shared header keeps the brand visible and replaces the five compressed links with an accessible menu button; the layout audit checks one-line 48px menu links, no horizontal overflow, and Escape focus return at 390px.
+- The last verification passed 231 tests, production build, ESLint, Cloudflare deployment-contract validation, and desktop/mobile layout and heading audits over 13 stateful and primary paths. The simulator audit covers whole-card pointer selection, keyboard selection, keyboard slider operation, and the allocation-result route after a complete redistribution. The result summary lists only changed fields, distinguishes reallocated from still-unallocated money, and preserves all nine allocations in category-detail links. The participation audit also covers the optional AI disclosure, default-off consent state, and the selected official contact repeated after the drafting and AI workflow. At 900px and below, the shared header keeps the brand visible and replaces the five compressed links with an accessible menu button; the layout audit checks one-line 48px menu links, no horizontal overflow, and Escape focus return at 390px.
 - Optional AI copy-editing uses `@cf/openai/gpt-oss-120b`, sends only the three resident-authored fields after explicit consent, and retains an editable, confirm-before-copy result beside the original. Production binding and rate-limit configuration pass Wrangler dry-run; live preview, CPU, quota, and logging checks remain external release gates in `docs/adversarial-release-checklist.md`.
 - Cloudflare Workers Free in the user's personal account is the selected hosting target, and `https://tokyobudget.page/` is the canonical public URL. The personal account's native Workers Builds GitHub integration deploys the generated `dist/server/wrangler.json` through the commands recorded in `docs/cloudflare-deployment.md`. The time-limited ODH Paid-equivalent team is not the production owner.
 - The remaining unchecked section 1 items are historical decision-record entries whose substance is implemented; section 19 is intentionally future scope. Do not treat either group as a failed section 18 acceptance item.

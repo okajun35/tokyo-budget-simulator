@@ -38,6 +38,9 @@ const returnRoutes = [
   ".aboutPageBack a",
   ".fiscalContextHeader>a",
   ".fiscalContextBack a",
+  ".budgetResultHeader>a",
+  ".budgetResultNext>a",
+  ".budgetResultEmpty>a",
 ];
 
 /** シミュレーターから詳しい説明へ進むための導線。 */
@@ -47,6 +50,8 @@ const detailRoutes = [
   ".detailLink",
   ".participationDetailLink",
   ".processDetailLink",
+  ".budgetResultCtaLink",
+  ".budgetResultChangeList a",
 ];
 
 test("keeps every return route readable", () => {

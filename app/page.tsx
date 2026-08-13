@@ -22,8 +22,10 @@ import {
   createBudgetDetailHref,
   createBudgetParticipationHref,
   createBudgetProcessHref,
+  createBudgetResultHref,
   resolveBudgetPlanState,
 } from "@/features/simulate-budget/budget-plan-query";
+import { summarizeBudgetResult } from "@/features/simulate-budget/budget-result-summary";
 import { createInitialBudgetSimulationState } from "@/features/simulate-budget/budget-simulation-state";
 import { FISCAL_CONTEXTS } from "@/features/understand-fiscal-context/fiscal-contexts";
 
@@ -41,6 +43,14 @@ export default function Home() {
   const [selected, setSelected] = useState<BudgetCategoryId>(() => restoredState.selectedCategoryId);
   const allocationSummary = useMemo(
     () => calculateBudgetAllocationSummary(values, GENERAL_ACCOUNT_BASELINE_100M_YEN),
+    [values],
+  );
+  const budgetResult = useMemo(
+    () => summarizeBudgetResult(
+      BUDGET_CATEGORIES,
+      values,
+      GENERAL_ACCOUNT_BASELINE_100M_YEN,
+    ),
     [values],
   );
   const active = BUDGET_CATEGORIES.find(x => x.id === selected)!;
@@ -148,6 +158,24 @@ export default function Home() {
             </p>
           </aside>
         </div>
+        <section className="budgetResultCta" aria-labelledby="budget-result-cta-heading">
+          <div>
+            <p className="eyebrow">YOUR ALLOCATION</p>
+            <h2 id="budget-result-cta-heading">動かした予算を振り返る</h2>
+            <p>{budgetResult.hasChanges
+              ? `${budgetResult.increaseCount + budgetResult.decreaseCount}分野の変更を、増やした分野と減らした分野に分けて確認できます。`
+              : "まだ予算配分を変更していません。分野を動かすと結果を確認できます。"}</p>
+          </div>
+          {budgetResult.hasChanges
+            ? <a
+                className="budgetResultCtaLink"
+                data-budget-result-cta="enabled"
+                href={createBudgetResultHref(values, active.id)}
+              >配分結果を確認する <span>→</span></a>
+            : <button className="budgetResultCtaDisabled" data-budget-result-cta="disabled" type="button" disabled>
+                配分結果を確認する
+              </button>}
+        </section>
       </section>
 
       <section className="process" id="budget-process" aria-label="予算成立までの段階">

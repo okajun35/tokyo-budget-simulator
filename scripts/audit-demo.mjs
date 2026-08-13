@@ -98,10 +98,27 @@ await pressRangeKey("教育と文化の予算", "End", "End", 35);
 const afterEducationIncrease = await evaluate(`({
   education: Number(document.querySelector('input[aria-label="教育と文化の予算"]').value),
   debt: Number(document.querySelector('input[aria-label="公債費の予算"]').value),
-  metrics: Array.from(document.querySelectorAll('.balanceMetrics strong')).map(item => item.textContent)
+  metrics: Array.from(document.querySelectorAll('.balanceMetrics strong')).map(item => item.textContent),
+  resultHref: document.querySelector('[data-budget-result-cta=enabled]')?.getAttribute('href')
 })`);
 check("17.4 教育へ再配分", afterEducationIncrease.education === 16762, afterEducationIncrease);
 check("17.5 年間総予算を固定", afterEducationIncrease.metrics[0] === "96,530億円" && afterEducationIncrease.metrics[1] === "96,530億円" && afterEducationIncrease.metrics[2] === "0億円", afterEducationIncrease.metrics);
+
+await navigate(afterEducationIncrease.resultHref);
+const allocationResult = await evaluate(`({
+  state: document.querySelector('[data-budget-result-state]')?.getAttribute('data-budget-result-state'),
+  changedCategories: Array.from(document.querySelectorAll('[data-budget-result-change]')).map(item => item.getAttribute('data-budget-result-change')),
+  summary: document.querySelector('.budgetResultLead')?.textContent,
+  detailPlans: Array.from(document.querySelectorAll('.budgetResultChangeList a')).map(item => new URL(item.href).searchParams.get('plan'))
+})`);
+check(
+  "17.5a 配分結果を確認",
+  allocationResult.state === "changed" &&
+    allocationResult.summary.includes("840億円") &&
+    allocationResult.changedCategories.join(",") === "education,debt" &&
+    allocationResult.detailPlans.every(plan => plan?.split(",").length === 9),
+  allocationResult,
+);
 
 await navigate("/budget/debt?amount=1959");
 const debtDetail = await evaluate(`({
