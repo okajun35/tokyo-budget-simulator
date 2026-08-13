@@ -28,3 +28,14 @@ test("keeps free text in component memory and never persists it", async () => {
   assert.match(source, /maxLength=\{PARTICIPATION_REFINEMENT_LIMITS\.concern\}/);
   assert.doesNotMatch(source, /categoryName[\s\S]*body:\s*JSON\.stringify/);
 });
+
+test("offers the selected official contact again after the optional AI workflow", async () => {
+  const source = await readFile(workspacePath, "utf8");
+  const aiCopyPosition = source.indexOf("確認したAI案をコピー");
+  const nextContactPosition = source.indexOf("コピーしたら、公式窓口へ");
+
+  assert.ok(aiCopyPosition >= 0);
+  assert.ok(nextContactPosition > aiCopyPosition);
+  assert.match(source.slice(nextContactPosition), /primaryContact\.contactUrl/);
+  assert.match(source.slice(nextContactPosition), /このサイトから意見は送信されません/);
+});

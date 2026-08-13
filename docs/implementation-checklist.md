@@ -696,3 +696,5 @@ PCレイアウト    docs/web-image.png
 ドメイン更新（2026-08-12）：東京予算ラボの正規公開URLを `https://tokyobudget.page/` とし、canonicalとOpen Graph URLの基準に設定する。「正規公開」は東京都公式という意味ではない。CloudflareとGoogleの公開DNS応答、SNI付きTLS接続、HTTP 200、非公式表示を確認済み。デプロイ後の実HTMLでcanonicalとOpen Graph URLがともに `https://tokyobudget.page/` を指すことも確認済み。
 
 公開準備（2026-08-12）：Next.jsと`eslint-config-next`を16.3.0へ更新し、`npm audit --omit=dev`の脆弱性をHigh 4件から0件へ解消した。コードとプロジェクト作成のレイアウト参照画像はMIT Licenseとし、東京都のデータ・公式資料は再許諾しない境界を`NOTICE`に記録した。未使用の`.vinext`生成フォントとWindows由来メタデータも追跡対象から外し、再追跡をignoreする。全依存を含む`npm audit`には開発・ビルド用依存からのLow 1、Moderate 4、High 13が残るため、`@cloudflare/vite-plugin`、Vite、Vinext等の大型更新は互換性確認を伴う別作業とする。
+
+参加導線更新（2026-08-13）：`/participation/prepare` の構造化結果と任意AI推敲の後に、選択済みの公式窓口を「コピーしたら、公式窓口へ」と再掲した。原文・AI案のどちらをコピーした場合も、スマートフォンで上部へ戻らず公式ページへ進める。東京予算ラボから意見は送信されないこともその場で説明する。`npm run verify:cloudflare`はproduction build、220テスト、ESLint、生成設定検証を通過した。参加専用ブラウザ監査ではPC・390px幅の双方で、窓口カードがAI欄の後にあり、選択中の教育委員会窓口を保持し、横あふれがなく、スマートフォンで1列表示になることを確認した。

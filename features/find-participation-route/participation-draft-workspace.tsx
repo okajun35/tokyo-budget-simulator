@@ -330,6 +330,24 @@ export function ParticipationDraftWorkspace({
             >確認したAI案をコピー</button>
           </div>}
         </section>
+
+        {primaryContact && <section
+          className="participationNextContact"
+          aria-labelledby="next-contact-heading"
+        >
+          <div>
+            <p className="eyebrow">NEXT STEP</p>
+            <h4 id="next-contact-heading">コピーしたら、公式窓口へ</h4>
+            <p>{primaryContact.contactOrganizationName}</p>
+            <strong>{primaryContact.contactLabel}</strong>
+          </div>
+          <div>
+            <a href={primaryContact.contactUrl} target="_blank" rel="noreferrer">
+              {CONTACT_ACTION_LABELS[primaryContact.contactKind]}（外部リンク）↗
+            </a>
+            <p>このサイトから意見は送信されません。公式ページを開き、内容を確認して必要に応じて貼り付けてください。</p>
+          </div>
+        </section>}
       </article>}
 
       <button type="button" className="participationClearButton" onClick={clearDraft}>

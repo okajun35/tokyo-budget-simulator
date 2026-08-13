@@ -131,6 +131,26 @@ for (const viewport of [
     aiBoundary.text.includes("分野、予算変更額、所管、窓口URLは送りません"));
   check(`${viewport.name}: AI同意は初期オフ`, aiBoundary.consent === false && aiBoundary.runDisabled === true);
   check(`${viewport.name}: AI説明表示後も横あふれなし`, aiBoundary.overflow === 0, aiBoundary.overflow);
+  const nextContact = JSON.parse(await evaluate(`JSON.stringify((() => {
+    const card = document.querySelector('.participationNextContact');
+    const ai = document.querySelector('.participationAiRefinement');
+    return {
+      text: card?.innerText,
+      href: card?.querySelector('a')?.getAttribute('href'),
+      followsAi: Boolean(ai && card && (ai.compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING)),
+      columns: card ? getComputedStyle(card).gridTemplateColumns.split(' ').length : 0,
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+    };
+  })())`));
+  check(`${viewport.name}: 下書き後に選択済みの公式窓口を再掲`,
+    nextContact.text.includes("コピーしたら、公式窓口へ") &&
+    nextContact.text.includes("東京都教育委員会") &&
+    nextContact.href.startsWith("https://"));
+  check(`${viewport.name}: 窓口導線をAI欄の後に表示`, nextContact.followsAi === true);
+  check(`${viewport.name}: 窓口再掲後も横あふれなし`, nextContact.overflow === 0, nextContact.overflow);
+  if (viewport.mobile) {
+    check("mobile: 最終窓口カードは1列", nextContact.columns === 1, nextContact.columns);
+  }
 }
 
 await command("Page.navigate", { url: `${siteUrl}/participation?category=safety` });
