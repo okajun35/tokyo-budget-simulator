@@ -113,8 +113,8 @@ export default function Home() {
               data-budget-result-cta-location="budget-balance"
               className="budgetBalanceResultLink"
               href={createBudgetResultHref(values, active.id)}
-            >{budgetResult.increaseCount + budgetResult.decreaseCount}分野の配分結果を見る <span>→</span></a>}
-            <a className="fixedTotalReason" href="/fiscal-context">なぜ増やせない？ →</a>
+            >{budgetResult.increaseCount + budgetResult.decreaseCount}分野の配分結果を見る</a>}
+            <a className="fixedTotalReason" href="/fiscal-context">なぜ増やせない？</a>
             <button className="reset" onClick={reset}>↺ 初期値に戻す</button>
           </div>
         </div>

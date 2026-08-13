@@ -117,7 +117,11 @@ test("enables the top result route only after an allocation changes", async () =
   assert.ok(changedHtml.includes(createBudgetResultHref(allocations, "education")));
   assert.match(
     changedHtml,
-    /data-budget-result-cta-location="budget-balance"[^>]*>2分野の配分結果を見る/,
+    /data-budget-result-cta-location="budget-balance"[^>]*>2分野の配分結果を見る<\/a>/,
+  );
+  assert.match(
+    changedHtml,
+    /class="fixedTotalReason"[^>]*>なぜ増やせない？<\/a>/,
   );
   assert.match(unchangedHtml, /data-budget-result-cta="disabled"/);
   assert.doesNotMatch(unchangedHtml, /data-budget-result-cta-location="budget-balance"/);
