@@ -48,10 +48,22 @@ function BudgetResultChanges({
       <span className="budgetResultDirectionLabel">{direction === "increase" ? "増額" : "減額"}</span>
       <span className="colorDot" style={{ background: entry.category.color }} aria-hidden="true" />
       <h3>{entry.category.name}</h3>
+      <p
+        className="budgetResultCategoryMeaning"
+        data-budget-result-meaning={entry.category.id}
+      >{entry.category.definition}</p>
       <dl>
         <div><dt>変更額</dt><dd>{entry.change.amountLabel}</dd></div>
         <div><dt>変更率</dt><dd>{entry.change.rateLabel}</dd></div>
       </dl>
+      <details className="budgetResultMeaningDetails">
+        <summary>この分野には何が含まれる？</summary>
+        <div>
+          <h4>この分野に含まれる主な経費</h4>
+          <ul>{entry.category.mainUses.map(use => <li key={use}>{use}</li>)}</ul>
+          <p data-budget-result-scope-note={entry.category.id}>ここに挙げたものは分野全体の例です。増減分の具体的な使い道は、この操作だけでは決まりません。</p>
+        </div>
+      </details>
       <Link href={createBudgetDetailHref(entry.category.id, allocations)}>
         この変更について詳しく見る <span>→</span>
       </Link>

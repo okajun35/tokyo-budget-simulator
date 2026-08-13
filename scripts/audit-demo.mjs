@@ -89,17 +89,19 @@ const afterDebtReduction = await evaluate(`({
   value: Number(document.querySelector('input[aria-label="公債費の予算"]').value),
   changeAmount: document.querySelector('[data-budget-category=debt] .changeMetric b').textContent,
   changeRate: document.querySelector('[data-budget-category=debt] .changeMetric em').textContent,
-  metrics: Array.from(document.querySelectorAll('.balanceMetrics strong')).map(item => item.textContent)
+  metrics: Array.from(document.querySelectorAll('.balanceMetrics strong')).map(item => item.textContent),
+  resultCtaText: document.querySelector('[data-budget-result-cta-location=budget-balance]')?.textContent
 })`);
 check("17.2 公債費30%減", afterDebtReduction.value === 1959 && afterDebtReduction.changeAmount === "-840億円" && afterDebtReduction.changeRate === "-30.0%", afterDebtReduction);
 check("17.3 配分可能額840億円", afterDebtReduction.metrics[2] === "840億円", afterDebtReduction.metrics);
+check("17.3a 操作中の結果導線", afterDebtReduction.resultCtaText?.includes("1分野の配分結果を見る"), afterDebtReduction.resultCtaText);
 
 await pressRangeKey("教育と文化の予算", "End", "End", 35);
 const afterEducationIncrease = await evaluate(`({
   education: Number(document.querySelector('input[aria-label="教育と文化の予算"]').value),
   debt: Number(document.querySelector('input[aria-label="公債費の予算"]').value),
   metrics: Array.from(document.querySelectorAll('.balanceMetrics strong')).map(item => item.textContent),
-  resultHref: document.querySelector('[data-budget-result-cta=enabled]')?.getAttribute('href')
+  resultHref: document.querySelector('[data-budget-result-cta-location=budget-balance]')?.getAttribute('href')
 })`);
 check("17.4 教育へ再配分", afterEducationIncrease.education === 16762, afterEducationIncrease);
 check("17.5 年間総予算を固定", afterEducationIncrease.metrics[0] === "96,530億円" && afterEducationIncrease.metrics[1] === "96,530億円" && afterEducationIncrease.metrics[2] === "0億円", afterEducationIncrease.metrics);
@@ -109,7 +111,9 @@ const allocationResult = await evaluate(`({
   state: document.querySelector('[data-budget-result-state]')?.getAttribute('data-budget-result-state'),
   changedCategories: Array.from(document.querySelectorAll('[data-budget-result-change]')).map(item => item.getAttribute('data-budget-result-change')),
   summary: document.querySelector('.budgetResultLead')?.textContent,
-  detailPlans: Array.from(document.querySelectorAll('.budgetResultChangeList a')).map(item => new URL(item.href).searchParams.get('plan'))
+  detailPlans: Array.from(document.querySelectorAll('.budgetResultChangeList a')).map(item => new URL(item.href).searchParams.get('plan')),
+  meanings: Array.from(document.querySelectorAll('[data-budget-result-meaning]')).map(item => item.textContent),
+  meaningDetails: Array.from(document.querySelectorAll('.budgetResultMeaningDetails')).map(item => item.textContent)
 })`);
 check(
   "17.5a 配分結果を確認",
@@ -117,6 +121,14 @@ check(
     allocationResult.summary.includes("840億円") &&
     allocationResult.changedCategories.join(",") === "education,debt" &&
     allocationResult.detailPlans.every(plan => plan?.split(",").length === 9),
+  allocationResult,
+);
+check(
+  "17.5b 変更分野が何のお金か確認",
+  allocationResult.meanings.length === 2 &&
+    allocationResult.meanings.some(text => text.includes("学校運営")) &&
+    allocationResult.meanings.some(text => text.includes("都債の元金返済")) &&
+    allocationResult.meaningDetails.every(text => text.includes("具体的な使い道は、この操作だけでは決まりません")),
   allocationResult,
 );
 

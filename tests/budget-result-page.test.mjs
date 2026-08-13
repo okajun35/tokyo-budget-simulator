@@ -47,6 +47,16 @@ test("shows only increased and decreased fields in the allocation result", async
   assert.match(html, /data-budget-result-change="education"[^>]*data-change-direction="increase"/);
   assert.match(html, /data-budget-result-change="debt"[^>]*data-change-direction="decrease"/);
   assert.doesNotMatch(html, /data-budget-result-change="welfare"/);
+  assert.equal(html.match(/data-budget-result-meaning=/g)?.length, 2);
+  assert.match(
+    html,
+    /data-budget-result-meaning="education"[^>]*>学校運営、教職員、学校施設、図書館、文化・スポーツ、生涯学習などを支える経費です。/,
+  );
+  assert.equal(html.match(/<summary>この分野には何が含まれる？<\/summary>/g)?.length, 2);
+  assert.match(html, /学校運営と教職員/);
+  assert.match(html, /都債の元金償還/);
+  assert.equal(html.match(/data-budget-result-scope-note=/g)?.length, 2);
+  assert.match(html, /増減分の具体的な使い道は、この操作だけでは決まりません。/);
   assert.match(html, /東京都の正式な予算案ではありません/);
   assert.ok(html.includes(createBudgetDetailHref("education", allocations)));
   assert.ok(html.includes(createBudgetDetailHref("debt", allocations)));
@@ -105,6 +115,11 @@ test("enables the top result route only after an allocation changes", async () =
 
   assert.match(changedHtml, /data-budget-result-cta="enabled"/);
   assert.ok(changedHtml.includes(createBudgetResultHref(allocations, "education")));
+  assert.match(
+    changedHtml,
+    /data-budget-result-cta-location="budget-balance"[^>]*>2分野の配分結果を見る/,
+  );
   assert.match(unchangedHtml, /data-budget-result-cta="disabled"/);
+  assert.doesNotMatch(unchangedHtml, /data-budget-result-cta-location="budget-balance"/);
   assert.match(unchangedHtml, /まだ予算配分を変更していません/);
 });

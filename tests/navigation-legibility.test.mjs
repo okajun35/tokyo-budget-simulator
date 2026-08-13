@@ -50,6 +50,7 @@ const detailRoutes = [
   ".detailLink",
   ".participationDetailLink",
   ".processDetailLink",
+  ".budgetBalanceResultLink",
   ".budgetResultCtaLink",
   ".budgetResultChangeList a",
 ];

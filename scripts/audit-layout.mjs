@@ -45,7 +45,8 @@ const statefulParticipationPreparePath = "/participation/prepare?plan=18730%2C16
 const statefulCasePath = "/budget/education/cases?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education&amount=16762";
 const statefulMaterialsPath = "/budget/education/materials?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education&amount=16762";
 const statefulResultPath = "/budget-result?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education";
-const paths = ["/", statefulResultPath, "/budget/welfare?amount=15000", "/budget/debt?amount=1959", statefulCasePath, statefulMaterialsPath, "/budget-process", statefulProcessPath, "/participation?category=debt", statefulParticipationPreparePath, "/sources", "/about", "/fiscal-context"];
+const statefulTopPath = "/?plan=18730%2C16762%2C7822%2C4813%2C9823%2C10575%2C4993%2C1959%2C21053&category=education";
+const paths = ["/", statefulTopPath, statefulResultPath, "/budget/welfare?amount=15000", "/budget/debt?amount=1959", statefulCasePath, statefulMaterialsPath, "/budget-process", statefulProcessPath, "/participation?category=debt", statefulParticipationPreparePath, "/sources", "/about", "/fiscal-context"];
 const results = [];
 
 // 開発サーバは初回の変換に時間がかかる。固定の待ち時間では読み込み前の
@@ -74,6 +75,12 @@ for (const viewport of viewports) {
   for (const path of paths) {
     await command("Page.navigate", { url: `${siteUrl}${path}` });
     await waitForRenderedPage();
+    if (path === statefulResultPath) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      await command("Runtime.evaluate", {
+        expression: "document.querySelectorAll('.budgetResultMeaningDetails>summary').forEach(item => { item.click(); })",
+      });
+    }
     const response = await command("Runtime.evaluate", {
       expression: `JSON.stringify({
         path: location.pathname + location.search,
@@ -86,6 +93,9 @@ for (const viewport of viewports) {
         mobileDetailDisplay: document.querySelector('[data-mobile-detail-link]') ? getComputedStyle(document.querySelector('[data-mobile-detail-link]')).display : null,
         contextPanelDisplay: document.querySelector('.contextPanel') ? getComputedStyle(document.querySelector('.contextPanel')).display : null,
         budgetBalancePosition: document.querySelector('.budgetBalance') ? getComputedStyle(document.querySelector('.budgetBalance')).position : null,
+        budgetBalanceHeight: Math.round(document.querySelector('.budgetBalance')?.getBoundingClientRect().height ?? 0),
+        budgetBalanceResultText: document.querySelector('[data-budget-result-cta-location=budget-balance]')?.textContent ?? null,
+        openMeaningDetails: document.querySelectorAll('.budgetResultMeaningDetails[open]').length,
         desktopMenuDisplay: getComputedStyle(document.querySelector('.desktopSiteMenu')).display,
         mobileMenuDisplay: getComputedStyle(document.querySelector('.mobileMenu')).display
       })`,
