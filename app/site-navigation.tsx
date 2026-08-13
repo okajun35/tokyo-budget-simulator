@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MobileSiteMenu } from "./mobile-site-menu";
 
 const SITE_MENU = [
   { href: "/#simulator", label: "予算シミュレーター" },
@@ -14,9 +15,10 @@ export function SiteHeader() {
       <span className="brandMark">都</span>
       <span>東京予算ラボ<small>令和8年度・一般会計</small></span>
     </Link>
-    <nav aria-label="主要メニュー">
+    <nav className="desktopSiteMenu" aria-label="主要メニュー">
       {SITE_MENU.map(item => <Link key={item.href} href={item.href}>{item.label}</Link>)}
     </nav>
+    <MobileSiteMenu items={SITE_MENU} />
   </header>;
 }
 

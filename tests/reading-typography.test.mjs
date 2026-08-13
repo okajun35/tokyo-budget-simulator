@@ -45,7 +45,7 @@ const LEAD_MAX_CHARS = 55;
 /**
  * 読者は高校生以上で東京都の予算に詳しくない都民である。
  * 8〜9pxまで落ちた本文は読まれないため、下限を設ける。
- * 狭幅のグローバルメニューだけは、5項目を1行に収めるため11pxを許す。
+ * 狭幅ではメニューボタンへ切り替えるため、グローバルメニューも12px未満にしない。
  */
 test("keeps every declared text size readable", () => {
   const tooSmall = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
@@ -56,7 +56,7 @@ test("keeps every declared text size readable", () => {
         .map(size => `${selectors.trim().replace(/\s+/g, " ").slice(0, 40)} = ${size}px`),
     );
 
-  assert.deepEqual(tooSmall, [".topbar nav>a = 11px"]);
+  assert.deepEqual(tooSmall, []);
 });
 
 test("keeps the top-page lead within one line of its own column", async () => {

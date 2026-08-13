@@ -84,7 +84,9 @@ for (const viewport of viewports) {
         headings: Array.from(document.querySelectorAll('h1,h2,h3,h4,h5,h6')).map(heading => ({ level: Number(heading.tagName[1]), text: heading.textContent.trim() })),
         mobileDetailDisplay: document.querySelector('[data-mobile-detail-link]') ? getComputedStyle(document.querySelector('[data-mobile-detail-link]')).display : null,
         contextPanelDisplay: document.querySelector('.contextPanel') ? getComputedStyle(document.querySelector('.contextPanel')).display : null,
-        budgetBalancePosition: document.querySelector('.budgetBalance') ? getComputedStyle(document.querySelector('.budgetBalance')).position : null
+        budgetBalancePosition: document.querySelector('.budgetBalance') ? getComputedStyle(document.querySelector('.budgetBalance')).position : null,
+        desktopMenuDisplay: getComputedStyle(document.querySelector('.desktopSiteMenu')).display,
+        mobileMenuDisplay: getComputedStyle(document.querySelector('.mobileMenu')).display
       })`,
       returnByValue: true,
     });
@@ -170,6 +172,72 @@ const keyboardAudit = {
   sliderAfter: Number(sliderAfterResponse.result.value),
 };
 
+await command("Emulation.setDeviceMetricsOverride", {
+  width: 390,
+  height: 844,
+  deviceScaleFactor: 1,
+  mobile: true,
+});
+await command("Page.navigate", { url: `${siteUrl}/` });
+await waitForRenderedPage();
+
+for (let attempt = 0; attempt < 20; attempt++) {
+  const menuOpened = await command("Runtime.evaluate", {
+    expression: `(() => {
+      const button = document.querySelector('.mobileMenuButton');
+      if (button.getAttribute('aria-expanded') !== 'true') button.click();
+      return button.getAttribute('aria-expanded') === 'true';
+    })()`,
+    returnByValue: true,
+  });
+  if (menuOpened.result.value === true) break;
+  await new Promise(resolve => setTimeout(resolve, 100));
+}
+const openedMenuResponse = await command("Runtime.evaluate", {
+  expression: `JSON.stringify((() => {
+    const button = document.querySelector('.mobileMenuButton');
+    const menu = document.querySelector('.mobileSiteMenu');
+    const links = [...menu.querySelectorAll('a')];
+    const lineCount = element => {
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      return new Set([...range.getClientRects()].map(rect => Math.round(rect.top))).size;
+    };
+    return {
+      expanded: button.getAttribute('aria-expanded'),
+      hidden: menu.hidden,
+      linkCount: links.length,
+      linkLines: links.map(lineCount),
+      minimumLinkHeight: Math.min(...links.map(link => link.getBoundingClientRect().height)),
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+    };
+  })())`,
+  returnByValue: true,
+});
+const openedMenuAudit = JSON.parse(openedMenuResponse.result.value);
+await command("Input.dispatchKeyEvent", {
+  type: "keyDown",
+  key: "Escape",
+  code: "Escape",
+  windowsVirtualKeyCode: 27,
+});
+await command("Input.dispatchKeyEvent", {
+  type: "keyUp",
+  key: "Escape",
+  code: "Escape",
+  windowsVirtualKeyCode: 27,
+});
+await new Promise(resolve => setTimeout(resolve, 100));
+const closedMenuResponse = await command("Runtime.evaluate", {
+  expression: `JSON.stringify({
+    expanded: document.querySelector('.mobileMenuButton').getAttribute('aria-expanded'),
+    hidden: document.querySelector('.mobileSiteMenu').hidden,
+    focusReturned: document.activeElement === document.querySelector('.mobileMenuButton')
+  })`,
+  returnByValue: true,
+});
+const closedMenuAudit = JSON.parse(closedMenuResponse.result.value);
+
 socket.close();
 await fetch(`${devtoolsEndpoint}/json/close/${target.id}`);
 
@@ -180,9 +248,12 @@ for (const result of results) {
   const headingsValid = headingLevels.filter(level => level === 1).length === 1 &&
     headingLevels.every((level, index) => index === 0 || level <= headingLevels[index - 1] + 1);
   const loadTimeValid = result.viewport !== "desktop" || result.path !== "/" || result.loadDurationMs < 3000;
-  if (overflow || !headingsValid || !loadTimeValid) failed = true;
+  const menuLayoutValid = result.viewport === "mobile"
+    ? result.desktopMenuDisplay === "none" && result.mobileMenuDisplay !== "none"
+    : result.desktopMenuDisplay !== "none" && result.mobileMenuDisplay === "none";
+  if (overflow || !headingsValid || !loadTimeValid || !menuLayoutValid) failed = true;
   const { headings, ...layoutResult } = result;
-  console.log(JSON.stringify({ ...layoutResult, headingCount: headings.length, overflow, headingsValid, loadTimeValid }));
+  console.log(JSON.stringify({ ...layoutResult, headingCount: headings.length, overflow, headingsValid, loadTimeValid, menuLayoutValid }));
 }
 
 const keyboardValid = keyboardAudit.select.educationPressed === "true" &&
@@ -191,5 +262,17 @@ const keyboardValid = keyboardAudit.select.educationPressed === "true" &&
   keyboardAudit.sliderAfter === keyboardAudit.sliderBefore - 1;
 if (!keyboardValid) failed = true;
 console.log(JSON.stringify({ keyboardAudit, keyboardValid }));
+
+const mobileMenuValid = openedMenuAudit.expanded === "true" &&
+  openedMenuAudit.hidden === false &&
+  openedMenuAudit.linkCount === 5 &&
+  openedMenuAudit.linkLines.every(lines => lines === 1) &&
+  openedMenuAudit.minimumLinkHeight >= 48 &&
+  openedMenuAudit.overflow === 0 &&
+  closedMenuAudit.expanded === "false" &&
+  closedMenuAudit.hidden === true &&
+  closedMenuAudit.focusReturned === true;
+if (!mobileMenuValid) failed = true;
+console.log(JSON.stringify({ openedMenuAudit, closedMenuAudit, mobileMenuValid }));
 
 if (failed) process.exitCode = 1;

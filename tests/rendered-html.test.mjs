@@ -174,7 +174,7 @@ test("offers all four primary navigation destinations", async () => {
     },
   );
   const html = await response.text();
-  const navigation = html.match(/<nav aria-label="主要メニュー">.*?<\/nav>/)?.[0];
+  const navigation = html.match(/<nav(?=[^>]*aria-label="主要メニュー")[^>]*>.*?<\/nav>/)?.[0];
 
   assert.ok(navigation);
   assert.match(navigation, />予算シミュレーター</);
