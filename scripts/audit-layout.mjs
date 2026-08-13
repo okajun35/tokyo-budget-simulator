@@ -102,7 +102,73 @@ await command("Emulation.setDeviceMetricsOverride", {
   mobile: false,
 });
 await command("Page.navigate", { url: `${siteUrl}/` });
-await waitForRenderedPage();
+for (let attempt = 0; attempt < 60; attempt++) {
+  const response = await command("Runtime.evaluate", {
+    expression: "document.querySelectorAll('[data-budget-category]').length === 9",
+    returnByValue: true,
+  });
+  if (response.result.value === true) break;
+  await new Promise(resolve => setTimeout(resolve, 100));
+}
+
+const clickPoint = async ({ x, y }) => {
+  await command("Input.dispatchMouseEvent", { type: "mouseMoved", x, y });
+  await command("Input.dispatchMouseEvent", {
+    type: "mousePressed",
+    x,
+    y,
+    button: "left",
+    clickCount: 1,
+  });
+  await command("Input.dispatchMouseEvent", {
+    type: "mouseReleased",
+    x,
+    y,
+    button: "left",
+    clickCount: 1,
+  });
+};
+
+const rowSurfaceTargetResponse = await command("Runtime.evaluate", {
+  expression: `JSON.stringify((() => {
+    const row = document.querySelector('[data-budget-category=industry]');
+    row.scrollIntoView({ block: 'center', behavior: 'instant' });
+    const amount = row.querySelector('.budgetMetric');
+    const rect = amount.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const hit = document.elementFromPoint(x, y);
+    return {
+      x,
+      y,
+      hitControl: hit?.getAttribute('data-budget-select-control') ?? null,
+      hitTag: hit?.tagName ?? null,
+      hitClass: hit?.className ?? null
+    };
+  })())`,
+  returnByValue: true,
+});
+const rowSurfaceTarget = JSON.parse(rowSurfaceTargetResponse.result.value);
+let rowSurfaceSelectionResponse;
+for (let attempt = 0; attempt < 20; attempt++) {
+  await clickPoint(rowSurfaceTarget);
+  await new Promise(resolve => setTimeout(resolve, 100));
+  rowSurfaceSelectionResponse = await command("Runtime.evaluate", {
+    expression: `JSON.stringify({
+      pressed: document.querySelector('[data-budget-select-control=industry]').getAttribute('aria-pressed'),
+      current: document.querySelector('[data-budget-category=industry]').getAttribute('aria-current')
+    })`,
+    returnByValue: true,
+  });
+  const selection = JSON.parse(rowSurfaceSelectionResponse.result.value);
+  if (selection.pressed === "true" && selection.current === "true") break;
+}
+const rowSurfaceAudit = {
+  hitControl: rowSurfaceTarget.hitControl,
+  hitTag: rowSurfaceTarget.hitTag,
+  hitClass: rowSurfaceTarget.hitClass,
+  ...JSON.parse(rowSurfaceSelectionResponse.result.value),
+};
 
 // 開発サーバではハイドレーションが終わる前に押しても何も起きない。
 // 固定の待ち時間ではなく、選択が反映されるまで押し直して判定する。
@@ -262,6 +328,12 @@ const keyboardValid = keyboardAudit.select.educationPressed === "true" &&
   keyboardAudit.sliderAfter === keyboardAudit.sliderBefore - 1;
 if (!keyboardValid) failed = true;
 console.log(JSON.stringify({ keyboardAudit, keyboardValid }));
+
+const rowSurfaceValid = rowSurfaceAudit.hitControl === "industry" &&
+  rowSurfaceAudit.pressed === "true" &&
+  rowSurfaceAudit.current === "true";
+if (!rowSurfaceValid) failed = true;
+console.log(JSON.stringify({ rowSurfaceAudit, rowSurfaceValid }));
 
 const mobileMenuValid = openedMenuAudit.expanded === "true" &&
   openedMenuAudit.hidden === false &&

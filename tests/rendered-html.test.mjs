@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { BUDGET_CATEGORIES } from "../features/simulate-budget/budget-categories.ts";
+
 const developmentPreviewMeta =
   /<meta(?=[^>]*\bname=["']codex-preview["'])(?=[^>]*\bcontent=["']development["'])[^>]*>/i;
 
@@ -645,6 +647,16 @@ test("offers a keyboard-operable selection control for every budget row", async 
   assert.equal(html.match(/data-budget-select-control=/g)?.length, 9);
   assert.equal(html.match(/aria-pressed="true"/g)?.length, 1);
   assert.equal(html.match(/aria-pressed="false"/g)?.length, 8);
+  assert.equal(html.match(/class="budgetRowSelectSurface"/g)?.length, 9);
+
+  for (const category of BUDGET_CATEGORIES) {
+    assert.match(
+      html,
+      new RegExp(
+        `data-budget-select-control="${category.id}"[^>]*aria-label="${category.name}を選択"`,
+      ),
+    );
+  }
 });
 
 test("visibly labels every link that opens an external site", async () => {
