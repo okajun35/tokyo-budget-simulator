@@ -11,6 +11,7 @@ import {
   createBudgetDetailHref,
   createBudgetParticipationHref,
   createBudgetProcessHref,
+  createBudgetResultHref,
   createBudgetSimulatorHref,
 } from "../features/simulate-budget/budget-plan-query.ts";
 import {
@@ -57,6 +58,57 @@ test("returns from a detail page with the complete plan", async () => {
   assert.ok(html.includes(createBudgetParticipationHref(plan, "education")));
   assert.ok(html.includes(createBudgetCasesHref("education", 16_762, plan)));
   assert.ok(html.includes(createBudgetMaterialsHref("education", 16_762, plan)));
+});
+
+test("returns to the allocation result when detail was opened from the result", async () => {
+  const resultHref = createBudgetResultHref(plan, "education");
+  const detailHref = createBudgetDetailHref("education", plan, "budget-result");
+  const resultHtml = await fetchHtml(resultHref, "result-origin-detail-link");
+  const detailHtml = await fetchHtml(detailHref, "result-origin-detail-return");
+
+  assert.ok(resultHtml.includes(detailHref));
+  assert.match(
+    detailHtml,
+    new RegExp(`href="${resultHref.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"[^>]*>← 配分結果に戻る`),
+  );
+  assert.ok(
+    detailHtml.includes(
+      createBudgetCasesHref("education", 16_762, plan, "budget-result"),
+    ),
+  );
+  assert.ok(
+    detailHtml.includes(
+      createBudgetMaterialsHref("education", 16_762, plan, "budget-result"),
+    ),
+  );
+});
+
+test("keeps the allocation-result origin across case and material pages", async () => {
+  const casesHref = createBudgetCasesHref(
+    "education",
+    16_762,
+    plan,
+    "budget-result",
+  );
+  const materialsHref = createBudgetMaterialsHref(
+    "education",
+    16_762,
+    plan,
+    "budget-result",
+  );
+  const meaningHref = createBudgetMeaningHref(
+    "education",
+    16_762,
+    plan,
+    "budget-result",
+  );
+  const caseHtml = await fetchHtml(casesHref, "cases-result-origin");
+  const materialsHtml = await fetchHtml(materialsHref, "materials-result-origin");
+
+  assert.ok(caseHtml.includes(meaningHref));
+  assert.ok(caseHtml.includes(materialsHref));
+  assert.ok(materialsHtml.includes(meaningHref));
+  assert.ok(materialsHtml.includes(casesHref));
 });
 
 test("keeps the complete plan across the case and material pages", async () => {
@@ -126,7 +178,7 @@ test("keeps plan, category, and topic when opening and leaving the drafting page
 
 test("does not invent a plan for legacy detail links", async () => {
   const html = await fetchHtml(
-    "/budget/education?amount=16762",
+    "/budget/education?amount=16762&from=budget-result",
     "legacy-detail-without-plan",
   );
 

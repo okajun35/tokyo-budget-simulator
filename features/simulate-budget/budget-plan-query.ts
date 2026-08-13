@@ -17,6 +17,8 @@ export type ResolvedBudgetPlanState = {
   restoredFromQuery: boolean;
 };
 
+export type BudgetDetailOrigin = "budget-result";
+
 const isBudgetCategoryId = (value: string | undefined): value is BudgetCategoryId =>
   BUDGET_CATEGORIES.some(category => category.id === value);
 
@@ -85,10 +87,18 @@ export function createBudgetSimulatorHref(
 export function createBudgetDetailHref(
   categoryId: BudgetCategoryId,
   allocations: BudgetAllocations,
+  origin?: BudgetDetailOrigin,
 ): string {
   const params = stateQuery(allocations, categoryId);
   params.set("amount", String(allocations[categoryId]));
+  if (origin) params.set("from", origin);
   return `/budget/${categoryId}?${params}`;
+}
+
+export function resolveBudgetDetailOrigin(
+  value: string | undefined,
+): BudgetDetailOrigin | undefined {
+  return value === "budget-result" ? value : undefined;
 }
 
 export function createBudgetProcessHref(

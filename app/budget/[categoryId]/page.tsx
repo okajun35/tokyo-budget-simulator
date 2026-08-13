@@ -4,7 +4,9 @@ import { BUDGET_TERM_GLOSSARY } from "@/domain/tokyo-budget/budget-term-glossary
 import {
   createBudgetParticipationHref,
   createBudgetProcessHref,
+  createBudgetResultHref,
   createBudgetSimulatorHref,
+  resolveBudgetDetailOrigin,
 } from "@/features/simulate-budget/budget-plan-query";
 import {
   createBudgetCasesHref,
@@ -30,6 +32,7 @@ type BudgetDetailPageProps = {
     amount?: string | string[];
     plan?: string | string[];
     category?: string | string[];
+    from?: string | string[];
   }>;
 };
 
@@ -38,7 +41,7 @@ export default async function BudgetDetailPage({
   searchParams,
 }: BudgetDetailPageProps) {
   const { categoryId } = await params;
-  const { amount, plan } = await searchParams;
+  const { amount, plan, from } = await searchParams;
   const state = resolveBudgetDetailPageState(categoryId, amount, plan);
 
   if (!state) {
@@ -56,9 +59,18 @@ export default async function BudgetDetailPage({
     BUDGET_TERM_GLOSSARY[category.name as keyof typeof BUDGET_TERM_GLOSSARY]?.meaning;
   const detailedCategory = findDetailedBudgetCategory(category.id);
   const policyContext = findBudgetPolicyContext(category.id);
+  const detailOrigin = planAllocations
+    ? resolveBudgetDetailOrigin(typeof from === "string" ? from : undefined)
+    : undefined;
   const simulatorHref = planAllocations
     ? createBudgetSimulatorHref(planAllocations, category.id)
     : "/#simulator";
+  const returnHref = detailOrigin === "budget-result" && planAllocations
+    ? createBudgetResultHref(planAllocations, category.id)
+    : simulatorHref;
+  const returnLabel = detailOrigin === "budget-result"
+    ? "← 配分結果に戻る"
+    : "← 予算に戻る";
   const participationHref = planAllocations
     ? createBudgetParticipationHref(planAllocations, category.id)
     : `/participation?category=${category.id}`;
@@ -69,11 +81,13 @@ export default async function BudgetDetailPage({
     category.id,
     resolvedAmount.amount100mYen,
     planAllocations,
+    detailOrigin,
   );
   const materialsHref = createBudgetMaterialsHref(
     category.id,
     resolvedAmount.amount100mYen,
     planAllocations,
+    detailOrigin,
   );
   const changeVerb = comparison.direction === "increase"
     ? "増やしました"
@@ -83,7 +97,7 @@ export default async function BudgetDetailPage({
 
   return <main className="budgetDetailPage" data-budget-detail={category.id} data-change-direction={comparison.direction}>
     <header className="budgetDetailHeader">
-      <Link href={simulatorHref}>← 予算に戻る</Link>
+      <Link href={returnHref}>{returnLabel}</Link>
       <p className="eyebrow">BUDGET DETAIL · FY2026</p>
       <h1>{category.name}</h1>
       <p>{categoryTermMeaning && <>{category.name}は{categoryTermMeaning}です。</>}選んだ変更が何を意味し、どんな制約があるかを考えます。</p>
@@ -181,7 +195,7 @@ export default async function BudgetDetailPage({
       </section>
 
       <nav className="budgetDetailBack" aria-label="関連ページへ移動">
-        <Link href={simulatorHref}>← 予算に戻る</Link>
+        <Link href={returnHref}>{returnLabel}</Link>
         <Link href={budgetProcessHref}>東京都の予算が決まる流れを見る →</Link>
       </nav>
     </div>

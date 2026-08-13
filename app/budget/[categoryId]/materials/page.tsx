@@ -5,6 +5,7 @@ import {
   createBudgetProcessHref,
   createBudgetParticipationHref,
   createBudgetSimulatorHref,
+  resolveBudgetDetailOrigin,
 } from "@/features/simulate-budget/budget-plan-query";
 import {
   BudgetDetailContext,
@@ -26,6 +27,7 @@ type BudgetMaterialsPageProps = {
   searchParams: Promise<{
     amount?: string | string[];
     plan?: string | string[];
+    from?: string | string[];
   }>;
 };
 
@@ -34,7 +36,7 @@ export default async function BudgetMaterialsPage({
   searchParams,
 }: BudgetMaterialsPageProps) {
   const { categoryId } = await params;
-  const { amount, plan } = await searchParams;
+  const { amount, plan, from } = await searchParams;
   const state = resolveBudgetDetailPageState(categoryId, amount, plan);
 
   if (!state) {
@@ -42,9 +44,27 @@ export default async function BudgetMaterialsPage({
   }
 
   const { category, comparison, planAllocations, resolvedAmount } = state;
-  const meaningHref = createBudgetMeaningHref(category.id, resolvedAmount.amount100mYen, planAllocations);
-  const casesHref = createBudgetCasesHref(category.id, resolvedAmount.amount100mYen, planAllocations);
-  const materialsHref = createBudgetMaterialsHref(category.id, resolvedAmount.amount100mYen, planAllocations);
+  const detailOrigin = planAllocations
+    ? resolveBudgetDetailOrigin(typeof from === "string" ? from : undefined)
+    : undefined;
+  const meaningHref = createBudgetMeaningHref(
+    category.id,
+    resolvedAmount.amount100mYen,
+    planAllocations,
+    detailOrigin,
+  );
+  const casesHref = createBudgetCasesHref(
+    category.id,
+    resolvedAmount.amount100mYen,
+    planAllocations,
+    detailOrigin,
+  );
+  const materialsHref = createBudgetMaterialsHref(
+    category.id,
+    resolvedAmount.amount100mYen,
+    planAllocations,
+    detailOrigin,
+  );
   const simulatorHref = planAllocations
     ? createBudgetSimulatorHref(planAllocations, category.id)
     : "/#simulator";

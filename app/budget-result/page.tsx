@@ -64,7 +64,7 @@ function BudgetResultChanges({
           <p data-budget-result-scope-note={entry.category.id}>ここに挙げたものは分野全体の例です。増減分の具体的な使い道は、この操作だけでは決まりません。</p>
         </div>
       </details>
-      <Link href={createBudgetDetailHref(entry.category.id, allocations)}>
+      <Link href={createBudgetDetailHref(entry.category.id, allocations, "budget-result")}>
         この変更について詳しく見る <span>→</span>
       </Link>
     </article>)}</div>

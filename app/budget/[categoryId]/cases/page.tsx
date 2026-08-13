@@ -4,6 +4,7 @@ import { CategoryCaseStudies } from "@/features/learn-from-budget-cases/category
 import {
   createBudgetParticipationHref,
   createBudgetSimulatorHref,
+  resolveBudgetDetailOrigin,
 } from "@/features/simulate-budget/budget-plan-query";
 import {
   BudgetDetailContext,
@@ -27,6 +28,7 @@ type BudgetCasesPageProps = {
   searchParams: Promise<{
     amount?: string | string[];
     plan?: string | string[];
+    from?: string | string[];
   }>;
 };
 
@@ -35,7 +37,7 @@ export default async function BudgetCasesPage({
   searchParams,
 }: BudgetCasesPageProps) {
   const { categoryId } = await params;
-  const { amount, plan } = await searchParams;
+  const { amount, plan, from } = await searchParams;
   const state = resolveBudgetDetailPageState(categoryId, amount, plan);
 
   if (!state) {
@@ -44,9 +46,27 @@ export default async function BudgetCasesPage({
 
   const { category, comparison, changeGuidance, planAllocations, resolvedAmount } = state;
   const policyContext = findBudgetPolicyContext(category.id);
-  const meaningHref = createBudgetMeaningHref(category.id, resolvedAmount.amount100mYen, planAllocations);
-  const casesHref = createBudgetCasesHref(category.id, resolvedAmount.amount100mYen, planAllocations);
-  const materialsHref = createBudgetMaterialsHref(category.id, resolvedAmount.amount100mYen, planAllocations);
+  const detailOrigin = planAllocations
+    ? resolveBudgetDetailOrigin(typeof from === "string" ? from : undefined)
+    : undefined;
+  const meaningHref = createBudgetMeaningHref(
+    category.id,
+    resolvedAmount.amount100mYen,
+    planAllocations,
+    detailOrigin,
+  );
+  const casesHref = createBudgetCasesHref(
+    category.id,
+    resolvedAmount.amount100mYen,
+    planAllocations,
+    detailOrigin,
+  );
+  const materialsHref = createBudgetMaterialsHref(
+    category.id,
+    resolvedAmount.amount100mYen,
+    planAllocations,
+    detailOrigin,
+  );
   const simulatorHref = planAllocations
     ? createBudgetSimulatorHref(planAllocations, category.id)
     : "/#simulator";
